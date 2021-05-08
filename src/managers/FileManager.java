@@ -9,35 +9,24 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class FileManager {
-	
-	private String rootDirectory;
-	
-	public FileManager(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
-	}
-	
-	public void setRootDirectory(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
-	}
-	
-	public void createDirectory(String directoryName) throws IOException {
-		Files.createDirectory(Paths.get(rootDirectory + File.separator + directoryName));
+public class FileManager {	
+	public void createDir(String dirName, String dirLocation) throws IOException {
+		Files.createDirectory(Paths.get(dirLocation + File.separator + dirName));
 	}
 	
 	public boolean removeFile(String fileName) throws IOException {
 		return Files.deleteIfExists(Paths.get(fileName));
 	}
 	
-	public void removeDirectory(File directoryName) throws IOException {
-		Files.delete(Paths.get(directoryName.toString()));
+	public void removeDir(File dirName) throws IOException {
+		Files.delete(Paths.get(dirName.toString()));
 	}
 	
-	public void createRootDirectory() throws IOException {
-		Files.createDirectories(Paths.get(rootDirectory));
+	public void createDirPath(String dirPath) throws IOException {
+		Files.createDirectories(Paths.get(dirPath));
 	}
 	
-	public void copyFileToDirectory(File sourceFileName, File destDirectoryName) throws IOException {
+	public void copyFileToDir(File sourceFileName, File destDirectoryName) throws IOException {
 		Path sourcePath = Paths.get(sourceFileName.toString());
 		Path destPath = Paths.get(destDirectoryName.toString()).resolve(sourcePath.getFileName());
 		
