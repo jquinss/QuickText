@@ -74,7 +74,7 @@ public class DialogBuilder {
 			boolean areRequiredFieldsEmpty = newValue.trim().isEmpty();
 
 			if (!isOptionalSecondField) {
-				areRequiredFieldsEmpty = areRequiredFieldsEmpty & secondField.getText().trim().isEmpty();
+				areRequiredFieldsEmpty = areRequiredFieldsEmpty | secondField.getText().trim().isEmpty();
 			}
 
 			okButton.setDisable(areRequiredFieldsEmpty);
@@ -82,7 +82,7 @@ public class DialogBuilder {
 
 		if (!isOptionalSecondField) {
 			secondField.textProperty().addListener((observable, oldValue, newValue) -> {
-				boolean areRequiredFieldsEmpty = newValue.trim().isEmpty() & firstField.getText().trim().isEmpty();
+				boolean areRequiredFieldsEmpty = newValue.trim().isEmpty() | firstField.getText().trim().isEmpty();
 
 				okButton.setDisable(areRequiredFieldsEmpty);
 			});
