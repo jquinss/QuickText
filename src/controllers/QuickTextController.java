@@ -1,12 +1,14 @@
 package controllers;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Properties;
 
 import control.FileTreeItem;
 import data.FileItem;
 import managers.FileManager;
 import managers.SettingsManager;
+import util.DialogBuilder;
 import util.OSChecker;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -14,6 +16,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -23,6 +26,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Pair;
 
 
 public class QuickTextController {
@@ -69,7 +73,10 @@ public class QuickTextController {
 
     @FXML
     void createFolder(ActionEvent event) {
-    	System.out.println("Creating folder");
+    	Dialog dialog = DialogBuilder.getTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
+    			"Description", true);
+    	
+    	Optional<Pair<String, String>> result = dialog.showAndWait();
     }
     
     @FXML
