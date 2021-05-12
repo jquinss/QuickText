@@ -33,12 +33,15 @@ public class FileManager {
 		Files.copy(sourcePath, destPath);
 	}
 	
-	public void deleteFileTree(File startDirectory) throws IOException {
+	public void deleteFileTree(File startDirectory, boolean includeStartDirectory) throws IOException {
 		Files.walkFileTree(startDirectory.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 				if (e == null) {
-					Files.delete(dir);
+					if ((!dir.equals(startDirectory.toPath()) || includeStartDirectory)) {
+						Files.delete(dir);
+					}
+					
 					return FileVisitResult.CONTINUE;
 				}
 				else {
