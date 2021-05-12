@@ -1,6 +1,9 @@
 package controllers;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -10,11 +13,11 @@ import managers.FileManager;
 import managers.SettingsManager;
 import util.DialogBuilder;
 import util.OSChecker;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
@@ -73,67 +76,118 @@ public class QuickTextController {
 
     @FXML
     void createFolder(ActionEvent event) {
-    	Dialog dialog = DialogBuilder.getTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
+    	Dialog<Pair<String, String>> dialog = DialogBuilder.getTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
     			"Description", true);
     	
     	Optional<Pair<String, String>> result = dialog.showAndWait();
+    	
+    	if (result.isPresent()) {
+    		String folderName = result.get().getKey();
+    		String folderDescription = result.get().getValue();
+    		
+    		String templatesDir = getRootDirectory();
+    		
+    		try {
+    			fileManager.createDir(folderName, templatesDir);
+    			FileItem folderItem = new FileItem(new File(templatesDir + File.separator + folderName));
+    			
+    			if (!folderDescription.isEmpty()) {
+    				folderItem.setDescription(folderDescription);
+    			}
+    			
+    			FileTreeItem folderTreeItem = new FileTreeItem(folderItem);
+    			setContextMenu(folderTreeItem);
+    			treeView.getRoot().getChildren().add(folderTreeItem);
+    		}
+        	catch (FileAlreadyExistsException e) {
+        		DialogBuilder.getAlertDialog("Error", "Error creating the folder", "There is already a folder with the same name", AlertType.ERROR).showAndWait();
+        	}
+    		catch (IOException e) {
+    			DialogBuilder.getAlertDialog("Error", "Error creating the folder", "Folder cannot be created", AlertType.ERROR).showAndWait();
+    		}
+    	}
     }
     
     @FXML
     void deleteTemplate(ActionEvent event) {
+    	// TO-DO
     	System.out.println("Deleting template");
     }
     
     @FXML
     void deleteFolder(ActionEvent event) {
-    	System.out.println("Deleting folder");
+    	TreeItem<FileItem> treeItem = treeView.getSelectionModel().getSelectedItem();
+    	File selectedFolder = treeItem.getValue().getFile();
+    	try {
+			fileManager.removeDir(selectedFolder);
+			treeView.getRoot().getChildren().remove(treeItem);
+    	}
+    	catch (DirectoryNotEmptyException e) {
+    		Alert alertDialog = DialogBuilder.getAlertDialog("Confirmation", "The folder is not empty", "Are you sure you want to delete all the files?", AlertType.CONFIRMATION);
+    		alertDialog.showAndWait().ifPresent(response -> {
+    			if (response == ButtonType.OK) {
+    				deleteAllFilesAndFolders(treeItem, true);
+    			}
+    		});;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     @FXML
     void deleteAllFolders(ActionEvent event) {
-    	System.out.println("Deleting all folders");
+    	deleteAllFilesAndFolders(treeView.getRoot(), false);
     }
 
     @FXML
     void createHTMLTemplate(ActionEvent event) {
-
+    	// TO-DO
+    	System.out.println("Creating HTML template");
     }
 
     @FXML
     void createPlainTextTemplate(ActionEvent event) {
-
+    	// TO-DO
+    	System.out.println("Creating Plain-Text template");
     }
     
     @FXML
     void importTemplate(ActionEvent event) {
-    	
+    	// TO-DO
+    	System.out.println("Importing template");
     }
 
     @FXML
     void exitApplication(ActionEvent event) {
-
+    	// TO-DO
+    	System.out.println("Exiting application");
     }
 
     @FXML
     void saveTemplates(ActionEvent event) {
-
+    	// TO-DO
+    	System.out.println("Saving templates");
     }
 
     @FXML
     void showAboutMenu(ActionEvent event) {
-
+    	// TO-DO
+    	System.out.println("Showing about menu");
     }
     
     void copyTemplateToClipboard() {
-    	
+    	// TO-DO
+    	System.out.println("Copying template to clipboard");
     }
     
     void viewTemplate() {
-    	
+    	// TO-DO
+    	System.out.println("Viewing template");
     }
 
     void editTemplate() {
-    	
+    	// TO-DO
+    	System.out.println("Editing template");
     }
 
     @FXML
@@ -160,40 +214,44 @@ public class QuickTextController {
     
     private void initializeTreeView() {
     	setRootDirectory();
-    	setSelectedTreeItemBindings();
+    	setSelectedTreeItemListener();
     	setTreeViewCellFactory();
     }
     
     private void setRootDirectory() {
-    	Properties settings = SettingsManager.getInstance().getSettings();
-    	File rootFile = new File(settings.getProperty("templates_dir"));
-    	FileItem rootFileItem = new FileItem(rootFile);
-    	rootFileItem.setIsRoot(true);
+    	String templatesDir = getRootDirectory();
     	
-    	FileTreeItem rootTreeItem = new FileTreeItem(rootFileItem);
-    	ContextMenu contextMenu = buildContextMenu(rootTreeItem);
-		rootTreeItem.setValue(rootFileItem);
-		rootTreeItem.setContextMenu(contextMenu);
-		treeView.setRoot(rootTreeItem);
+    	try {
+    		fileManager.createDirPath(templatesDir);
+    		FileItem rootFileItem = new FileItem(new File(templatesDir));
+        	rootFileItem.setIsRoot(true);
+        	FileTreeItem rootTreeItem = new FileTreeItem(rootFileItem);
+        	setContextMenu(rootTreeItem);
+    		treeView.setRoot(rootTreeItem);
+    	}
+    	catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	
     }
     
-    private void setSelectedTreeItemBindings() {
-    	ObjectProperty<FileItem> selectedTreeItem = new SimpleObjectProperty<>();
+    private String getRootDirectory() {
+    	Properties settings = SettingsManager.getInstance().getSettings();
+    	String templatesDir = settings.getProperty("templates_dir");
     	
-		selectedTreeItem.bind(Bindings.createObjectBinding(() -> {
-		    TreeItem<FileItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
-		    return selectedItem == null ?  null : selectedItem.getValue();
-		}, treeView.getSelectionModel().selectedItemProperty()));
-		
-		selectedTreeItem.addListener((obs, oldValue, newValue) -> {
+    	return templatesDir;
+    }
+    
+    private void setSelectedTreeItemListener() {
+    	treeView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 		    if (newValue != null) {
-		    	if (newValue.isRootDirectory()) {
+		    	if (newValue.getValue().isRootDirectory()) {
 		    		setRootMenuItemsVisibility();
 		    	}
-		    	if (newValue.isDirectory()) {
+		    	else if (newValue.getValue().isDirectory()) {
 		    		setFolderMenuItemsVisibility();
 		    	}
-		    	else if (newValue.isFile()) {
+		    	else if (newValue.getValue().isFile()) {
 		    		setFileMenuItemsVisibility();
 		    	}
 		    	
@@ -263,10 +321,14 @@ public class QuickTextController {
 		});
 	}
     
-    private ContextMenu buildContextMenu(TreeItem<FileItem> treeItem) {
+    private void setContextMenu(FileTreeItem fileTreeItem) {
+    	FileItem fileItem = fileTreeItem.getValue();
+    	ContextMenu contextMenu = buildContextMenu(fileItem);
+    	fileTreeItem.setContextMenu(contextMenu);
+    }
+    
+    private ContextMenu buildContextMenu(FileItem fileItem) {
     	ContextMenu contextMenu = new ContextMenu();
-    	
-    	FileItem fileItem = treeItem.getValue();
     	
     	if (fileItem.isRootDirectory()) { 
     		setRootDirContextMenu(contextMenu);
@@ -317,5 +379,23 @@ public class QuickTextController {
 		deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
 		
 		contextMenu.getItems().addAll(copyTemplateItem, viewTemplateItem, editTemplateItem, deleteTemplateItem);
+    }
+    
+    private void deleteAllFilesAndFolders(TreeItem<FileItem> startTreeItem, boolean includeStartTreeItem) {
+    	File startDirectory = startTreeItem.getValue().getFile();
+    	
+    	try {
+    		fileManager.deleteFileTree(startDirectory, includeStartTreeItem);
+    		if (includeStartTreeItem) {
+    			startTreeItem.getParent().getChildren().remove(startTreeItem);
+    		}
+    		else {
+    			startTreeItem.getChildren().clear();
+    		}
+    		
+    	}
+    	catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
 }
