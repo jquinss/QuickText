@@ -15,6 +15,9 @@ import util.DialogBuilder;
 import util.OSChecker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -27,6 +30,7 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -146,9 +150,28 @@ public class QuickTextController {
     }
 
     @FXML
-    void createPlainTextTemplate(ActionEvent event) {
-    	// TO-DO
-    	System.out.println("Creating Plain-Text template");
+    void createPlainTextTemplate(ActionEvent event) throws IOException {
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\PlainTextEditor.fxml"));
+		Parent parent = fxmlLoader.load();
+		
+		PlainTextEditorController plainTextEditorController = fxmlLoader.getController();
+		
+		Scene scene = new Scene(parent, 800, 600);
+		scene.getStylesheets().add(getClass().getResource("..\\styles\\application.css").toExternalForm());
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        stage.setTitle("Plain-Text Editor");
+        
+        TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+        
+        plainTextEditorController.setStage(stage);
+        plainTextEditorController.setFileManager(fileManager);
+        plainTextEditorController.setFolderTreeItem(selectedTreeItem);
+        plainTextEditorController.setQuickTextController(this);
+        
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
     
     @FXML
@@ -321,7 +344,7 @@ public class QuickTextController {
 		});
 	}
     
-    private void setContextMenu(FileTreeItem fileTreeItem) {
+    void setContextMenu(FileTreeItem fileTreeItem) {
     	FileItem fileItem = fileTreeItem.getValue();
     	ContextMenu contextMenu = buildContextMenu(fileItem);
     	fileTreeItem.setContextMenu(contextMenu);
@@ -359,7 +382,13 @@ public class QuickTextController {
 		MenuItem createHTMLTemplateItem = new MenuItem("HTML Template");
 		MenuItem deleteFolderItem = new MenuItem("Delete");
 		
-		createPlainTextTemplateItem.setOnAction(e -> createPlainTextTemplate(e));
+		createPlainTextTemplateItem.setOnAction(e -> {
+			try {
+				createPlainTextTemplate(e);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
 		createHTMLTemplateItem.setOnAction(e -> createHTMLTemplate(e));
 		deleteFolderItem.setOnAction(e -> deleteFolder(e));
 		
