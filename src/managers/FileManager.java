@@ -1,7 +1,10 @@
 package managers;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,5 +58,14 @@ public class FileManager {
 				return FileVisitResult.CONTINUE;
 			}
 		});
+	}
+	
+	public void writeStringToFile(String text, File file) throws IOException {
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))){
+    		writer.print(text);
+    		if (writer.checkError()) {
+    			throw new IOException();
+    		}
+    	}
 	}
 }
