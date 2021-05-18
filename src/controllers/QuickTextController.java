@@ -30,6 +30,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -189,8 +191,16 @@ public class QuickTextController {
     }
     
     void copyTemplateToClipboard() {
-    	// TO-DO
-    	System.out.println("Copying template to clipboard");
+    	Clipboard clipboard = Clipboard.getSystemClipboard();
+    	ClipboardContent content = new ClipboardContent();
+    	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
+    	
+    	if (fileItem.isPlainTextTemplate()) {
+    		// TO-DO
+    	}
+    	else if (fileItem.isHTMLTemplate()) {
+    		// TO-DO
+    	}
     }
     
     void viewTemplate() {
