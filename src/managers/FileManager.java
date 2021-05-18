@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 
 public class FileManager {	
 	public void createDir(String dirName, String dirLocation) throws IOException {
@@ -67,5 +68,9 @@ public class FileManager {
     			throw new IOException();
     		}
     	}
+	}
+	
+	public List<String> readAllLinesFromFile(File file) throws IOException {
+		return Files.readAllLines(Paths.get(file.toURI()));
 	}
 }
