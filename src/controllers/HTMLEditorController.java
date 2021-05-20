@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import data.FileItem;
 import javafx.fxml.FXML;
@@ -20,11 +19,11 @@ public class HTMLEditorController extends TextEditorController {
 	@FXML
     private HTMLEditor htmlEditor;
 	
-    void saveNewFile(String fileName) throws IOException {
+    void saveNewFile(String fileName, String description) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
 		File file = new File(folder.toString() + File.separator + fileName + HTML_EXT);
     	writeHTMLEditorToFile(file);
-    	addFileTreeItemToFolderTreeItem(file);
+    	addFileTreeItemToFolderTreeItem(file, description);
     }
     
     void saveExistingFile(File file) throws IOException {
