@@ -7,8 +7,11 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.xml.sax.SAXException;
 
 import util.HtmlToPlainText;
 import control.FileTreeItem;
@@ -17,6 +20,7 @@ import managers.FileManager;
 import managers.SettingsManager;
 import util.DialogBuilder;
 import util.OSChecker;
+import util.XMLConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -98,7 +102,7 @@ public class QuickTextController {
     		String folderName = result.get().getKey();
     		String folderDescription = result.get().getValue();
     		
-    		String templatesDir = getRootDirectory();
+    		String templatesDir = getRootDirectoryPath();
     		
     		try {
     			fileManager.createDir(folderName, templatesDir);
@@ -185,14 +189,19 @@ public class QuickTextController {
 
     @FXML
     void saveTemplates(ActionEvent event) {
-    	// TO-DO
-    	System.out.println("Saving templates");
+    	Properties settings = SettingsManager.getInstance().getSettings();
+    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
+    	XMLConverter xmlConverter = new XMLConverter();
+    	try {
+			xmlConverter.convertTreeViewToXML(treeView, xmlFilePath, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
     void showAboutMenu(ActionEvent event) {
-    	// TO-DO
-    	System.out.println("Showing about menu");
+    	DialogBuilder.getAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
     }
     
     void copyTemplateToClipboard() {
@@ -259,7 +268,6 @@ public class QuickTextController {
     			e.printStackTrace();
     		}
     	}
-
     }
 
     @FXML
@@ -286,12 +294,14 @@ public class QuickTextController {
     
     private void initializeTreeView() {
     	setRootDirectory();
+    	setXMLDirectory();
     	setSelectedTreeItemListener();
     	setTreeViewCellFactory();
+    	buildTreeViewFromXML();
     }
     
     private void setRootDirectory() {
-    	String templatesDir = getRootDirectory();
+    	String templatesDir = getRootDirectoryPath();
     	
     	try {
     		fileManager.createDirPath(templatesDir);
@@ -304,14 +314,29 @@ public class QuickTextController {
     	catch (IOException e) {
     		e.printStackTrace();
     	}
-    	
     }
     
-    private String getRootDirectory() {
+    private String getRootDirectoryPath() {
     	Properties settings = SettingsManager.getInstance().getSettings();
     	String templatesDir = settings.getProperty("templates_dir");
     	
     	return templatesDir;
+    }
+    
+    private void setXMLDirectory() {
+    	String xmlDir = getXMLDirectoryPath();
+    	try {
+			fileManager.createDirPath(xmlDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    private String getXMLDirectoryPath() {
+    	Properties settings = SettingsManager.getInstance().getSettings();
+    	String xmlDir = settings.getProperty("xml_dir");
+    	
+    	return xmlDir;
     }
     
     private void setSelectedTreeItemListener() {
@@ -394,6 +419,17 @@ public class QuickTextController {
 			}
 		});
 	}
+    
+    private void buildTreeViewFromXML() {
+    	Properties settings = SettingsManager.getInstance().getSettings();
+    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
+    	XMLConverter xmlConverter = new XMLConverter();
+    	try {
+			xmlConverter.initializeTreeViewFromXML(xmlFilePath, treeView);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
     
     void setContextMenu(FileTreeItem fileTreeItem) {
     	FileItem fileItem = fileTreeItem.getValue();
