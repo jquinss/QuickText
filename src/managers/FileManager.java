@@ -73,4 +73,15 @@ public class FileManager {
 	public List<String> readAllLinesFromFile(File file) throws IOException {
 		return Files.readAllLines(Paths.get(file.toURI()));
 	}
+	
+	public String readAllLinesAsStringFromFile(File file) throws IOException {
+    	List<String> fileLines = readAllLinesFromFile(file);
+    	StringBuilder text = new StringBuilder();
+    	for (String line : fileLines) {
+    		text.append(line + System.lineSeparator());
+    	}
+    	text.delete(text.length() - System.lineSeparator().length(), text.length());
+    	
+    	return text.toString();
+	}
 }
