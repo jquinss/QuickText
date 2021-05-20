@@ -3,8 +3,6 @@ package control;
 import data.FileItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class FileTreeItem extends TreeItem<FileItem> {
 	private static final String FOLDER_IMG = "/images/folder_img.png";
