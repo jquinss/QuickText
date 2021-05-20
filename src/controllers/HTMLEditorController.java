@@ -11,6 +11,8 @@ import javafx.scene.web.HTMLEditor;
 import managers.FileManager;
 
 public class HTMLEditorController extends TextEditorController {
+	private static final String HTML_EXT = ".html";
+	
 	public HTMLEditorController(TreeItem<FileItem> treeItem, FileManager fileManager) {
 		super(treeItem, fileManager);
 	}
@@ -20,7 +22,7 @@ public class HTMLEditorController extends TextEditorController {
 	
     void saveNewFile(String fileName) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
-		File file = new File(folder.toString() + File.separator + fileName + ".html");
+		File file = new File(folder.toString() + File.separator + fileName + HTML_EXT);
     	writeHTMLEditorToFile(file);
     	addFileTreeItemToFolderTreeItem(file);
     }
@@ -47,11 +49,7 @@ public class HTMLEditorController extends TextEditorController {
     }
     
     private void loadFileToHTMLEditor(File file) throws IOException {
-        List<String> fileLines = fileManager.readAllLinesFromFile(file);
-        StringBuilder text = new StringBuilder();
-        for (String line : fileLines) {
-        	text.append(line);
-        }
-        htmlEditor.setHtmlText(text.toString());
+        String text = fileManager.readAllLinesAsStringFromFile(file);
+        htmlEditor.setHtmlText(text);
     }
 }
