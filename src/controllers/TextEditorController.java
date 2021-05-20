@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import control.FileTreeItem;
 import data.FileItem;
@@ -9,11 +10,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import managers.FileManager;
 import util.DialogBuilder;
 
@@ -84,25 +86,27 @@ public abstract class TextEditorController {
 
     @FXML
     void saveAs(ActionEvent event) {
-    	Alert invalidInputAlert = DialogBuilder.getAlertDialog("Informational alert", "Invalid input",
-				"The field cannot be empty", AlertType.ERROR);
-		TextInputDialog textInputDialog = DialogBuilder.getSingleTextFieldInputDialog("Save Template As", 
-				"Enter the name of the template", "Template name", invalidInputAlert);
-		
-		textInputDialog.showAndWait().ifPresent(fileName -> {
-			
-			try {
-				saveNewFile(fileName);
+    	Dialog<Pair<String, String>> dialog = DialogBuilder.getTwoTextFieldInputDialog("Create template", "Create a new template:", "Template name", 
+    			"Description", true);
+    	
+    	Optional<Pair<String, String>> result = dialog.showAndWait();
+    	
+    	if (result.isPresent()) {
+    		String fileName = result.get().getKey();
+    		String fileDescription = result.get().getValue();
+    		
+    		try {
+				saveNewFile(fileName, fileDescription);
 			}
 			catch (IOException e) {
 				DialogBuilder.getAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
 			}
-		});
+    	}
     }
     
     abstract void saveExistingFile(File file) throws IOException;
     
-    abstract void saveNewFile(String fileName) throws IOException;
+    abstract void saveNewFile(String fileName, String description) throws IOException;
     
     
     public void setStage(Stage stage) {
@@ -113,9 +117,13 @@ public abstract class TextEditorController {
     	this.quickTextController = quickTextController;
     }
     
-    void addFileTreeItemToFolderTreeItem(File file) {
+    void addFileTreeItemToFolderTreeItem(File file, String description) {
 		FileItem fileItem = new FileItem(file);
+		if (!description.isEmpty()) {
+			fileItem.setDescription(description);
+		}
 		FileTreeItem fileTreeItem = new FileTreeItem(fileItem);
+
 		quickTextController.setContextMenu(fileTreeItem);
 		this.fileTreeItem = fileTreeItem;
 		folderTreeItem.getChildren().add(fileTreeItem);
