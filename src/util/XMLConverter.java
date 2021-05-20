@@ -31,9 +31,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import control.FolderTreeItem;
-import control.RootTreeItem;
-import control.TemplateTreeItem;
+import control.FileTreeItem;
+import data.FileItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -42,8 +41,9 @@ public class XMLConverter {
 	private static final String XML_FOLDER_TEXT = "folder";
 	private static final String XML_TEMPLATE_TEXT = "template";
 	private static final String XML_PATH_TEXT = "path";
+	private static final String XML_DESCRIPTION_TEXT = "description";
 	
-	public void initializeTreeViewFromXML(File xmlFile, TreeView<File> treeView) throws SAXException,
+	public void initializeTreeViewFromXML(File xmlFile, TreeView<FileItem> treeView) throws SAXException,
 																		ParserConfigurationException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
@@ -52,7 +52,7 @@ public class XMLConverter {
 		saxParser.parse(xmlFile, handler);
 	}
 	
-	public void convertTreeViewToXML(TreeView<File> treeView, File xmlFile, boolean formatXML) throws XMLStreamException, IOException, ParserConfigurationException, 
+	public void convertTreeViewToXML(TreeView<FileItem> treeView, File xmlFile, boolean formatXML) throws XMLStreamException, IOException, ParserConfigurationException, 
 																								SAXException, TransformerFactoryConfigurationError, TransformerException {
 		XMLOutputFactory xmlFactory = XMLOutputFactory.newInstance();
 		XMLStreamWriter xmlStreamWriter = xmlFactory.createXMLStreamWriter(new FileWriter(xmlFile));
@@ -64,37 +64,51 @@ public class XMLConverter {
 		}
 	}
 	
-	private void writeXMLFile(TreeView<File> treeView, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+	private void writeXMLFile(TreeView<FileItem> treeView, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+		writeTreeToXML(treeView, xmlStreamWriter);
+	}
+	
+	private void writeTreeToXML(TreeView<FileItem> treeView, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
 		xmlStreamWriter.writeStartDocument();
 		xmlStreamWriter.writeStartElement(XML_ROOT_TEXT);
 		xmlStreamWriter.writeStartElement(XML_PATH_TEXT);
-		xmlStreamWriter.writeCharacters(treeView.getRoot().getValue().getPath());
+		xmlStreamWriter.writeCharacters(treeView.getRoot().getValue().getFile().getPath());
 		xmlStreamWriter.writeEndElement();
-		
-		if (!treeView.getRoot().getChildren().isEmpty()) {
-			for (TreeItem<File> folder : treeView.getRoot().getChildren()) {
-				xmlStreamWriter.writeStartElement(XML_FOLDER_TEXT);
-				xmlStreamWriter.writeStartElement(XML_PATH_TEXT);
-				xmlStreamWriter.writeCharacters(folder.getValue().getPath());
-				xmlStreamWriter.writeEndElement();
-				
-				if (!folder.getChildren().isEmpty()) {
-					for (TreeItem<File> template : folder.getChildren()) {
-						xmlStreamWriter.writeStartElement(XML_TEMPLATE_TEXT);
-						xmlStreamWriter.writeStartElement(XML_PATH_TEXT);
-						xmlStreamWriter.writeCharacters(template.getValue().getPath());
-						xmlStreamWriter.writeEndElement();
-						xmlStreamWriter.writeEndElement();
-					}
-				}
-				
-				xmlStreamWriter.writeEndElement();
-			}
-		}
-		
+		writeFolders(treeView.getRoot(), xmlStreamWriter);
 		xmlStreamWriter.writeEndElement();
 		xmlStreamWriter.writeEndDocument();
 		xmlStreamWriter.flush();
+	}
+	
+	private void writeFolders(TreeItem<FileItem> root, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+		if (!root.getChildren().isEmpty()) {
+			for (TreeItem<FileItem> folder : root.getChildren()) {
+				xmlStreamWriter.writeStartElement(XML_FOLDER_TEXT);
+				xmlStreamWriter.writeStartElement(XML_PATH_TEXT);
+				xmlStreamWriter.writeCharacters(folder.getValue().getFile().getPath());
+				xmlStreamWriter.writeEndElement();
+				xmlStreamWriter.writeStartElement(XML_DESCRIPTION_TEXT);
+				xmlStreamWriter.writeCharacters(folder.getValue().getDescription());
+				xmlStreamWriter.writeEndElement();
+				writeTemplates(folder, xmlStreamWriter);
+				xmlStreamWriter.writeEndElement();
+			}
+		}
+	}
+	
+	private void writeTemplates(TreeItem<FileItem> folder, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+		if (!folder.getChildren().isEmpty()) {
+			for (TreeItem<FileItem> template : folder.getChildren()) {
+				xmlStreamWriter.writeStartElement(XML_TEMPLATE_TEXT);
+				xmlStreamWriter.writeStartElement(XML_PATH_TEXT);
+				xmlStreamWriter.writeCharacters(template.getValue().getFile().getPath());
+				xmlStreamWriter.writeEndElement();
+				xmlStreamWriter.writeStartElement(XML_DESCRIPTION_TEXT);
+				xmlStreamWriter.writeCharacters(template.getValue().getDescription());
+				xmlStreamWriter.writeEndElement();
+				xmlStreamWriter.writeEndElement();
+			}
+		}
 	}
 	
 	private void formatXMLFile(File xmlFile) throws ParserConfigurationException, FileNotFoundException, SAXException, 
@@ -115,16 +129,17 @@ public class XMLConverter {
 			transformer.transform(source, result);
 	}
 	
-	private DefaultHandler createHandler(TreeView<File> treeView) {
+	private DefaultHandler createHandler(TreeView<FileItem> treeView) {
 		DefaultHandler handler = new DefaultHandler() {
-			RootTreeItem rootTreeItem;
-			FolderTreeItem folderTreeItem;
-			TemplateTreeItem templateTreeItem;
+			FileTreeItem rootTreeItem;
+			FileTreeItem folderTreeItem;
+			FileTreeItem templateTreeItem;
 				
 			boolean enterRootItem;
 			boolean enterFolderItem;
 			boolean enterTemplateItem;
 			boolean enterPath;
+			boolean enterDescription;
 				
 			@Override
 			public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -144,6 +159,10 @@ public class XMLConverter {
 				if (qName.contentEquals(XML_PATH_TEXT)) {
 					enterPath = true;
 				}
+				
+				if (qName.contentEquals(XML_DESCRIPTION_TEXT)) {
+					enterDescription = true;
+				}
 			}
 				
 			@Override
@@ -151,7 +170,7 @@ public class XMLConverter {
 				if (enterRootItem) {
 					if (enterPath) {
 						File rootFolder = new File(new String(ch, start, length));
-						rootTreeItem = new RootTreeItem(rootFolder);
+						rootTreeItem = new FileTreeItem(new FileItem(rootFolder));
 						treeView.setRoot(rootTreeItem);
 							
 						enterRootItem = false;
@@ -162,22 +181,32 @@ public class XMLConverter {
 				if (enterFolderItem) {
 					if (enterPath) {
 						File folder = new File(new String(ch, start, length));
-						folderTreeItem = new FolderTreeItem(folder);
+						FileItem folderItem = new FileItem(folder);
+						if (enterDescription) {
+							folderItem.setDescription(new String(ch, start, length));
+						}
+						folderTreeItem = new FileTreeItem(new FileItem(folder));
 						treeView.getRoot().getChildren().add(folderTreeItem);
 							
 						enterFolderItem = false;
 						enterPath = false;
+						enterDescription = false;
 					}
 				}
 					
 				if (enterTemplateItem) {
 					if (enterPath) {
 						File template = new File(new String(ch, start, length));
-						templateTreeItem = new TemplateTreeItem(template);
+						FileItem templateItem = new FileItem(template);
+						if (enterDescription) {
+							templateItem.setDescription(new String(ch, start, length));
+						}
+						templateTreeItem = new FileTreeItem(templateItem);
 						folderTreeItem.getChildren().add(templateTreeItem);
-								
-						enterPath = false;
+						
 						enterTemplateItem = false;
+						enterPath = false;
+						enterDescription = false;
 					}
 				}
 			}
