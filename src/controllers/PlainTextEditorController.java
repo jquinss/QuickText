@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import data.FileItem;
 import javafx.fxml.FXML;
@@ -11,6 +10,9 @@ import javafx.scene.control.TreeItem;
 import managers.FileManager;
 
 public class PlainTextEditorController extends TextEditorController {
+	
+	private static final String PLAIN_TEXT_EXT = ".txt";
+	
 	public PlainTextEditorController(TreeItem<FileItem> treeItem, FileManager fileManager) {
 		super(treeItem, fileManager);
 	}
@@ -19,7 +21,7 @@ public class PlainTextEditorController extends TextEditorController {
 	
     void saveNewFile(String fileName) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
-		File file = new File(folder.toString() + File.separator + fileName + ".txt");
+		File file = new File(folder.toString() + File.separator + fileName + PLAIN_TEXT_EXT);
     	writeTextAreaToFile(file);
     	addFileTreeItemToFolderTreeItem(file);
 		setIsSavedStatus();
@@ -59,9 +61,7 @@ public class PlainTextEditorController extends TextEditorController {
     }
     
     private void loadFileToTextArea(File file) throws IOException {
-        List<String> fileLines = fileManager.readAllLinesFromFile(file);
-        for (String line : fileLines) {
-        	textArea.appendText(line + "\n");
-        }
+        String text = fileManager.readAllLinesAsStringFromFile(file);
+        textArea.setText(text);
     }
 }
