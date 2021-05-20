@@ -7,11 +7,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.xml.sax.SAXException;
 
 import util.HtmlToPlainText;
 import control.FileTreeItem;
