@@ -16,14 +16,15 @@ public class PlainTextEditorController extends TextEditorController {
 	public PlainTextEditorController(TreeItem<FileItem> treeItem, FileManager fileManager) {
 		super(treeItem, fileManager);
 	}
+	
 	@FXML
     private TextArea textArea;
 	
-    void saveNewFile(String fileName) throws IOException {
+    void saveNewFile(String fileName, String description) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
 		File file = new File(folder.toString() + File.separator + fileName + PLAIN_TEXT_EXT);
     	writeTextAreaToFile(file);
-    	addFileTreeItemToFolderTreeItem(file);
+    	addFileTreeItemToFolderTreeItem(file, description);
 		setIsSavedStatus();
     }
     
