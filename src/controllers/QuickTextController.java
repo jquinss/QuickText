@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import util.HtmlToPlainText;
 import control.FileTreeItem;
 import data.FileItem;
 import managers.FileManager;
@@ -30,6 +33,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.web.WebEngine;
@@ -194,13 +199,26 @@ public class QuickTextController {
     	Clipboard clipboard = Clipboard.getSystemClipboard();
     	ClipboardContent content = new ClipboardContent();
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
+    	try {
+    		String text = fileManager.readAllLinesAsStringFromFile(fileItem.getFile());
     	
-    	if (fileItem.isPlainTextTemplate()) {
-    		// TO-DO
+    		if (fileItem.isPlainTextTemplate()) {
+    			content.putString(text);
+    		
+    		}
+    		else if (fileItem.isHTMLTemplate()) {
+    			HtmlToPlainText formatter = new HtmlToPlainText();
+    			Document doc = Jsoup.parse(text);
+    			String plainText = formatter.getPlainText(doc);
+    			content.putHtml(text);
+    			content.putString(plainText);
+    		}
     	}
-    	else if (fileItem.isHTMLTemplate()) {
-    		// TO-DO
+    	catch (IOException e) {
+    		e.printStackTrace();
     	}
+    	
+    	clipboard.setContent(content);
     }
     
     void viewTemplate() {
@@ -362,10 +380,12 @@ public class QuickTextController {
 						
 						if (empty) {
 							setText(null);
+							setGraphic(null);
 						}
 						else {
 							setText(fileItem.getFile().getName());
 							setContextMenu(((FileTreeItem) getTreeItem()).getContextMenu());
+							setGraphic(new ImageView(new Image(getClass().getResourceAsStream(((FileTreeItem) getTreeItem()).getImgURL()))));
 						}
 					}
 				};
@@ -519,13 +539,12 @@ public class QuickTextController {
     }
     
     private void viewPlainTextTemplate(File file) throws IOException {
-    	List<String> fileLines = fileManager.readAllLinesFromFile(file);
     	textArea.clear();
     	textArea.setVisible(true);
     	webView.setVisible(false);
-        for (String line : fileLines) {
-        	textArea.appendText(line + "\n");
-        }
+
+        String text = fileManager.readAllLinesAsStringFromFile(file);
+        textArea.setText(text);
     }
     
     private void viewHTMLTemplate(File file) throws IOException {
@@ -533,11 +552,8 @@ public class QuickTextController {
     	textArea.setVisible(false);
     	webView.setVisible(true);
     	WebEngine webEngine = webView.getEngine();
-    	List<String> fileLines = fileManager.readAllLinesFromFile(file);
-        StringBuilder text = new StringBuilder();
-        for (String line : fileLines) {
-        	text.append(line);
-        }
-    	webEngine.loadContent(text.toString(), "text/html");
+    	
+    	String text = fileManager.readAllLinesAsStringFromFile(file);
+    	webEngine.loadContent(text, "text/html");
     }
 }
