@@ -31,6 +31,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -41,6 +42,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -78,6 +80,9 @@ public class QuickTextController {
     
     @FXML
     private MenuItem importTemplateMenuItem;
+    
+    @FXML
+    private GridPane gridPane;
 
     
     private Stage stage;
@@ -226,6 +231,9 @@ public class QuickTextController {
     	
     	if (fileItem.isPlainTextTemplate()) {
     		try {
+    			gridPane.getChildren().clear();
+    			gridPane.add(new Label("Description"), 0, 0);
+    			gridPane.add(new Label(fileItem.getDescription()), 1, 0);
 				viewPlainTextTemplate(fileItem.getFile());
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -499,11 +507,9 @@ public class QuickTextController {
     	setContextMenu((FileTreeItem) treeView.getRoot());
     	
     	for (TreeItem<FileItem> folderTreeItem : treeView.getRoot().getChildren()) {
-    		System.out.println(folderTreeItem.getValue().getFile().toString());
     		setContextMenu((FileTreeItem) folderTreeItem);
     		
     		for (TreeItem<FileItem> templateTreeItem : folderTreeItem.getChildren()) {
-    			System.out.println(templateTreeItem.getValue().getFile().toString());
     			setContextMenu((FileTreeItem) templateTreeItem);
     		} 
     	}
