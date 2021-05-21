@@ -293,8 +293,9 @@ public class QuickTextController {
     	setRootDirectory();
     	setXMLDirectory();
     	setSelectedTreeItemListener();
-    	setTreeViewCellFactory();
     	buildTreeViewFromXML();
+    	initializeContextMenu();
+    	setTreeViewCellFactory();
     }
     
     private void setRootDirectory() {
@@ -498,6 +499,20 @@ public class QuickTextController {
 		deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
 		
 		contextMenu.getItems().addAll(copyTemplateItem, viewTemplateItem, editTemplateItem, deleteTemplateItem);
+    }
+    
+    private void initializeContextMenu() {
+    	setContextMenu((FileTreeItem) treeView.getRoot());
+    	
+    	for (TreeItem<FileItem> folderTreeItem : treeView.getRoot().getChildren()) {
+    		System.out.println(folderTreeItem.getValue().getFile().toString());
+    		setContextMenu((FileTreeItem) folderTreeItem);
+    		
+    		for (TreeItem<FileItem> templateTreeItem : folderTreeItem.getChildren()) {
+    			System.out.println(templateTreeItem.getValue().getFile().toString());
+    			setContextMenu((FileTreeItem) templateTreeItem);
+    		} 
+    	}
     }
     
     private void deleteAllFilesAndFolders(TreeItem<FileItem> startTreeItem, boolean includeStartTreeItem) {
