@@ -22,7 +22,7 @@ public class PropertiesReaderWriter {
 	public PropertiesReaderWriter(File fileName, String keyValueSeparator) {
 		this.fileName = fileName;
 		this.keyValueSeparator = keyValueSeparator;
-		this.regex = "(?<key>[\\p{ASCII}]+)=(?<value>[\\p{ASCII}]+)";
+		this.regex = "(?<key>[\\p{ASCII}]+)" + this.keyValueSeparator + "(?<value>[\\p{ASCII}]+)";
 		keyValuePattern = Pattern.compile(regex);
 	}
 	
