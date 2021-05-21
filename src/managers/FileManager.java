@@ -80,7 +80,10 @@ public class FileManager {
     	for (String line : fileLines) {
     		text.append(line + System.lineSeparator());
     	}
-    	text.delete(text.length() - System.lineSeparator().length(), text.length());
+    	
+    	if (!fileLines.isEmpty()) {
+    		text.delete(text.length() - System.lineSeparator().length(), text.length());
+    	}
     	
     	return text.toString();
 	}
