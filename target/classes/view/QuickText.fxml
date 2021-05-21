@@ -42,8 +42,6 @@
           	</Menu>   
             <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplate" disable="true" text="Import Template" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#saveTemplates" text="Save" />
-            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Quit" />
           </items>
         </Menu>
