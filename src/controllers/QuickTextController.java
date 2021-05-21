@@ -45,6 +45,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Pair;
 
@@ -85,6 +86,7 @@ public class QuickTextController {
     
     public void setStage(Stage stage) {
     	this.stage = stage;
+    	this.stage.setOnCloseRequest(e -> handleStageClosure(e));
     }
     
     public Stage getStage() {
@@ -606,5 +608,9 @@ public class QuickTextController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+    }
+    
+    public void handleStageClosure(WindowEvent e) {
+    	saveTreeViewToXML();
     }
 }
