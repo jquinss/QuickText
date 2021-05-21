@@ -7,8 +7,11 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.xml.sax.SAXException;
 
 import util.HtmlToPlainText;
 import control.FileTreeItem;
@@ -180,20 +183,8 @@ public class QuickTextController {
 
     @FXML
     void exitApplication(ActionEvent event) {
-    	// TO-DO
-    	System.out.println("Exiting application");
-    }
-
-    @FXML
-    void saveTemplates(ActionEvent event) {
-    	Properties settings = SettingsManager.getInstance().getSettings();
-    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
-    	XMLConverter xmlConverter = new XMLConverter();
-    	try {
-			xmlConverter.convertTreeViewToXML(treeView, xmlFilePath, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    	saveTreeViewToXML();
+    	stage.close();
     }
 
     @FXML
@@ -290,10 +281,14 @@ public class QuickTextController {
     }
     
     private void initializeTreeView() {
-    	setRootDirectory();
     	setXMLDirectory();
     	setSelectedTreeItemListener();
-    	buildTreeViewFromXML();
+    	try {
+			buildTreeViewFromXML();
+		} catch (SAXException | ParserConfigurationException | IOException e) {
+			e.printStackTrace();
+			setRootDirectory();
+		}
     	initializeContextMenu();
     	setTreeViewCellFactory();
     }
@@ -418,15 +413,12 @@ public class QuickTextController {
 		});
 	}
     
-    private void buildTreeViewFromXML() {
+    private void buildTreeViewFromXML() throws SAXException, ParserConfigurationException, IOException {
     	Properties settings = SettingsManager.getInstance().getSettings();
     	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
     	XMLConverter xmlConverter = new XMLConverter();
-    	try {
-			xmlConverter.initializeTreeViewFromXML(xmlFilePath, treeView);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		xmlConverter.initializeTreeViewFromXML(xmlFilePath, treeView);
+
     }
     
     void setContextMenu(FileTreeItem fileTreeItem) {
@@ -603,5 +595,16 @@ public class QuickTextController {
     	
     	String text = fileManager.readAllLinesAsStringFromFile(file);
     	webEngine.loadContent(text, "text/html");
+    }
+    
+    private void saveTreeViewToXML() {
+    	Properties settings = SettingsManager.getInstance().getSettings();
+    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
+    	XMLConverter xmlConverter = new XMLConverter();
+    	try {
+			xmlConverter.convertTreeViewToXML(treeView, xmlFilePath, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }
