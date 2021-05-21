@@ -169,8 +169,10 @@ public class XMLConverter {
 			public void characters(char ch[], int start, int length) throws SAXException {
 				if (enterRootItem) {
 					if (enterPath) {
-						File rootFolder = new File(new String(ch, start, length));
-						rootTreeItem = new FileTreeItem(new FileItem(rootFolder));
+						File root = new File(new String(ch, start, length));
+						FileItem rootItem = new FileItem(root);
+						rootItem.setIsRoot(true);
+						rootTreeItem = new FileTreeItem(rootItem);
 						treeView.setRoot(rootTreeItem);
 							
 						enterRootItem = false;
