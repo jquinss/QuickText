@@ -170,10 +170,13 @@ public class XMLConverter {
 				if (enterRootItem) {
 					if (enterPath) {
 						File root = new File(new String(ch, start, length));
-						FileItem rootItem = new FileItem(root);
-						rootItem.setIsRoot(true);
-						rootTreeItem = new FileTreeItem(rootItem);
-						treeView.setRoot(rootTreeItem);
+						
+						if (root.exists()) {
+							FileItem rootItem = new FileItem(root);
+							rootItem.setIsRoot(true);
+							rootTreeItem = new FileTreeItem(rootItem);
+							treeView.setRoot(rootTreeItem);
+						}
 							
 						enterRootItem = false;
 						enterPath = false;
@@ -183,13 +186,18 @@ public class XMLConverter {
 				if (enterFolderItem) {
 					if (enterPath) {
 						File folder = new File(new String(ch, start, length));
-						FileItem folderItem = new FileItem(folder);
-						if (enterDescription) {
-							folderItem.setDescription(new String(ch, start, length));
-						}
-						folderTreeItem = new FileTreeItem(new FileItem(folder));
-						treeView.getRoot().getChildren().add(folderTreeItem);
+						
+						if (folder.exists()) {
+							FileItem folderItem = new FileItem(folder);
 							
+							if (enterDescription) {
+								folderItem.setDescription(new String(ch, start, length));
+							}
+							
+							folderTreeItem = new FileTreeItem(new FileItem(folder));
+							rootTreeItem.getChildren().add(folderTreeItem);
+						}
+						
 						enterFolderItem = false;
 						enterPath = false;
 						enterDescription = false;
@@ -199,12 +207,17 @@ public class XMLConverter {
 				if (enterTemplateItem) {
 					if (enterPath) {
 						File template = new File(new String(ch, start, length));
-						FileItem templateItem = new FileItem(template);
-						if (enterDescription) {
-							templateItem.setDescription(new String(ch, start, length));
+
+						if (template.exists()) {
+							FileItem templateItem = new FileItem(template);
+							
+							if (enterDescription) {
+								templateItem.setDescription(new String(ch, start, length));
+							}
+							
+							templateTreeItem = new FileTreeItem(templateItem);
+							folderTreeItem.getChildren().add(templateTreeItem);
 						}
-						templateTreeItem = new FileTreeItem(templateItem);
-						folderTreeItem.getChildren().add(templateTreeItem);
 						
 						enterTemplateItem = false;
 						enterPath = false;
