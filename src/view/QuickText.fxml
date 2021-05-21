@@ -74,7 +74,7 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <GridPane AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
+                        <GridPane AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0" fx:id="gridPane">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
