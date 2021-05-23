@@ -128,7 +128,7 @@ public class XMLConverter {
 		
 			transformer.transform(source, result);
 	}
-	
+
 	private DefaultHandler createHandler(TreeView<FileItem> treeView) {
 		DefaultHandler handler = new DefaultHandler() {
 			FileTreeItem rootTreeItem;
@@ -175,6 +175,7 @@ public class XMLConverter {
 							FileItem rootItem = new FileItem(root);
 							rootItem.setIsRoot(true);
 							rootTreeItem = new FileTreeItem(rootItem);
+							rootTreeItem.setExpanded(true);
 							treeView.setRoot(rootTreeItem);
 						}
 							
@@ -190,16 +191,19 @@ public class XMLConverter {
 						if (folder.exists()) {
 							FileItem folderItem = new FileItem(folder);
 							
-							if (enterDescription) {
-								folderItem.setDescription(new String(ch, start, length));
-							}
-							
-							folderTreeItem = new FileTreeItem(new FileItem(folder));
+							folderTreeItem = new FileTreeItem(folderItem);
 							rootTreeItem.getChildren().add(folderTreeItem);
 						}
 						
-						enterFolderItem = false;
 						enterPath = false;
+					}
+				}
+				
+				if (enterFolderItem) {
+					if (enterDescription) {
+						folderTreeItem.getValue().setDescription(new String(ch, start, length).trim());
+
+						enterFolderItem = false;
 						enterDescription = false;
 					}
 				}
@@ -211,16 +215,19 @@ public class XMLConverter {
 						if (template.exists()) {
 							FileItem templateItem = new FileItem(template);
 							
-							if (enterDescription) {
-								templateItem.setDescription(new String(ch, start, length));
-							}
-							
 							templateTreeItem = new FileTreeItem(templateItem);
 							folderTreeItem.getChildren().add(templateTreeItem);
 						}
 						
-						enterTemplateItem = false;
 						enterPath = false;
+					}
+				}
+				
+				if (enterTemplateItem) {
+					if (enterDescription) {
+						templateTreeItem.getValue().setDescription(new String(ch, start, length).trim());
+
+						enterTemplateItem = false;
 						enterDescription = false;
 					}
 				}
