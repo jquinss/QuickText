@@ -92,7 +92,7 @@ public class DialogBuilder {
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == ButtonType.OK) {
-				return new Pair<>(firstField.getText(), secondField.getText());
+				return new Pair<>(firstField.getText().trim(), secondField.getText().trim());
 			}
 
 			return null;
