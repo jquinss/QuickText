@@ -31,9 +31,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -42,8 +42,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.web.WebEngine;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -82,8 +81,10 @@ public class QuickTextController {
     private MenuItem importTemplateMenuItem;
     
     @FXML
-    private GridPane gridPane;
+    private ScrollPane detailsPane;
 
+    @FXML
+    private Text descriptionText;
     
     private Stage stage;
     
@@ -171,15 +172,23 @@ public class QuickTextController {
     }
 
     @FXML
-    void createHTMLTemplate(ActionEvent event) throws IOException {
+    void createHTMLTemplate(ActionEvent event) {
     	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-    	buildHTMLEditor(selectedTreeItem);
+    	try {
+			openHTMLEditor(selectedTreeItem);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
-    void createPlainTextTemplate(ActionEvent event) throws IOException {
+    void createPlainTextTemplate(ActionEvent event) {
     	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-    	buildPlainTextEditor(selectedTreeItem);
+    	try {
+			openPlainTextEditor(selectedTreeItem);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     @FXML
@@ -208,12 +217,11 @@ public class QuickTextController {
     	
     		if (fileItem.isPlainTextTemplate()) {
     			content.putString(text);
-    		
     		}
     		else if (fileItem.isHTMLTemplate()) {
     			HtmlToPlainText formatter = new HtmlToPlainText();
     			Document doc = Jsoup.parse(text);
-    			String plainText = formatter.getPlainText(doc);
+    			String plainText = formatter.getPlainText(doc).trim();
     			content.putHtml(text);
     			content.putString(plainText);
     		}
@@ -231,9 +239,6 @@ public class QuickTextController {
     	
     	if (fileItem.isPlainTextTemplate()) {
     		try {
-    			gridPane.getChildren().clear();
-    			gridPane.add(new Label("Description"), 0, 0);
-    			gridPane.add(new Label(fileItem.getDescription()), 1, 0);
 				viewPlainTextTemplate(fileItem.getFile());
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -254,14 +259,14 @@ public class QuickTextController {
     	
     	if (selectedTreeItem.getValue().isPlainTextTemplate()) {
         	try {
-    			buildPlainTextEditor(selectedTreeItem);
+    			openPlainTextEditor(selectedTreeItem);
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
     	}
     	else if (selectedTreeItem.getValue().isHTMLTemplate()) {
         	try {
-    			buildHTMLEditor(selectedTreeItem);
+    			openHTMLEditor(selectedTreeItem);
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
@@ -272,6 +277,8 @@ public class QuickTextController {
 	public void initialize() {
 		loadSettings();
 		initializeTreeView();
+		
+		descriptionText.wrappingWidthProperty().bind(detailsPane.widthProperty());
 	}
     
     private void loadSettings() {
@@ -295,7 +302,7 @@ public class QuickTextController {
     	setSelectedTreeItemListener();
     	try {
 			buildTreeViewFromXML();
-		} catch (SAXException | ParserConfigurationException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			setRootDirectory();
 		}
@@ -311,6 +318,7 @@ public class QuickTextController {
     		FileItem rootFileItem = new FileItem(new File(templatesDir));
         	rootFileItem.setIsRoot(true);
         	FileTreeItem rootTreeItem = new FileTreeItem(rootFileItem);
+        	rootTreeItem.setExpanded(true);
         	setContextMenu(rootTreeItem);
     		treeView.setRoot(rootTreeItem);
     	}
@@ -345,19 +353,23 @@ public class QuickTextController {
     private void setSelectedTreeItemListener() {
     	treeView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 		    if (newValue != null) {
+		    	hideAllViewAreas();
 		    	if (newValue.getValue().isRootDirectory()) {
 		    		setRootMenuItemsVisibility();
 		    	}
 		    	else if (newValue.getValue().isDirectory()) {
 		    		setFolderMenuItemsVisibility();
+		    		viewFileDetails(newValue.getValue());
 		    	}
 		    	else if (newValue.getValue().isFile()) {
 		    		setFileMenuItemsVisibility();
+		    		viewFileDetails(newValue.getValue());
 		    	}
 		    	
 		    }
 		    else {
 		    	disableAllMenuItems();
+		    	hideAllViewAreas();
 		    }
 		});
     }
@@ -395,6 +407,36 @@ public class QuickTextController {
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(true);
 		deleteFolderMenuItem.setDisable(true);
+    }
+    
+    private void hideAllViewAreas() {
+    	hideTextArea();
+    	hideWebView();
+    	hideDetailsPane();
+    }
+    
+    private void hideTextArea() {
+    	textArea.setVisible(false);
+    }
+    
+    private void showTextArea() {
+    	textArea.setVisible(true);
+    }
+    
+    private void hideWebView() {
+    	webView.setVisible(false);
+    }
+    
+    private void showWebView() {
+    	webView.setVisible(true);
+    }
+    
+    private void hideDetailsPane() {
+    	detailsPane.setVisible(false);
+    }
+    
+    private void showDetailsPane() {
+    	detailsPane.setVisible(true);
     }
     
     private void setTreeViewCellFactory() {
@@ -469,20 +511,8 @@ public class QuickTextController {
 		MenuItem createHTMLTemplateItem = new MenuItem("HTML Template");
 		MenuItem deleteFolderItem = new MenuItem("Delete");
 		
-		createPlainTextTemplateItem.setOnAction(e -> {
-			try {
-				createPlainTextTemplate(e);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-		createHTMLTemplateItem.setOnAction(e -> {
-			try {
-				createHTMLTemplate(e);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
+		createPlainTextTemplateItem.setOnAction(e -> { createPlainTextTemplate(e); });
+		createHTMLTemplateItem.setOnAction(e -> { createHTMLTemplate(e); });
 		deleteFolderItem.setOnAction(e -> deleteFolder(e));
 		
 		createTemplateMenu.getItems().addAll(createPlainTextTemplateItem, createHTMLTemplateItem);
@@ -504,9 +534,10 @@ public class QuickTextController {
     }
     
     private void initializeContextMenu() {
-    	setContextMenu((FileTreeItem) treeView.getRoot());
+    	FileTreeItem rootTreeItem = (FileTreeItem) treeView.getRoot();
+    	setContextMenu(rootTreeItem);
     	
-    	for (TreeItem<FileItem> folderTreeItem : treeView.getRoot().getChildren()) {
+    	for (TreeItem<FileItem> folderTreeItem : rootTreeItem.getChildren()) {
     		setContextMenu((FileTreeItem) folderTreeItem);
     		
     		for (TreeItem<FileItem> templateTreeItem : folderTreeItem.getChildren()) {
@@ -534,7 +565,7 @@ public class QuickTextController {
     }
     
     
-    private void buildPlainTextEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
+    private void openPlainTextEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\PlainTextEditor.fxml"));
     	TextEditorController plainTextEditorController = new PlainTextEditorController(selectedTreeItem, fileManager);
     	fxmlLoader.setController(plainTextEditorController);
@@ -549,7 +580,7 @@ public class QuickTextController {
         stage.showAndWait();
     }
     
-    private void buildHTMLEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
+    private void openHTMLEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\HTMLTextEditor.fxml"));
     	HTMLEditorController htmlEditorController = new HTMLEditorController(selectedTreeItem, fileManager);
     	fxmlLoader.setController(htmlEditorController);
@@ -587,22 +618,27 @@ public class QuickTextController {
     }
     
     private void viewPlainTextTemplate(File file) throws IOException {
-    	textArea.clear();
-    	textArea.setVisible(true);
-    	webView.setVisible(false);
+    	hideWebView();
+    	showTextArea();
 
         String text = fileManager.readAllLinesAsStringFromFile(file);
         textArea.setText(text);
     }
     
     private void viewHTMLTemplate(File file) throws IOException {
-    	textArea.clear();
-    	textArea.setVisible(false);
-    	webView.setVisible(true);
-    	WebEngine webEngine = webView.getEngine();
+    	hideTextArea();
+    	showWebView();
     	
     	String text = fileManager.readAllLinesAsStringFromFile(file);
-    	webEngine.loadContent(text, "text/html");
+    	webView.getEngine().loadContent(text, "text/html");
+    }
+    
+    private void viewFileDetails(FileItem fileItem) {
+    	String description = fileItem.getDescription();
+    	if (!description.isEmpty()) {
+    		showDetailsPane();
+        	descriptionText.setText(description);
+    	}
     }
     
     private void saveTreeViewToXML() {
