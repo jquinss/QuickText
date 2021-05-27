@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -44,6 +45,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -78,6 +80,12 @@ public class QuickTextController {
     private Menu newTemplateMenu;
     
     @FXML
+    private MenuItem duplicateTemplateMenuItem;
+    
+    @FXML
+    private MenuItem copyTemplateToClipboardMenuItem;
+    
+    @FXML
     private MenuItem importTemplateMenuItem;
     
     @FXML
@@ -101,7 +109,7 @@ public class QuickTextController {
 
     @FXML
     void createFolder(ActionEvent event) {
-    	Dialog<Pair<String, String>> dialog = DialogBuilder.getTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
+    	Dialog<Pair<String, String>> dialog = DialogBuilder.buildTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
     			"Description", true);
     	
     	Optional<Pair<String, String>> result = dialog.showAndWait();
@@ -113,22 +121,16 @@ public class QuickTextController {
     		String templatesDir = getRootDirectoryPath();
     		
     		try {
-    			fileManager.createDir(folderName, templatesDir);
-    			FileItem folderItem = new FileItem(new File(templatesDir + File.separator + folderName));
-    			
-    			if (!folderDescription.isEmpty()) {
-    				folderItem.setDescription(folderDescription);
-    			}
-    			
-    			FileTreeItem folderTreeItem = new FileTreeItem(folderItem);
-    			setContextMenu(folderTreeItem);
+    			File destDir = fileManager.buildFilePath(templatesDir, folderName);
+    			fileManager.createDir(destDir);
+    			FileTreeItem folderTreeItem = buildFileTreeItem(destDir, folderDescription);
     			treeView.getRoot().getChildren().add(folderTreeItem);
     		}
         	catch (FileAlreadyExistsException e) {
-        		DialogBuilder.getAlertDialog("Error", "Error creating the folder", "There is already a folder with the same name", AlertType.ERROR).showAndWait();
+        		DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "There is already a folder with the same name", AlertType.ERROR).showAndWait();
         	}
     		catch (IOException e) {
-    			DialogBuilder.getAlertDialog("Error", "Error creating the folder", "Folder cannot be created", AlertType.ERROR).showAndWait();
+    			DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "Folder cannot be created", AlertType.ERROR).showAndWait();
     		}
     	}
     }
@@ -138,11 +140,11 @@ public class QuickTextController {
     	TreeItem<FileItem> treeItem = treeView.getSelectionModel().getSelectedItem();
     	File selectedFile = treeItem.getValue().getFile();
     	try {
-			fileManager.removeFile(selectedFile.toString());
+			fileManager.removeFile(selectedFile);
 			treeItem.getParent().getChildren().remove(treeItem);
     	}
     	catch (IOException e) {
-    		DialogBuilder.getAlertDialog("Error", "Error removing the file", "An error has occurred while trying to remove the file", AlertType.ERROR).showAndWait();
+    		DialogBuilder.buildAlertDialog("Error", "Error removing the file", "An error has occurred while trying to remove the file", AlertType.ERROR).showAndWait();
     	}
     }
     
@@ -155,7 +157,7 @@ public class QuickTextController {
 			treeView.getRoot().getChildren().remove(treeItem);
     	}
     	catch (DirectoryNotEmptyException e) {
-    		Alert alertDialog = DialogBuilder.getAlertDialog("Confirmation", "The folder is not empty", "Are you sure you want to delete all the files?", AlertType.CONFIRMATION);
+    		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "The folder is not empty", "Are you sure you want to delete all the files?", AlertType.CONFIRMATION);
     		alertDialog.showAndWait().ifPresent(response -> {
     			if (response == ButtonType.OK) {
     				deleteAllFilesAndFolders(treeItem, true);
@@ -192,28 +194,35 @@ public class QuickTextController {
     }
     
     @FXML
-    void importTemplate(ActionEvent event) {
-    	// TO-DO
-    	System.out.println("Importing template");
-    }
-
-    @FXML
-    void exitApplication(ActionEvent event) {
-    	saveTreeViewToXML();
-    	stage.close();
-    }
-
-    @FXML
-    void showAboutMenu(ActionEvent event) {
-    	DialogBuilder.getAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
+    void importTemplates(ActionEvent event) {
+    	FileChooser.ExtensionFilter extensions = new FileChooser.ExtensionFilter("Templates", "*.txt", "*.html");
+    	List<File> selectedFiles = DialogBuilder.buildFileChooser("Select a template", extensions).showOpenMultipleDialog(stage);
+    	
+    	if (selectedFiles != null) {
+    		TreeItem<FileItem> folderTreeItem = treeView.getSelectionModel().getSelectedItem();
+    		File destFolder = folderTreeItem.getValue().getFile();
+    		for (File srcFile : selectedFiles) {
+    			String srcFileName = srcFile.getName();
+    			File destFile = fileManager.buildFilePath(destFolder, srcFileName);
+    			try {
+					fileManager.copyFile(srcFile, destFile);
+					FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
+					folderTreeItem.getChildren().add(fileTreeItem);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
+    	
     }
     
-    void copyTemplateToClipboard() {
+    @FXML
+    void copyTemplateToClipboard(ActionEvent event) {
     	Clipboard clipboard = Clipboard.getSystemClipboard();
     	ClipboardContent content = new ClipboardContent();
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
     	try {
-    		String text = fileManager.readAllLinesAsStringFromFile(fileItem.getFile());
+    		String text = fileManager.readAllLinesFromFileAsString(fileItem.getFile());
     	
     		if (fileItem.isPlainTextTemplate()) {
     			content.putString(text);
@@ -231,6 +240,47 @@ public class QuickTextController {
     	}
     	
     	clipboard.setContent(content);
+    }
+
+    @FXML
+    void exitApplication(ActionEvent event) {
+    	saveTreeViewToXML();
+    	stage.close();
+    }
+
+    @FXML
+    void showAboutMenu(ActionEvent event) {
+    	DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
+    }
+    
+    void duplicateTemplate() {
+    	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+    	TreeItem<FileItem> folderTreeItem = selectedTreeItem.getParent();
+    	
+    	File srcFile = selectedTreeItem.getValue().getFile();
+    	String dirName = srcFile.getParent();
+    	String fileName = srcFile.getName();
+    	String suffix = fileManager.getExtensionFromFile(fileName);
+    	String prefix = fileManager.removeFileExtension(fileName, suffix);
+    	String nextPrefix = fileManager.getNextAvailableFileName(dirName, prefix, suffix);
+    	
+    	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Duplicate template", "Create a new duplicate template", "Name of the template", 
+    																				nextPrefix);
+    	
+    	Optional<String> result = inputDialog.showAndWait();
+    	
+    	if (result.isPresent()) {
+    		String newPrefix = result.get();
+    		File destFile = fileManager.buildFilePath(dirName, newPrefix, suffix);
+    		try {
+				fileManager.copyFile(srcFile, destFile);
+				FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
+				folderTreeItem.getChildren().add(fileTreeItem);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
     }
     
     void viewTemplate() {
@@ -271,6 +321,23 @@ public class QuickTextController {
     			e.printStackTrace();
     		}
     	}
+    }
+    
+    private FileTreeItem buildFileTreeItem(File file) {
+    	FileTreeItem fileTreeItem = new FileTreeItem(new FileItem(file));
+		setContextMenu(fileTreeItem);
+		fileTreeItem.setExpanded(true);
+		
+		return fileTreeItem;
+    }
+    
+    private FileTreeItem buildFileTreeItem(File file, String description) {
+    	FileTreeItem fileTreeItem = buildFileTreeItem(file);
+    	if (description != null && !description.isEmpty()) {
+    		fileTreeItem.getValue().setDescription(description);
+    	}
+		
+		return fileTreeItem;
     }
 
     @FXML
@@ -315,11 +382,8 @@ public class QuickTextController {
     	
     	try {
     		fileManager.createDirPath(templatesDir);
-    		FileItem rootFileItem = new FileItem(new File(templatesDir));
-        	rootFileItem.setIsRoot(true);
-        	FileTreeItem rootTreeItem = new FileTreeItem(rootFileItem);
-        	rootTreeItem.setExpanded(true);
-        	setContextMenu(rootTreeItem);
+    		FileTreeItem rootTreeItem = buildFileTreeItem(new File(templatesDir));
+    		rootTreeItem.getValue().setIsRoot(true);
     		treeView.setRoot(rootTreeItem);
     	}
     	catch (IOException e) {
@@ -365,7 +429,6 @@ public class QuickTextController {
 		    		setFileMenuItemsVisibility();
 		    		viewFileDetails(newValue.getValue());
 		    	}
-		    	
 		    }
 		    else {
 		    	disableAllMenuItems();
@@ -380,6 +443,7 @@ public class QuickTextController {
 		deleteAllFoldersMenuItem.setDisable(false);
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(true);
+		copyTemplateToClipboardMenuItem.setDisable(true);
 		deleteFolderMenuItem.setDisable(true);
     }
     
@@ -388,6 +452,7 @@ public class QuickTextController {
 		newTemplateMenu.setDisable(false);
 		importTemplateMenuItem.setDisable(false);
 		deleteTemplateMenuItem.setDisable(true);
+		copyTemplateToClipboardMenuItem.setDisable(true);
 		deleteFolderMenuItem.setDisable(false);
     }
     
@@ -397,6 +462,7 @@ public class QuickTextController {
 		deleteAllFoldersMenuItem.setDisable(true);
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(false);
+		copyTemplateToClipboardMenuItem.setDisable(false);
 		deleteFolderMenuItem.setDisable(true);
     }
     
@@ -407,6 +473,7 @@ public class QuickTextController {
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(true);
 		deleteFolderMenuItem.setDisable(true);
+		copyTemplateToClipboardMenuItem.setDisable(true);
     }
     
     private void hideAllViewAreas() {
@@ -474,8 +541,7 @@ public class QuickTextController {
     }
     
     void setContextMenu(FileTreeItem fileTreeItem) {
-    	FileItem fileItem = fileTreeItem.getValue();
-    	ContextMenu contextMenu = buildContextMenu(fileItem);
+    	ContextMenu contextMenu = buildContextMenu(fileTreeItem.getValue());
     	fileTreeItem.setContextMenu(contextMenu);
     }
     
@@ -509,28 +575,32 @@ public class QuickTextController {
 		Menu createTemplateMenu = new Menu("Create Template...");
 		MenuItem createPlainTextTemplateItem = new MenuItem("Plain-Text Template");
 		MenuItem createHTMLTemplateItem = new MenuItem("HTML Template");
+		MenuItem importTemplatesItem = new MenuItem("Import Templates...");
 		MenuItem deleteFolderItem = new MenuItem("Delete");
 		
-		createPlainTextTemplateItem.setOnAction(e -> { createPlainTextTemplate(e); });
-		createHTMLTemplateItem.setOnAction(e -> { createHTMLTemplate(e); });
+		createPlainTextTemplateItem.setOnAction(e -> createPlainTextTemplate(e));
+		createHTMLTemplateItem.setOnAction(e -> createHTMLTemplate(e));
+		importTemplatesItem.setOnAction(e -> importTemplates(e));
 		deleteFolderItem.setOnAction(e -> deleteFolder(e));
 		
 		createTemplateMenu.getItems().addAll(createPlainTextTemplateItem, createHTMLTemplateItem);
-		contextMenu.getItems().addAll(createTemplateMenu, deleteFolderItem);
+		contextMenu.getItems().addAll(createTemplateMenu, importTemplatesItem, deleteFolderItem);
     }
     
     private void setFileContextMenu(ContextMenu contextMenu) {
     	MenuItem copyTemplateItem = new MenuItem("Copy To Clipboard");
+    	MenuItem duplicateTemplateItem = new MenuItem("Duplicate");
     	MenuItem viewTemplateItem = new MenuItem("View");
     	MenuItem editTemplateItem = new MenuItem("Edit");
 		MenuItem deleteTemplateItem = new MenuItem("Delete");
 		
-		copyTemplateItem.setOnAction(e -> copyTemplateToClipboard());
+		copyTemplateItem.setOnAction(e -> copyTemplateToClipboard(e));
+		duplicateTemplateItem.setOnAction(e -> duplicateTemplate());
 		viewTemplateItem.setOnAction(e -> viewTemplate());
 		editTemplateItem.setOnAction(e -> editTemplate());
 		deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
 		
-		contextMenu.getItems().addAll(copyTemplateItem, viewTemplateItem, editTemplateItem, deleteTemplateItem);
+		contextMenu.getItems().addAll(copyTemplateItem, viewTemplateItem, duplicateTemplateItem, editTemplateItem, deleteTemplateItem);
     }
     
     private void initializeContextMenu() {
@@ -621,7 +691,7 @@ public class QuickTextController {
     	hideWebView();
     	showTextArea();
 
-        String text = fileManager.readAllLinesAsStringFromFile(file);
+        String text = fileManager.readAllLinesFromFileAsString(file);
         textArea.setText(text);
     }
     
@@ -629,13 +699,13 @@ public class QuickTextController {
     	hideTextArea();
     	showWebView();
     	
-    	String text = fileManager.readAllLinesAsStringFromFile(file);
+    	String text = fileManager.readAllLinesFromFileAsString(file);
     	webView.getEngine().loadContent(text, "text/html");
     }
     
     private void viewFileDetails(FileItem fileItem) {
     	String description = fileItem.getDescription();
-    	if (!description.isEmpty()) {
+    	if (description != null && !description.isEmpty()) {
     		showDetailsPane();
         	descriptionText.setText(description);
     	}
