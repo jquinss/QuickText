@@ -18,8 +18,8 @@ import javafx.scene.layout.GridPane;
 public class DialogBuilder {
 	private DialogBuilder() {}
 	
-	public static TextInputDialog getSingleTextFieldInputDialog(String title, String headerText, 
-																String contentText, Alert alertDialog) {
+	public static TextInputDialog buildSingleTextFieldInputDialog(String title, String headerText, 
+																String contentText) {
 		
 		TextInputDialog dialog = new TextInputDialog();
 		
@@ -31,7 +31,7 @@ public class DialogBuilder {
 		
 		okBtn.addEventFilter(ActionEvent.ACTION, e -> {
 			if (dialog.getEditor().getText().trim().isEmpty()) {
-				Alert alert = alertDialog;
+				Alert alert = buildAlertDialog("Error", "Input Error", "The field cannot be empty", AlertType.ERROR);
 				alert.showAndWait();
 				e.consume();
 			}
@@ -40,7 +40,17 @@ public class DialogBuilder {
 		return dialog;
 	}
 	
-	public static Dialog<Pair<String, String>> getTwoTextFieldInputDialog(String title, String headerText, String firstFieldName, 
+	public static TextInputDialog buildSingleTextFieldInputDialog(String title, String headerText, 
+			String contentText, String defaultInputText) {
+
+		TextInputDialog dialog = buildSingleTextFieldInputDialog(title, headerText, contentText);
+		
+		dialog.getEditor().setText(defaultInputText);
+		
+		return dialog;
+	}
+	
+	public static Dialog<Pair<String, String>> buildTwoTextFieldInputDialog(String title, String headerText, String firstFieldName, 
 			String secondFieldName, boolean isOptionalSecondField) {
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 
@@ -101,7 +111,7 @@ public class DialogBuilder {
 		return dialog;
 	}
 	
-	public static Alert getAlertDialog(String title, String headerText, 
+	public static Alert buildAlertDialog(String title, String headerText, 
 									String contentText, AlertType alertType) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
@@ -111,7 +121,7 @@ public class DialogBuilder {
 		return alert;
 	}
 	
-	public static FileChooser getFileChooser(String title, ExtensionFilter... extFilters) {
+	public static FileChooser buildFileChooser(String title, ExtensionFilter... extFilters) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
 		fileChooser.getExtensionFilters().addAll(extFilters);
