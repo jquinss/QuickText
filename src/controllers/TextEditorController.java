@@ -55,7 +55,7 @@ public abstract class TextEditorController {
     void quit(ActionEvent event) {
     	if (!isSavedText) {
     		System.out.println("Text has been modified since last save.");
-    		Alert alertDialog = DialogBuilder.getAlertDialog("Confirmation", "Some changes made have not been saved", 
+    		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "Some changes made have not been saved", 
     				"Are you sure you want to exit?", AlertType.CONFIRMATION);
     		alertDialog.showAndWait().ifPresent(response -> {
     			if (response == ButtonType.OK) {
@@ -79,14 +79,14 @@ public abstract class TextEditorController {
     			saveExistingFile(template);
     		}
     		catch (IOException e) {
-    			DialogBuilder.getAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+    			DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
     		}
     	}
     }
 
     @FXML
     void saveAs(ActionEvent event) {
-    	Dialog<Pair<String, String>> dialog = DialogBuilder.getTwoTextFieldInputDialog("Create template", "Create a new template:", "Template name", 
+    	Dialog<Pair<String, String>> dialog = DialogBuilder.buildTwoTextFieldInputDialog("Create template", "Create a new template:", "Template name", 
     			"Description", true);
     	
     	Optional<Pair<String, String>> result = dialog.showAndWait();
@@ -99,7 +99,7 @@ public abstract class TextEditorController {
 				saveNewFile(fileName, fileDescription);
 			}
 			catch (IOException e) {
-				DialogBuilder.getAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+				DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
 			}
     	}
     }
