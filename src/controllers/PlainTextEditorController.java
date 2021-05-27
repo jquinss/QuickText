@@ -62,7 +62,7 @@ public class PlainTextEditorController extends TextEditorController {
     }
     
     private void loadFileToTextArea(File file) throws IOException {
-        String text = fileManager.readAllLinesAsStringFromFile(file);
+        String text = fileManager.readAllLinesFromFileAsString(file);
         textArea.setText(text);
     }
 }
