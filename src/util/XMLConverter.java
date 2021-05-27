@@ -172,10 +172,8 @@ public class XMLConverter {
 						File root = new File(new String(ch, start, length));
 						
 						if (root.exists()) {
-							FileItem rootItem = new FileItem(root);
-							rootItem.setIsRoot(true);
-							rootTreeItem = new FileTreeItem(rootItem);
-							rootTreeItem.setExpanded(true);
+							rootTreeItem = buildFileTreeItem(root);
+							rootTreeItem.getValue().setIsRoot(true);
 							treeView.setRoot(rootTreeItem);
 						}
 							
@@ -189,9 +187,7 @@ public class XMLConverter {
 						File folder = new File(new String(ch, start, length));
 						
 						if (folder.exists()) {
-							FileItem folderItem = new FileItem(folder);
-							
-							folderTreeItem = new FileTreeItem(folderItem);
+							folderTreeItem = buildFileTreeItem(folder);
 							rootTreeItem.getChildren().add(folderTreeItem);
 						}
 						
@@ -213,9 +209,7 @@ public class XMLConverter {
 						File template = new File(new String(ch, start, length));
 
 						if (template.exists()) {
-							FileItem templateItem = new FileItem(template);
-							
-							templateTreeItem = new FileTreeItem(templateItem);
+							templateTreeItem = buildFileTreeItem(template);
 							folderTreeItem.getChildren().add(templateTreeItem);
 						}
 						
@@ -238,6 +232,13 @@ public class XMLConverter {
 				if (qName.contentEquals("/" + XML_FOLDER_TEXT)) {
 					enterFolderItem = false;
 				}
+			}
+			
+			private FileTreeItem buildFileTreeItem(File file) {
+				FileTreeItem fileTreeItem = new FileTreeItem(new FileItem(file));
+				fileTreeItem.setExpanded(true);
+				
+				return fileTreeItem;
 			}
 		};
 		
