@@ -41,8 +41,9 @@
           			<MenuItem mnemonicParsing="false" fx:id="deleteFolderMenuItem" disable="true" onAction="#deleteFolder" text="Delete Folder" />
             		<MenuItem mnemonicParsing="false" fx:id="deleteAllFoldersMenuItem" disable="true" onAction="#deleteAllFolders" text="Delete All Folders" />
             	</items>
-          	</Menu>   
-            <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplate" disable="true" text="Import Template" />
+          	</Menu>
+            <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplates" disable="true" text="Import Template" />
+            <MenuItem  mnemonicParsing="false" fx:id="copyTemplateToClipboardMenuItem" onAction="#copyTemplateToClipboard" disable="true" text="Copy to Clipboard"></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Quit" />
           </items>
