@@ -14,12 +14,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 public class FileManager {	
-	public void createDir(String dirName, String dirLocation) throws IOException {
-		Files.createDirectory(Paths.get(dirLocation + File.separator + dirName));
+	public void createDir(File dirName) throws IOException {
+		Files.createDirectory(dirName.toPath());
 	}
 	
-	public boolean removeFile(String fileName) throws IOException {
-		return Files.deleteIfExists(Paths.get(fileName));
+	public boolean removeFile(File fileName) throws IOException {
+		return Files.deleteIfExists(fileName.toPath());
 	}
 	
 	public void removeDir(File dirName) throws IOException {
@@ -30,11 +30,59 @@ public class FileManager {
 		Files.createDirectories(Paths.get(dirPath));
 	}
 	
-	public void copyFileToDir(File sourceFileName, File destDirectoryName) throws IOException {
-		Path sourcePath = Paths.get(sourceFileName.toString());
-		Path destPath = Paths.get(destDirectoryName.toString()).resolve(sourcePath.getFileName());
+	public void copyFile(File sourceFileName, File destFileName) throws IOException {	
+		Files.copy(sourceFileName.toPath(), destFileName.toPath());
+	}
+	
+	public String getNextAvailableFileName(String dirName, String fileName, String extension) {
+		int i = 0;
+		StringBuilder resultFileName = new StringBuilder();
+		File destFilePath = null;
 		
-		Files.copy(sourcePath, destPath);
+		do {
+			resultFileName = new StringBuilder();
+			resultFileName.append(fileName);
+			resultFileName.append("(");
+			resultFileName.append(i);
+			resultFileName.append(")");
+
+			destFilePath = buildFilePath(dirName, resultFileName.toString(), extension);
+			i++;
+		} while (destFilePath.exists());
+		
+		
+		return resultFileName.toString();
+	}
+	
+	public File buildFilePath(String dirName, String fileName, String...suffixes) {
+		StringBuilder filePath = new StringBuilder();
+		filePath.append(dirName);
+		filePath.append(File.separator);
+		filePath.append(fileName);
+		for (String suffix : suffixes) {
+			filePath.append(suffix);
+		}
+		
+		return new File(filePath.toString());
+	}
+	
+	public File buildFilePath(File dirName, String fileName, String...suffixes) {
+		return buildFilePath(dirName.toString(), fileName, suffixes);
+	}
+	
+	public String getExtensionFromFile(String fileName) {
+		String suffix = new String();
+		int suffixIndex = fileName.lastIndexOf(".");
+		
+		if (suffixIndex != -1) {
+			suffix = fileName.substring(suffixIndex);
+		}
+		
+		return suffix;
+	}
+	
+	public String removeFileExtension(String fileName, String extension) {
+		return fileName.substring(0, fileName.lastIndexOf(extension));
 	}
 	
 	public void deleteFileTree(File startDirectory, boolean includeStartDirectory) throws IOException {
@@ -70,12 +118,12 @@ public class FileManager {
     	}
 	}
 	
-	public List<String> readAllLinesFromFile(File file) throws IOException {
+	public List<String> readAllLinesFromFileAsList(File file) throws IOException {
 		return Files.readAllLines(Paths.get(file.toURI()));
 	}
 	
-	public String readAllLinesAsStringFromFile(File file) throws IOException {
-    	List<String> fileLines = readAllLinesFromFile(file);
+	public String readAllLinesFromFileAsString(File file) throws IOException {
+    	List<String> fileLines = readAllLinesFromFileAsList(file);
     	StringBuilder text = new StringBuilder();
     	for (String line : fileLines) {
     		text.append(line + System.lineSeparator());
