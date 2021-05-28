@@ -36,6 +36,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -43,6 +44,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -90,9 +92,18 @@ public class QuickTextController {
     
     @FXML
     private ScrollPane detailsPane;
+    
+    @FXML
+    private VBox viewDescriptionPane;
+    
+    @FXML
+    private VBox editDescriptionPane;
 
     @FXML
     private Text descriptionText;
+    
+    @FXML
+    private TextField descriptionTextField;
     
     private Stage stage;
     
@@ -213,7 +224,6 @@ public class QuickTextController {
 				}
     		}
     	}
-    	
     }
     
     @FXML
@@ -253,6 +263,17 @@ public class QuickTextController {
     	DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
     }
     
+    @FXML
+    void saveDescription(ActionEvent event) {
+    	String description = descriptionTextField.getText().trim();
+    	if (!description.isEmpty()) {
+        	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+        	FileItem fileItem = selectedTreeItem.getValue();
+        	fileItem.setDescription(description);
+        	viewFileDetails(fileItem);
+    	}
+    }
+    
     void duplicateTemplate() {
     	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
     	TreeItem<FileItem> folderTreeItem = selectedTreeItem.getParent();
@@ -279,8 +300,7 @@ public class QuickTextController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-    	}
-    	
+    	}	
     }
     
     void viewTemplate() {
@@ -345,7 +365,7 @@ public class QuickTextController {
 		loadSettings();
 		initializeTreeView();
 		
-		descriptionText.wrappingWidthProperty().bind(detailsPane.widthProperty());
+		descriptionText.wrappingWidthProperty().bind(editDescriptionPane.widthProperty());
 	}
     
     private void loadSettings() {
@@ -479,7 +499,7 @@ public class QuickTextController {
     private void hideAllViewAreas() {
     	hideTextArea();
     	hideWebView();
-    	hideDetailsPane();
+    	hideDescriptionPanes();
     }
     
     private void hideTextArea() {
@@ -498,12 +518,30 @@ public class QuickTextController {
     	webView.setVisible(true);
     }
     
-    private void hideDetailsPane() {
-    	detailsPane.setVisible(false);
+    private void hideEditDescriptionPane() {
+    	editDescriptionPane.setVisible(false);
     }
     
-    private void showDetailsPane() {
-    	detailsPane.setVisible(true);
+    private void showEditDescriptionPane() {
+    	editDescriptionPane.setVisible(true);
+    }
+    
+    private void hideViewDescriptionPane() {
+    	viewDescriptionPane.setVisible(false);
+    }
+    
+    private void showViewDescriptionPane() {
+    	viewDescriptionPane.setVisible(true);
+    }
+    
+    private void hideDescriptionPanes() {
+    	hideViewDescriptionPane();
+    	hideEditDescriptionPane();
+    }
+    
+    private void showDescriptionPanes() {
+    	showViewDescriptionPane();
+    	hideViewDescriptionPane();
     }
     
     private void setTreeViewCellFactory() {
@@ -706,8 +744,13 @@ public class QuickTextController {
     private void viewFileDetails(FileItem fileItem) {
     	String description = fileItem.getDescription();
     	if (description != null && !description.isEmpty()) {
-    		showDetailsPane();
+    		showViewDescriptionPane();
+        	showEditDescriptionPane();
         	descriptionText.setText(description);
+    	}
+    	else if (!fileItem.isRootDirectory()) {
+    		hideViewDescriptionPane();
+        	showEditDescriptionPane();
     	}
     }
     
