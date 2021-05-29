@@ -28,26 +28,26 @@
           <items>
           	<Menu mnemonicParsing="false" text="Add">
           		<items>
-          			<MenuItem mnemonicParsing="false" fx:id="createFolderMenuItem" disable="true" onAction="#createFolder" text="New Folder" />
-          			<Menu mnemonicParsing="false" fx:id="newTemplateMenu" disable="true" text="New Template...">
+          			<MenuItem mnemonicParsing="false" fx:id="createFolderMenuItem" disable="true" onAction="#createFolder" text="New Folder" accelerator="Shortcut+F" />
+          			<Menu mnemonicParsing="false" text="New Template...">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#createHTMLTemplate" text="HTML Template" />
-                  		<MenuItem mnemonicParsing="false" onAction="#createPlainTextTemplate" text="Plain-Text Template" />
+                        <MenuItem mnemonicParsing="false" fx:id="createHTMLTemplateMenuItem" disable="true" onAction="#createHTMLTemplate" text="HTML Template" accelerator="Shortcut+H" />
+                  		<MenuItem mnemonicParsing="false" fx:id="createPlainTextTemplateMenuItem" disable="true" onAction="#createPlainTextTemplate" text="Plain-Text Template" accelerator="Shortcut+P" />
                      </items>
                   </Menu>
           		</items>
           	</Menu>
           	<Menu mnemonicParsing="false" text="Delete">
           		<items>
-          			<MenuItem mnemonicParsing="false" fx:id="deleteTemplateMenuItem" disable="true" onAction="#deleteTemplate" text="Delete Template" />
-          			<MenuItem mnemonicParsing="false" fx:id="deleteFolderMenuItem" disable="true" onAction="#deleteFolder" text="Delete Folder" />
-            		<MenuItem mnemonicParsing="false" fx:id="deleteAllFoldersMenuItem" disable="true" onAction="#deleteAllFolders" text="Delete All Folders" />
+          			<MenuItem mnemonicParsing="false" fx:id="deleteTemplateMenuItem" disable="true" onAction="#deleteTemplate" text="Delete Template" accelerator="Shortcut+Shift+T"/>
+          			<MenuItem mnemonicParsing="false" fx:id="deleteFolderMenuItem" disable="true" onAction="#deleteFolder" text="Delete Folder" accelerator="Shortcut+Shift+F" />
+            		<MenuItem mnemonicParsing="false" fx:id="deleteAllFoldersMenuItem" disable="true" onAction="#deleteAllFolders" text="Delete All Folders" accelerator="Shortcut+Shift+A"/>
             	</items>
           	</Menu>
-            <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplates" disable="true" text="Import Template" />
-            <MenuItem  mnemonicParsing="false" fx:id="copyTemplateToClipboardMenuItem" onAction="#copyTemplateToClipboard" disable="true" text="Copy to Clipboard"></MenuItem>
+            <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplates" disable="true" text="Import Template" accelerator="Shortcut+I" />
+            <MenuItem  mnemonicParsing="false" fx:id="copyTemplateToClipboardMenuItem" onAction="#copyTemplateToClipboard" disable="true" text="Copy to Clipboard" accelerator="Shortcut+Shift+C"></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Quit" accelerator="Shortcut+Q" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Settings" />
