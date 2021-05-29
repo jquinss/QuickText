@@ -79,7 +79,10 @@ public class QuickTextController {
     private MenuItem deleteAllFoldersMenuItem;
     
     @FXML
-    private Menu newTemplateMenu;
+    private MenuItem createPlainTextTemplateMenuItem;
+    
+    @FXML
+    private MenuItem createHTMLTemplateMenuItem;
     
     @FXML
     private MenuItem duplicateTemplateMenuItem;
@@ -458,7 +461,8 @@ public class QuickTextController {
     }
     
     private void setRootMenuItemsVisibility() {
-    	newTemplateMenu.setDisable(true);
+    	createPlainTextTemplateMenuItem.setDisable(true);
+    	createHTMLTemplateMenuItem.setDisable(true);
 		createFolderMenuItem.setDisable(false);
 		deleteAllFoldersMenuItem.setDisable(false);
 		importTemplateMenuItem.setDisable(true);
@@ -469,7 +473,8 @@ public class QuickTextController {
     
     private void setFolderMenuItemsVisibility() {
     	createFolderMenuItem.setDisable(true);
-		newTemplateMenu.setDisable(false);
+    	createPlainTextTemplateMenuItem.setDisable(false);
+    	createHTMLTemplateMenuItem.setDisable(false);
 		importTemplateMenuItem.setDisable(false);
 		deleteTemplateMenuItem.setDisable(true);
 		copyTemplateToClipboardMenuItem.setDisable(true);
@@ -478,7 +483,8 @@ public class QuickTextController {
     
     private void setFileMenuItemsVisibility() {
     	createFolderMenuItem.setDisable(true);
-		newTemplateMenu.setDisable(true);
+    	createPlainTextTemplateMenuItem.setDisable(true);
+    	createHTMLTemplateMenuItem.setDisable(true);
 		deleteAllFoldersMenuItem.setDisable(true);
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(false);
@@ -488,7 +494,8 @@ public class QuickTextController {
     
     private void disableAllMenuItems() {
     	createFolderMenuItem.setDisable(true);
-    	newTemplateMenu.setDisable(true);
+    	createPlainTextTemplateMenuItem.setDisable(true);
+    	createHTMLTemplateMenuItem.setDisable(true);
 		deleteAllFoldersMenuItem.setDisable(true);
 		importTemplateMenuItem.setDisable(true);
 		deleteTemplateMenuItem.setDisable(true);
@@ -601,7 +608,7 @@ public class QuickTextController {
     
     private void setRootDirContextMenu(ContextMenu contextMenu) {
     	MenuItem addFolder = new MenuItem("Add Folder");
-		MenuItem removeFolders = new MenuItem("Remove All Folders");
+		MenuItem removeFolders = new MenuItem("Delete All Folders");
 		
 		addFolder.setOnAction(e -> createFolder(e));
 		removeFolders.setOnAction(e -> deleteAllFolders(e));
@@ -611,18 +618,18 @@ public class QuickTextController {
     
     private void setDirContextMenu(ContextMenu contextMenu) {
 		Menu createTemplateMenu = new Menu("Create Template...");
-		MenuItem createPlainTextTemplateItem = new MenuItem("Plain-Text Template");
-		MenuItem createHTMLTemplateItem = new MenuItem("HTML Template");
-		MenuItem importTemplatesItem = new MenuItem("Import Templates...");
-		MenuItem deleteFolderItem = new MenuItem("Delete");
+		MenuItem createPlainTextTemplateMenuItem = new MenuItem("Plain-Text Template");
+		MenuItem createHTMLTemplateMenuItem = new MenuItem("HTML Template");
+		MenuItem importTemplatesMenuItem = new MenuItem("Import Templates...");
+		MenuItem deleteFolderMenuItem = new MenuItem("Delete");
 		
-		createPlainTextTemplateItem.setOnAction(e -> createPlainTextTemplate(e));
-		createHTMLTemplateItem.setOnAction(e -> createHTMLTemplate(e));
-		importTemplatesItem.setOnAction(e -> importTemplates(e));
-		deleteFolderItem.setOnAction(e -> deleteFolder(e));
+		createPlainTextTemplateMenuItem.setOnAction(e -> createPlainTextTemplate(e));
+		createHTMLTemplateMenuItem.setOnAction(e -> createHTMLTemplate(e));
+		importTemplatesMenuItem.setOnAction(e -> importTemplates(e));
+		deleteFolderMenuItem.setOnAction(e -> deleteFolder(e));
 		
-		createTemplateMenu.getItems().addAll(createPlainTextTemplateItem, createHTMLTemplateItem);
-		contextMenu.getItems().addAll(createTemplateMenu, importTemplatesItem, deleteFolderItem);
+		createTemplateMenu.getItems().addAll(createPlainTextTemplateMenuItem, createHTMLTemplateMenuItem);
+		contextMenu.getItems().addAll(createTemplateMenu, importTemplatesMenuItem, deleteFolderMenuItem);
     }
     
     private void setFileContextMenu(ContextMenu contextMenu) {
