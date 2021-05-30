@@ -46,6 +46,8 @@
           	</Menu>
             <MenuItem mnemonicParsing="false" fx:id="importTemplateMenuItem" onAction="#importTemplates" disable="true" text="Import Template" accelerator="Shortcut+I" />
             <MenuItem  mnemonicParsing="false" fx:id="copyTemplateToClipboardMenuItem" onAction="#copyTemplateToClipboard" disable="true" text="Copy to Clipboard" accelerator="Shortcut+Shift+C"></MenuItem>
+            <MenuItem mnemonicParsing="false" fx:id="editTemplateMenuItem" onAction="#editTemplate" disable="true" text="Edit Template" accelerator="Shortcut+E" />
+            <MenuItem  mnemonicParsing="false" fx:id="duplicateTemplateMenuItem" onAction="#duplicateTemplate" disable="true" text="Duplicate Template" accelerator="Shortcut+D"></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Quit" accelerator="Shortcut+Q" />
           </items>
