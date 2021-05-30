@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 
 
@@ -14,6 +15,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\QuickText.fxml"));
 			primaryStage.setTitle("QuickText");
+			primaryStage.getIcons().add(new Image("/images/logo.png"));
 			VBox root = (VBox) fxmlLoader.load();
 			final QuickTextController controller = fxmlLoader.getController();
 			controller.setStage(primaryStage);
