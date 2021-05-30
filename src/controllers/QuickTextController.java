@@ -94,6 +94,9 @@ public class QuickTextController {
     private MenuItem importTemplateMenuItem;
     
     @FXML
+    private MenuItem editTemplateMenuItem;
+    
+    @FXML
     private ScrollPane detailsPane;
     
     @FXML
@@ -254,30 +257,29 @@ public class QuickTextController {
     	
     	clipboard.setContent(content);
     }
-
-    @FXML
-    void exitApplication(ActionEvent event) {
-    	saveTreeViewToXML();
-    	stage.close();
-    }
-
-    @FXML
-    void showAboutMenu(ActionEvent event) {
-    	DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
-    }
     
     @FXML
-    void saveDescription(ActionEvent event) {
-    	String description = descriptionTextField.getText().trim();
-    	if (!description.isEmpty()) {
-        	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-        	FileItem fileItem = selectedTreeItem.getValue();
-        	fileItem.setDescription(description);
-        	viewFileDetails(fileItem);
+    void editTemplate(ActionEvent event) {
+    	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+    	
+    	if (selectedTreeItem.getValue().isPlainTextTemplate()) {
+        	try {
+    			openPlainTextEditor(selectedTreeItem);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	else if (selectedTreeItem.getValue().isHTMLTemplate()) {
+        	try {
+    			openHTMLEditor(selectedTreeItem);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
     	}
     }
     
-    void duplicateTemplate() {
+    @FXML
+    void duplicateTemplate(ActionEvent event) {
     	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
     	TreeItem<FileItem> folderTreeItem = selectedTreeItem.getParent();
     	
@@ -305,6 +307,28 @@ public class QuickTextController {
 			}
     	}	
     }
+
+    @FXML
+    void exitApplication(ActionEvent event) {
+    	saveTreeViewToXML();
+    	stage.close();
+    }
+
+    @FXML
+    void showAboutMenu(ActionEvent event) {
+    	DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nDesigned by Joaquin Sampedro", AlertType.INFORMATION).show();
+    }
+    
+    @FXML
+    void saveDescription(ActionEvent event) {
+    	String description = descriptionTextField.getText().trim();
+    	if (!description.isEmpty()) {
+        	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+        	FileItem fileItem = selectedTreeItem.getValue();
+        	fileItem.setDescription(description);
+        	viewFileDetails(fileItem);
+    	}
+    }
     
     void viewTemplate() {
     	TreeItem<FileItem> treeItem = treeView.getSelectionModel().getSelectedItem();
@@ -322,25 +346,6 @@ public class QuickTextController {
     			viewHTMLTemplate(fileItem.getFile());
     		}
     		catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    	}
-    }
-
-    void editTemplate() {
-    	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-    	
-    	if (selectedTreeItem.getValue().isPlainTextTemplate()) {
-        	try {
-    			openPlainTextEditor(selectedTreeItem);
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    	}
-    	else if (selectedTreeItem.getValue().isHTMLTemplate()) {
-        	try {
-    			openHTMLEditor(selectedTreeItem);
-    		} catch (IOException e) {
     			e.printStackTrace();
     		}
     	}
@@ -367,8 +372,7 @@ public class QuickTextController {
 	public void initialize() {
 		loadSettings();
 		initializeTreeView();
-		
-		descriptionText.wrappingWidthProperty().bind(editDescriptionPane.widthProperty());
+		initializeDescriptionPane();
 	}
     
     private void loadSettings() {
@@ -398,6 +402,10 @@ public class QuickTextController {
 		}
     	initializeContextMenu();
     	setTreeViewCellFactory();
+    }
+    
+    private void initializeDescriptionPane() {
+    	descriptionText.wrappingWidthProperty().bind(editDescriptionPane.widthProperty());
     }
     
     private void setRootDirectory() {
@@ -449,7 +457,7 @@ public class QuickTextController {
 		    		viewFileDetails(newValue.getValue());
 		    	}
 		    	else if (newValue.getValue().isFile()) {
-		    		setFileMenuItemsVisibility();
+		    		setTemplateMenuItemsVisibility();
 		    		viewFileDetails(newValue.getValue());
 		    	}
 		    }
@@ -460,47 +468,47 @@ public class QuickTextController {
 		});
     }
     
+    private void disableRootRelatedMenuItems(boolean disable) {
+    	deleteAllFoldersMenuItem.setDisable(disable);
+    	createFolderMenuItem.setDisable(disable);
+    }
+    
+    private void disableFolderRelatedMenuItems(boolean disable) {
+    	createPlainTextTemplateMenuItem.setDisable(disable);
+    	createHTMLTemplateMenuItem.setDisable(disable);
+		importTemplateMenuItem.setDisable(disable);
+		deleteFolderMenuItem.setDisable(disable);
+    }
+    
+    private void disableTemplateRelatedMenuItems(boolean disable) {
+		deleteTemplateMenuItem.setDisable(disable);
+		copyTemplateToClipboardMenuItem.setDisable(disable);
+		duplicateTemplateMenuItem.setDisable(disable);
+		editTemplateMenuItem.setDisable(disable);
+    }
+    
     private void setRootMenuItemsVisibility() {
-    	createPlainTextTemplateMenuItem.setDisable(true);
-    	createHTMLTemplateMenuItem.setDisable(true);
-		createFolderMenuItem.setDisable(false);
-		deleteAllFoldersMenuItem.setDisable(false);
-		importTemplateMenuItem.setDisable(true);
-		deleteTemplateMenuItem.setDisable(true);
-		copyTemplateToClipboardMenuItem.setDisable(true);
-		deleteFolderMenuItem.setDisable(true);
+    	disableRootRelatedMenuItems(false);
+    	disableFolderRelatedMenuItems(true);
+    	disableTemplateRelatedMenuItems(true);
     }
     
     private void setFolderMenuItemsVisibility() {
-    	createFolderMenuItem.setDisable(true);
-    	createPlainTextTemplateMenuItem.setDisable(false);
-    	createHTMLTemplateMenuItem.setDisable(false);
-		importTemplateMenuItem.setDisable(false);
-		deleteTemplateMenuItem.setDisable(true);
-		copyTemplateToClipboardMenuItem.setDisable(true);
-		deleteFolderMenuItem.setDisable(false);
+    	disableRootRelatedMenuItems(true);
+    	disableFolderRelatedMenuItems(false);
+    	disableTemplateRelatedMenuItems(true);
     }
     
-    private void setFileMenuItemsVisibility() {
-    	createFolderMenuItem.setDisable(true);
-    	createPlainTextTemplateMenuItem.setDisable(true);
-    	createHTMLTemplateMenuItem.setDisable(true);
-		deleteAllFoldersMenuItem.setDisable(true);
-		importTemplateMenuItem.setDisable(true);
-		deleteTemplateMenuItem.setDisable(false);
-		copyTemplateToClipboardMenuItem.setDisable(false);
-		deleteFolderMenuItem.setDisable(true);
+    private void setTemplateMenuItemsVisibility() {
+    	disableRootRelatedMenuItems(true);
+    	disableFolderRelatedMenuItems(true);
+    	disableTemplateRelatedMenuItems(false);
     }
     
     private void disableAllMenuItems() {
-    	createFolderMenuItem.setDisable(true);
-    	createPlainTextTemplateMenuItem.setDisable(true);
-    	createHTMLTemplateMenuItem.setDisable(true);
-		deleteAllFoldersMenuItem.setDisable(true);
-		importTemplateMenuItem.setDisable(true);
-		deleteTemplateMenuItem.setDisable(true);
-		deleteFolderMenuItem.setDisable(true);
-		copyTemplateToClipboardMenuItem.setDisable(true);
+    	disableRootRelatedMenuItems(true);
+    	disableFolderRelatedMenuItems(true);
+    	disableTemplateRelatedMenuItems(true);
     }
     
     private void hideAllViewAreas() {
@@ -544,11 +552,6 @@ public class QuickTextController {
     private void hideDescriptionPanes() {
     	hideViewDescriptionPane();
     	hideEditDescriptionPane();
-    }
-    
-    private void showDescriptionPanes() {
-    	showViewDescriptionPane();
-    	hideViewDescriptionPane();
     }
     
     private void setTreeViewCellFactory() {
@@ -640,9 +643,9 @@ public class QuickTextController {
 		MenuItem deleteTemplateItem = new MenuItem("Delete");
 		
 		copyTemplateItem.setOnAction(e -> copyTemplateToClipboard(e));
-		duplicateTemplateItem.setOnAction(e -> duplicateTemplate());
+		duplicateTemplateItem.setOnAction(e -> duplicateTemplate(e));
 		viewTemplateItem.setOnAction(e -> viewTemplate());
-		editTemplateItem.setOnAction(e -> editTemplate());
+		editTemplateItem.setOnAction(e -> editTemplate(e));
 		deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
 		
 		contextMenu.getItems().addAll(copyTemplateItem, viewTemplateItem, duplicateTemplateItem, editTemplateItem, deleteTemplateItem);
