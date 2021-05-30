@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 import data.FileItem;
 import javafx.fxml.FXML;
@@ -21,7 +22,12 @@ public class HTMLEditorController extends TextEditorController {
 	
     void saveNewFile(String fileName, String description) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
-		File file = new File(folder.toString() + File.separator + fileName + HTML_EXT);
+		File file = fileManager.buildFilePath(folder.toString(), fileName, HTML_EXT);
+		
+		if (file.exists()) {
+			throw new FileAlreadyExistsException(file.toString());
+		}
+		
     	writeHTMLEditorToFile(file);
     	addFileTreeItemToFolderTreeItem(file, description);
     }
