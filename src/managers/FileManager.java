@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
@@ -30,7 +32,10 @@ public class FileManager {
 		Files.createDirectories(Paths.get(dirPath));
 	}
 	
-	public void copyFile(File sourceFileName, File destFileName) throws IOException {	
+	public void copyFile(File sourceFileName, File destFileName) throws IOException {
+		if (destFileName.exists()) {
+			throw new FileAlreadyExistsException(destFileName.toString());
+		}
 		Files.copy(sourceFileName.toPath(), destFileName.toPath());
 	}
 	
