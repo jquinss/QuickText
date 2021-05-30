@@ -225,6 +225,8 @@ public class QuickTextController {
 					fileManager.copyFile(srcFile, destFile);
 					FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
 					folderTreeItem.getChildren().add(fileTreeItem);
+				} catch (FileAlreadyExistsException e) {
+					DialogBuilder.buildAlertDialog("Error", "Error importing the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
