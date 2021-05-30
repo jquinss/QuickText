@@ -450,14 +450,14 @@ public class QuickTextController {
 		    if (newValue != null) {
 		    	hideAllViewAreas();
 		    	if (newValue.getValue().isRootDirectory()) {
-		    		setRootMenuItemsVisibility();
+		    		enableRootRelatedMenuItems();
 		    	}
 		    	else if (newValue.getValue().isDirectory()) {
-		    		setFolderMenuItemsVisibility();
+		    		enableFolderRelatedMenuItems();
 		    		viewFileDetails(newValue.getValue());
 		    	}
 		    	else if (newValue.getValue().isFile()) {
-		    		setTemplateMenuItemsVisibility();
+		    		enableTemplateRelatedMenuItems();
 		    		viewFileDetails(newValue.getValue());
 		    	}
 		    }
@@ -487,19 +487,19 @@ public class QuickTextController {
 		editTemplateMenuItem.setDisable(disable);
     }
     
-    private void setRootMenuItemsVisibility() {
+    private void enableRootRelatedMenuItems() {
     	disableRootRelatedMenuItems(false);
     	disableFolderRelatedMenuItems(true);
     	disableTemplateRelatedMenuItems(true);
     }
     
-    private void setFolderMenuItemsVisibility() {
+    private void enableFolderRelatedMenuItems() {
     	disableRootRelatedMenuItems(true);
     	disableFolderRelatedMenuItems(false);
     	disableTemplateRelatedMenuItems(true);
     }
     
-    private void setTemplateMenuItemsVisibility() {
+    private void enableTemplateRelatedMenuItems() {
     	disableRootRelatedMenuItems(true);
     	disableFolderRelatedMenuItems(true);
     	disableTemplateRelatedMenuItems(false);
