@@ -77,21 +77,21 @@
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" fx:id="detailsPane">
                <content>
-                  <AnchorPane>
+                  <AnchorPane  id="description-pane">
                		<children>
                   		<VBox prefHeight="200.0" prefWidth="200.0" spacing="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="40.0">
                      		<children>
                         		<VBox prefHeight="150.0" prefWidth="150.0" spacing="10.0" fx:id="viewDescriptionPane" visible="false">
                            			<children>
-                              			<Label text="Description:" />
-                              			<Text fx:id="descriptionText" />
+                              			<Label text="Description:" id="description-label"/>
+                              			<Text fx:id="descriptionText"/>
                            			</children>
                         		</VBox>
                         		<VBox prefHeight="150.0" prefWidth="150.0" spacing="10.0" fx:id="editDescriptionPane" visible="false">
                            			<children>
-                              			<Label text="Add/Modify Description:" />
+                              			<Label text="Add/Modify Description:" id="description-label" />
                               			<TextField fx:id="descriptionTextField"/>
-                              			<Button mnemonicParsing="false" text="Save" onAction="#saveDescription" />
+                              			<Button mnemonicParsing="false" text="Save" onAction="#saveDescription" id="save_button" />
                            			</children>
                         		</VBox>
                      		</children>
