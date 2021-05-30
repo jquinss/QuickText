@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 
 import control.FileTreeItem;
@@ -98,8 +99,11 @@ public abstract class TextEditorController {
     		try {
 				saveNewFile(fileName, fileDescription);
 			}
+    		catch (FileAlreadyExistsException e) {
+    			DialogBuilder.buildAlertDialog("Error", "Error saving the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+    		}
 			catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+				DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR).showAndWait();
 			}
     	}
     }
