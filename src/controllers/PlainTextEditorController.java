@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 import data.FileItem;
 import javafx.fxml.FXML;
@@ -22,8 +23,13 @@ public class PlainTextEditorController extends TextEditorController {
 	
     void saveNewFile(String fileName, String description) throws IOException {
     	File folder = folderTreeItem.getValue().getFile();
-		File file = new File(folder.toString() + File.separator + fileName + PLAIN_TEXT_EXT);
-    	writeTextAreaToFile(file);
+		File file = fileManager.buildFilePath(folder.toString(), fileName, PLAIN_TEXT_EXT);
+		
+		if (file.exists()) {
+			throw new FileAlreadyExistsException(file.toString());
+		}
+    	
+		writeTextAreaToFile(file);
     	addFileTreeItemToFolderTreeItem(file, description);
 		setIsSavedStatus();
     }
