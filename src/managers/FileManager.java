@@ -89,6 +89,10 @@ public class FileManager {
 		return fileName.substring(0, fileName.lastIndexOf(extension));
 	}
 	
+	public String getRelativePath(File root, File file) {
+		return root.toPath().relativize(file.toPath()).toString();
+	}
+	
 	public void deleteFileTree(File startDirectory, boolean includeStartDirectory) throws IOException {
 		Files.walkFileTree(startDirectory.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
