@@ -42,6 +42,7 @@ public class PlainTextEditorController extends TextEditorController {
     private void writeTextAreaToFile(File file) throws IOException {
     	String textAreaContent = textArea.getText();
     	fileManager.writeStringToFile(textAreaContent, file);
+    	quickTextController.updateTextInCache(file, textAreaContent);
     }
     
     private void initializeMenuItemBindings() {
