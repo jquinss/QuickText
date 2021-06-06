@@ -171,6 +171,7 @@ public class QuickTextController {
     	try {
 			fileManager.removeFile(selectedFile);
 			treeItem.getParent().getChildren().remove(treeItem);
+			removeTextFromCache(selectedFile);
     	}
     	catch (IOException e) {
     		DialogBuilder.buildAlertDialog("Error", "Error removing the file", "An error has occurred while trying to remove the file", AlertType.ERROR).showAndWait();
@@ -252,8 +253,12 @@ public class QuickTextController {
     	ClipboardContent content = new ClipboardContent();
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
     	try {
-    		String text = fileManager.readAllLinesFromFileAsString(fileItem.getFile());
-    	
+    		String text = getTextFromCache(getCacheKey(fileItem.getFile()));
+    		
+    		if ((text == null)) {
+    			text = fileManager.readAllLinesFromFileAsString(fileItem.getFile());
+    		}
+
     		if (fileItem.isPlainTextTemplate()) {
     			content.putString(text);
     		}
@@ -270,6 +275,8 @@ public class QuickTextController {
     	}
     	
     	clipboard.setContent(content);
+    	
+    	
     }
     
     @FXML
@@ -365,14 +372,7 @@ public class QuickTextController {
     	}
     }
     
-    private FileTreeItem buildFileTreeItem(File file) {
-    	FileTreeItem fileTreeItem = new FileTreeItem(new FileItem(file));
-		setContextMenu(fileTreeItem);
-		fileTreeItem.setExpanded(true);
-		
-		return fileTreeItem;
-    }
-    
+
     private FileTreeItem buildFileTreeItem(File file, String description) {
     	FileTreeItem fileTreeItem = buildFileTreeItem(file);
     	if (description != null && !description.isEmpty()) {
@@ -381,7 +381,15 @@ public class QuickTextController {
 		
 		return fileTreeItem;
     }
-
+    
+    private FileTreeItem buildFileTreeItem(File file) {
+    	FileTreeItem fileTreeItem = new FileTreeItem(new FileItem(file));
+		setContextMenu(fileTreeItem);
+		fileTreeItem.setExpanded(true);
+		
+		return fileTreeItem;
+    }
+    
     @FXML
 	public void initialize() {
 		loadSettings();
@@ -761,6 +769,7 @@ public class QuickTextController {
     	showTextArea();
 
         String text = fileManager.readAllLinesFromFileAsString(file);
+        addTextToCache(file, text);
         textArea.setText(text);
     }
     
@@ -769,6 +778,7 @@ public class QuickTextController {
     	showWebView();
     	
     	String text = fileManager.readAllLinesFromFileAsString(file);
+    	addTextToCache(file, text);
     	webView.getEngine().loadContent(text, "text/html");
     }
     
@@ -783,6 +793,40 @@ public class QuickTextController {
     		hideViewDescriptionPane();
         	showEditDescriptionPane();
     	}
+    }
+    
+    private String getTextFromCache(String key) {
+    	return cacheManager.getFromCache(key);
+    }
+
+    private void addTextToCache(File file, String text) {
+    	String key = getCacheKey(file);
+    	if (!cacheManager.isInCache(key)) {
+    		cacheManager.addToCache(key, text);
+    	}
+    }
+    
+    void updateTextInCache(File file, String text) {
+    	String key = getCacheKey(file);
+    	if (cacheManager.isInCache(key)) {
+    		cacheManager.updateCache(key, text);
+    	}
+    }
+    
+    private void removeTextFromCache(File file) {
+    	String key = getCacheKey(file);
+    	if (cacheManager.isInCache(key)) {
+    		cacheManager.removeFromCache(key);
+    	}
+    }
+     
+    private void clearCache() {
+    	cacheManager.clearCache();
+    }
+    
+    private String getCacheKey(File file) {
+    	File root = treeView.getRoot().getValue().getFile();
+    	return fileManager.getRelativePath(root, file);
     }
     
     private void saveTreeViewToXML() {
