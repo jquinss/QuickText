@@ -9,10 +9,16 @@ public class StringCache extends LinkedHashMap<String, String>  {
 	private int maxItems;
 	
 	public StringCache(int maxItems) {
+		if (maxItems <= 0) {
+			throw new IllegalArgumentException("The number of items must be greater than 0");
+		}
 		this.maxItems = maxItems;
 	}
 	
 	public void setMaxItems(int maxItems) {
+		if (maxItems <= 0) {
+			throw new IllegalArgumentException("The number of items must be greater than 0");
+		}
 		this.maxItems = maxItems;
 	}
 	
