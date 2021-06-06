@@ -17,10 +17,12 @@ import org.xml.sax.SAXException;
 import util.HtmlToPlainText;
 import control.FileTreeItem;
 import data.FileItem;
+import managers.CacheManager;
 import managers.FileManager;
 import managers.SettingsManager;
 import util.DialogBuilder;
 import util.OSChecker;
+import util.StringCache;
 import util.XMLConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -56,7 +58,6 @@ import javafx.util.Pair;
 
 
 public class QuickTextController {
-
     @FXML
     private TreeView<FileItem> treeView;
 
@@ -111,7 +112,18 @@ public class QuickTextController {
     @FXML
     private TextField descriptionTextField;
     
+    private static final String APP_FOLDER_NAME = "QuickText";
+    private static final String TEMPLATES_FOLDER_NAME = "templates";
+    private static final String XML_FOLDER_NAME = "xml";
+    private static final String XML_FILE_NAME = "filetree.xml";
+    
+    private static final String TEMPLATES_DIR_PROP = "templates_dir";
+    private static final String XML_DIR_PROP = "xml_dir";
+    private static final String CACHE_MAX_ITEMS_PROP = "cache_max_items";
+    
     private Stage stage;
+    
+    private CacheManager cacheManager;
     
     private final FileManager fileManager = new FileManager();
     
@@ -373,6 +385,7 @@ public class QuickTextController {
     @FXML
 	public void initialize() {
 		loadSettings();
+		initializeCache();
 		initializeTreeView();
 		initializeDescriptionPane();
 	}
@@ -384,13 +397,20 @@ public class QuickTextController {
     
     private Properties getDefaultSettings() {
     	Properties settings = new Properties();
-    	String appDir = OSChecker.getOSDataDirectory() + File.separator + "QuickText";
-    	String templatesDir = appDir + File.separator + "templates";
-    	String xmlDir = appDir + File.separator + "xml";
+    	String appDir = fileManager.buildFilePath(OSChecker.getOSDataDirectory(), APP_FOLDER_NAME).toString();
+    	String templatesDir = fileManager.buildFilePath(appDir, TEMPLATES_FOLDER_NAME).toString();
+    	String xmlDir = fileManager.buildFilePath(appDir, XML_FOLDER_NAME).toString();
+    	String cacheMaxItems = "10";
     	settings.setProperty("templates_dir", templatesDir);
     	settings.setProperty("xml_dir", xmlDir);
+    	settings.setProperty("cache_max_items", cacheMaxItems);
     	
     	return settings;
+    }
+    
+    private void initializeCache() {
+    	String cacheMaxItems = (String) SettingsManager.getInstance().getSettings().get(CACHE_MAX_ITEMS_PROP);
+    	cacheManager = new CacheManager(new StringCache(Integer.parseInt(cacheMaxItems)));
     }
     
     private void initializeTreeView() {
@@ -426,7 +446,7 @@ public class QuickTextController {
     
     private String getRootDirectoryPath() {
     	Properties settings = SettingsManager.getInstance().getSettings();
-    	String templatesDir = settings.getProperty("templates_dir");
+    	String templatesDir = settings.getProperty(TEMPLATES_DIR_PROP);
     	
     	return templatesDir;
     }
@@ -442,7 +462,7 @@ public class QuickTextController {
     
     private String getXMLDirectoryPath() {
     	Properties settings = SettingsManager.getInstance().getSettings();
-    	String xmlDir = settings.getProperty("xml_dir");
+    	String xmlDir = settings.getProperty(XML_DIR_PROP);
     	
     	return xmlDir;
     }
@@ -584,7 +604,7 @@ public class QuickTextController {
     
     private void buildTreeViewFromXML() throws SAXException, ParserConfigurationException, IOException {
     	Properties settings = SettingsManager.getInstance().getSettings();
-    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
+    	File xmlFilePath = fileManager.buildFilePath(settings.getProperty(XML_DIR_PROP), XML_FILE_NAME);
     	XMLConverter xmlConverter = new XMLConverter();
 		xmlConverter.initializeTreeViewFromXML(xmlFilePath, treeView);
 
@@ -684,7 +704,6 @@ public class QuickTextController {
     	}
     }
     
-    
     private void openPlainTextEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\PlainTextEditor.fxml"));
     	TextEditorController plainTextEditorController = new PlainTextEditorController(selectedTreeItem, fileManager);
@@ -768,7 +787,7 @@ public class QuickTextController {
     
     private void saveTreeViewToXML() {
     	Properties settings = SettingsManager.getInstance().getSettings();
-    	File xmlFilePath = new File(settings.getProperty("xml_dir") + File.separator + "filetree.xml");
+    	File xmlFilePath = fileManager.buildFilePath(settings.getProperty(XML_DIR_PROP), XML_FILE_NAME);
     	XMLConverter xmlConverter = new XMLConverter();
     	try {
 			xmlConverter.convertTreeViewToXML(treeView, xmlFilePath, true);
