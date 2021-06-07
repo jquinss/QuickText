@@ -200,7 +200,9 @@ public class QuickTextController {
     
     @FXML
     void deleteAllFolders(ActionEvent event) {
-    	deleteAllFilesAndFolders(treeView.getRoot(), false);
+    	TreeItem<FileItem> rootTreeItem = treeView.getRoot();
+    	deleteAllFilesAndFolders(rootTreeItem, false);
+    	clearCache();
     }
 
     @FXML
@@ -252,12 +254,9 @@ public class QuickTextController {
     	Clipboard clipboard = Clipboard.getSystemClipboard();
     	ClipboardContent content = new ClipboardContent();
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
+    	File file = fileItem.getFile();
     	try {
-    		String text = getTextFromCache(getCacheKey(fileItem.getFile()));
-    		
-    		if ((text == null)) {
-    			text = fileManager.readAllLinesFromFileAsString(fileItem.getFile());
-    		}
+    		String text = readTextFromFile(file);
 
     		if (fileItem.isPlainTextTemplate()) {
     			content.putString(text);
@@ -768,8 +767,7 @@ public class QuickTextController {
     	hideWebView();
     	showTextArea();
 
-        String text = fileManager.readAllLinesFromFileAsString(file);
-        addTextToCache(file, text);
+    	String text = readTextFromFile(file);
         textArea.setText(text);
     }
     
@@ -777,8 +775,7 @@ public class QuickTextController {
     	hideTextArea();
     	showWebView();
     	
-    	String text = fileManager.readAllLinesFromFileAsString(file);
-    	addTextToCache(file, text);
+    	String text = readTextFromFile(file);
     	webView.getEngine().loadContent(text, "text/html");
     }
     
@@ -793,6 +790,17 @@ public class QuickTextController {
     		hideViewDescriptionPane();
         	showEditDescriptionPane();
     	}
+    }
+    
+    String readTextFromFile(File file) throws IOException {
+    	String text = getTextFromCache(getCacheKey(file));
+    	
+    	if (text == null) {
+    		text = fileManager.readAllLinesFromFileAsString(file);
+    		addTextToCache(file, text);
+    	}
+    	
+    	return text;
     }
     
     private String getTextFromCache(String key) {
