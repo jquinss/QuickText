@@ -37,9 +37,8 @@ public class HTMLEditorController extends TextEditorController {
     }
     
     private void writeHTMLEditorToFile(File file) throws IOException {
-    	String htmlEditorContent = htmlEditor.getHtmlText();
-    	fileManager.writeStringToFile(htmlEditorContent, file);
-    	quickTextController.updateTextInCache(file, htmlEditorContent);
+    	String text = htmlEditor.getHtmlText();
+    	writeTextToFile(text, file);
     }
     
     public void initialize() {
