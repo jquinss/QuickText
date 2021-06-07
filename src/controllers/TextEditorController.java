@@ -133,6 +133,11 @@ public abstract class TextEditorController {
 		folderTreeItem.getChildren().add(fileTreeItem);
     }
     
+    void writeTextToFile(String text, File file) throws IOException {
+    	fileManager.writeStringToFile(text, file);
+    	quickTextController.updateTextInCache(file, text);
+    }
+    
     void setIsSavedStatus() {
     	saveMenuItem.setDisable(true);
 		isSavedText = true;
