@@ -261,7 +261,8 @@ public class QuickTextController {
     		if (fileItem.isPlainTextTemplate()) {
     			content.putString(text);
     		}
-    		else if (fileItem.isHTMLTemplate()) {
+    		
+    		if (fileItem.isHTMLTemplate()) {
     			HtmlToPlainText formatter = new HtmlToPlainText();
     			Document doc = Jsoup.parse(text);
     			String plainText = formatter.getPlainText(doc).trim();
@@ -799,7 +800,7 @@ public class QuickTextController {
     		text = fileManager.readAllLinesFromFileAsString(file);
     		addTextToCache(file, text);
     	}
-    	
+
     	return text;
     }
     
