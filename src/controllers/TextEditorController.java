@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import control.FileTreeItem;
 import data.FileItem;
+import data.FolderItem;
+import data.TemplateItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import managers.FileManager;
 import util.DialogBuilder;
+import util.FileItemBuilder;
 
 public abstract class TextEditorController {
     @FXML
@@ -40,14 +43,21 @@ public abstract class TextEditorController {
     
     final FileManager fileManager;
     
+    FileItemBuilder fileItemBuilder;
+    
+    File root;
+    
     QuickTextController quickTextController;
     
-    public TextEditorController(TreeItem<FileItem> fileTreeItem, FileManager fileManager) {
+    public TextEditorController(TreeItem<FileItem> fileTreeItem, FileManager fileManager, File root) {
     	this.fileManager = fileManager;
-    	if (fileTreeItem.getValue().isDirectory()) {
+    	this.root = root;
+    	fileItemBuilder = new FileItemBuilder(this.root);
+    	
+    	if (fileTreeItem.getValue() instanceof FolderItem) {
     		folderTreeItem = fileTreeItem;
     	}
-    	else if (fileTreeItem.getValue().isFile()) {
+    	else if (fileTreeItem.getValue() instanceof TemplateItem) {
     		this.fileTreeItem = fileTreeItem;
     	}
     }
@@ -122,7 +132,7 @@ public abstract class TextEditorController {
     }
     
     void addFileTreeItemToFolderTreeItem(File file, String description) {
-		FileItem fileItem = new FileItem(file);
+		FileItem fileItem = fileItemBuilder.buildFileItem(file);
 		if (!description.isEmpty()) {
 			fileItem.setDescription(description);
 		}
