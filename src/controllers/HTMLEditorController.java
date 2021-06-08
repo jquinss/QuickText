@@ -13,8 +13,8 @@ import managers.FileManager;
 public class HTMLEditorController extends TextEditorController {
 	private static final String HTML_EXT = ".html";
 	
-	public HTMLEditorController(TreeItem<FileItem> treeItem, FileManager fileManager) {
-		super(treeItem, fileManager);
+	public HTMLEditorController(TreeItem<FileItem> treeItem, FileManager fileManager, File root) {
+		super(treeItem, fileManager, root);
 	}
 	
 	@FXML
