@@ -1,6 +1,9 @@
 package control;
 
 import data.FileItem;
+import data.FolderItem;
+import data.HTMLTemplateItem;
+import data.PlainTextTemplateItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 
@@ -23,14 +26,19 @@ public class FileTreeItem extends TreeItem<FileItem> {
 	}
 	
 	public String getImgURL() {
-		if (getValue().isDirectory()) {
-			return FOLDER_IMG;
+		String imgURL = null;
+		FileItem fileItem = getValue();
+		
+		if (fileItem instanceof FolderItem) {
+			imgURL = FOLDER_IMG;
 		}
-		else if (getValue().isPlainTextTemplate()) {
-			return TXT_IMG;
+		else if (fileItem instanceof PlainTextTemplateItem) {
+			imgURL = TXT_IMG;
 		}
-		else {
-			return HTML_IMG;
+		else if (fileItem instanceof HTMLTemplateItem) {
+			imgURL = HTML_IMG;
 		}
+		
+		return imgURL;
 	}
 }
