@@ -43,6 +43,15 @@ public class XMLConverter {
 	private static final String XML_PATH_TEXT = "path";
 	private static final String XML_DESCRIPTION_TEXT = "description";
 	
+	private File root;
+	private FileItemBuilder fileItemBuilder;
+	
+	public XMLConverter(File root) {
+		this.root = root;
+		fileItemBuilder = new FileItemBuilder(this.root);
+		
+	}
+	
 	public void initializeTreeViewFromXML(File xmlFile, TreeView<FileItem> treeView) throws SAXException,
 																		ParserConfigurationException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -173,7 +182,6 @@ public class XMLConverter {
 						
 						if (root.exists()) {
 							rootTreeItem = buildFileTreeItem(root);
-							rootTreeItem.getValue().setIsRoot(true);
 							treeView.setRoot(rootTreeItem);
 						}
 							
@@ -235,7 +243,8 @@ public class XMLConverter {
 			}
 			
 			private FileTreeItem buildFileTreeItem(File file) {
-				FileTreeItem fileTreeItem = new FileTreeItem(new FileItem(file));
+				FileItem fileItem = fileItemBuilder.buildFileItem(file);
+				FileTreeItem fileTreeItem = new FileTreeItem(fileItem);
 				fileTreeItem.setExpanded(true);
 				
 				return fileTreeItem;
