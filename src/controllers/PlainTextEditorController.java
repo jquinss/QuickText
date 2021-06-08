@@ -14,8 +14,8 @@ public class PlainTextEditorController extends TextEditorController {
 	
 	private static final String PLAIN_TEXT_EXT = ".txt";
 	
-	public PlainTextEditorController(TreeItem<FileItem> treeItem, FileManager fileManager) {
-		super(treeItem, fileManager);
+	public PlainTextEditorController(TreeItem<FileItem> treeItem, FileManager fileManager, File root) {
+		super(treeItem, fileManager, root);
 	}
 	
 	@FXML
