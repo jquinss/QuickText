@@ -2,26 +2,38 @@ package managers;
 
 import util.OSChecker;
 import util.PropertiesReaderWriter;
+import enums.Charsets;
 
 import java.util.Properties;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class SettingsManager {
+    private static final String APP_FOLDER_NAME = "QuickText";
+    private static final String TEMPLATES_FOLDER_NAME = "templates";
+    private static final String XML_FOLDER_NAME = "xml";
+    private static final String XML_FILE_NAME = "filetree.xml";
+    private static final String SETTINGS_FILE_NAME = "settings.txt";
+    private static final String CACHE_MAX_ITEMS = "10";
+    private static final String TEXT_CHARSET = Charsets.UTF_8.toString();
+    private static final String KEY_VALUE_SEPARATOR = "=";
+    
+    private static final String TEMPLATES_DIR_PROP = "templates_dir";
+    private static final String XML_DIR_PROP = "xml_dir";
+    private static final String XML_PATH_PROP = "xml_path";
+    private static final String SETTINGS_PATH_PROP = "settings_path";
+    private static final String CACHE_MAX_ITEMS_PROP = "cache_max_items";
+    private static final String TEXT_CHARSET_PROP = "text_charset";
+    
+
+	private FileManager fileManager = new FileManager();
 	private static SettingsManager instance;
-	private static final String SETTINGS_FILE_NAME = "settings.txt";
-	private static final String SETTINGS_DIR_NAME = "QuickText";
-	private static final String SETTINGS_ROOT_DIR = OSChecker.getOSDataDirectory() + File.separator + SETTINGS_DIR_NAME;
-	private static final String SETTINGS_PATH = SETTINGS_ROOT_DIR + File.separator + SETTINGS_FILE_NAME;
-	private static final String KEY_VALUE_SEPARATOR = "=";
-	
-	private Properties settings;
-	private Properties defaultSettings;
+	private final Properties defaultSettings;
+	private Properties optSettings;
 	private PropertiesReaderWriter propsReaderWriter;
 	
 	private SettingsManager() {
+		defaultSettings = loadDefaultSettings();
+		optSettings = loadOptSettings();
 	}
 	
 	public static synchronized SettingsManager getInstance() {
@@ -32,40 +44,87 @@ public class SettingsManager {
 		return instance;
 	}
 	
-	public Properties getSettings() {
-		return settings;
-	}
-	
-	public Properties getDefaultSettings() {
-		return defaultSettings;
-	}
-	
-	public void setSettings(Properties settings) {
-		this.settings = settings;
-	}
-	
-	public void loadSettings(Properties defaultSettings) {
-		this.defaultSettings = defaultSettings;
-		
-		propsReaderWriter = new PropertiesReaderWriter(SETTINGS_PATH, KEY_VALUE_SEPARATOR);
+	private Properties loadOptSettings() {
+		Properties optSettings = new Properties();
+		propsReaderWriter = new PropertiesReaderWriter(getSettingsPath(), KEY_VALUE_SEPARATOR);
 		
 		try {
-			settings = propsReaderWriter.readProperties();
+			optSettings = propsReaderWriter.readProperties();
 		}
 		catch (IOException e) {
-			settings = this.defaultSettings;
+			optSettings = new Properties();
 		}
+		
+		return optSettings;
 	}
 	
 	public void saveSettings() {
-		propsReaderWriter = new PropertiesReaderWriter(SETTINGS_PATH, KEY_VALUE_SEPARATOR);
+		propsReaderWriter = new PropertiesReaderWriter(getSettingsPath(), KEY_VALUE_SEPARATOR);
 		
 		try {
-			Files.createDirectories(Paths.get(SETTINGS_ROOT_DIR));
-			propsReaderWriter.writeProperties(settings);
+			propsReaderWriter.writeProperties(optSettings);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Properties loadDefaultSettings() {
+    	Properties settings = new Properties();
+    	
+    	String appDir = fileManager.buildFilePath(OSChecker.getOSDataDirectory(), APP_FOLDER_NAME).toString();
+    	String templatesDir = fileManager.buildFilePath(appDir, TEMPLATES_FOLDER_NAME).toString();
+    	String xmlDir = fileManager.buildFilePath(appDir, XML_FOLDER_NAME).toString();
+    	String xmlPath = fileManager.buildFilePath(xmlDir, XML_FILE_NAME).toString();
+    	String settingsPath = fileManager.buildFilePath(appDir, SETTINGS_FILE_NAME).toString();
+    	
+    	settings.setProperty(TEMPLATES_DIR_PROP, templatesDir);
+    	settings.setProperty(XML_DIR_PROP, xmlDir);
+    	settings.setProperty(XML_PATH_PROP, xmlPath);
+    	settings.setProperty(SETTINGS_PATH_PROP, settingsPath);
+    	settings.setProperty(CACHE_MAX_ITEMS_PROP, CACHE_MAX_ITEMS);
+    	settings.setProperty(TEXT_CHARSET_PROP, TEXT_CHARSET);
+    	
+    	return settings;
+	}
+	
+	public String getTemplatesDir() {
+		return defaultSettings.getProperty(TEMPLATES_DIR_PROP);
+	}
+	
+	public String getXMLDir() {
+		return defaultSettings.getProperty(XML_DIR_PROP);
+	}
+	
+	public String getXMLPath() {
+		return defaultSettings.getProperty(XML_PATH_PROP);
+	}
+	
+	private String getSettingsPath() {
+		return defaultSettings.getProperty(SETTINGS_PATH_PROP);
+	}
+	
+	public String getCacheMaxItems() {
+		if (optSettings.containsKey(CACHE_MAX_ITEMS_PROP)) {
+			return optSettings.getProperty(CACHE_MAX_ITEMS_PROP);
+		}
+		
+		return defaultSettings.getProperty(CACHE_MAX_ITEMS_PROP);
+	}
+	
+	public void setCacheMaxItems(String maxItems) {
+		optSettings.setProperty(CACHE_MAX_ITEMS_PROP, maxItems);
+	}
+	
+	public String getTextCharset() {
+		if (optSettings.containsKey(TEXT_CHARSET_PROP)) {
+			return optSettings.getProperty(TEXT_CHARSET_PROP);
+		}
+		
+		return defaultSettings.getProperty(TEXT_CHARSET_PROP);
+	}
+	
+	public void setTextCharset(String charset) {
+		optSettings.setProperty(TEXT_CHARSET_PROP, charset);
 	}
 }
