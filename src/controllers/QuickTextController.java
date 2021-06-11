@@ -2,8 +2,10 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ import data.HTMLTemplateItem;
 import data.PlainTextTemplateItem;
 import data.RootFolderItem;
 import data.TemplateItem;
+import enums.Charsets;
 import managers.CacheManager;
 import managers.FileManager;
 import managers.SettingsManager;
@@ -798,9 +801,11 @@ public class QuickTextController {
     
     String readTextFromFile(File file) throws IOException {
     	String text = getTextFromCache(getCacheKey(file));
+    	HashMap<String, Charsets> charsetsMap = Charsets.getCharsetsHashMap();
+    	String charsetName = SettingsManager.getInstance().getTextCharset();
     	
     	if (text == null) {
-    		text = fileManager.readAllLinesFromFileAsString(file);
+    		text = fileManager.readAllLinesFromFileAsString(file, charsetsMap.get(charsetName).toStandardCharset());
     		addTextToCache(file, text);
     	}
 
