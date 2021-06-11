@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -126,12 +128,12 @@ public class FileManager {
     	}
 	}
 	
-	public List<String> readAllLinesFromFileAsList(File file) throws IOException {
-		return Files.readAllLines(Paths.get(file.toURI()));
+	public List<String> readAllLinesFromFileAsList(File file, Charset charset) throws IOException {
+		return Files.readAllLines(Paths.get(file.toURI()), charset);
 	}
 	
-	public String readAllLinesFromFileAsString(File file) throws IOException {
-    	List<String> fileLines = readAllLinesFromFileAsList(file);
+	public String readAllLinesFromFileAsString(File file, Charset charset) throws IOException {
+    	List<String> fileLines = readAllLinesFromFileAsList(file, charset);
     	StringBuilder text = new StringBuilder();
     	for (String line : fileLines) {
     		text.append(line + System.lineSeparator());
