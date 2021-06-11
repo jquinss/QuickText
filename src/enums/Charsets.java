@@ -2,42 +2,10 @@ package enums;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 public enum Charsets {
-	ISO_8859_1 {
-		public Charset getCharset() {
-			return StandardCharsets.ISO_8859_1;
-		}
-	},
-	
-	US_ASCII {
-		public Charset getCharset() {
-			return StandardCharsets.US_ASCII;
-		}
-	},
-	
-	UTF_8 {
-		public Charset getCharset() {
-			return StandardCharsets.UTF_8;
-		}
-	},
-	
-	UTF_16 {
-		public Charset getCharset() {
-			return StandardCharsets.UTF_16;
-		}
-	}
-	,
-	UTF_16BE {
-		public Charset getCharset() {
-			return StandardCharsets.UTF_16BE;
-		}
-	},
-	UTF_16LE {
-		public Charset getCharset() {
-			return StandardCharsets.UTF_16LE;
-		}
-	};
+	ISO_8859_1, US_ASCII, UTF_8, UTF_16, UTF_16BE, UTF_16LE;
 	
 	@Override
 	public String toString() {
@@ -56,5 +24,32 @@ public enum Charsets {
 			return StandardCharsets.UTF_16LE.displayName();
 		default:throw new IllegalArgumentException();
 		}
+	}
+	
+	public Charset toStandardCharset() {
+		switch (this) {
+		case ISO_8859_1:
+			return StandardCharsets.ISO_8859_1;
+		case US_ASCII:
+			return StandardCharsets.US_ASCII;
+		case UTF_8:
+			return StandardCharsets.UTF_8;
+		case UTF_16:
+			return StandardCharsets.UTF_16;
+		case UTF_16BE:
+			return StandardCharsets.UTF_16BE;
+		case UTF_16LE:
+			return StandardCharsets.UTF_16LE;
+		default:throw new IllegalArgumentException();
+		}
+	}
+	
+	public static HashMap<String, Charsets> getCharsetsHashMap(){
+		HashMap<String, Charsets> hashMap = new HashMap<String, Charsets>();
+		for (Charsets charset : values()) {
+			hashMap.put(charset.toString(), charset);
+		}
+		
+		return hashMap;
 	}
 }
