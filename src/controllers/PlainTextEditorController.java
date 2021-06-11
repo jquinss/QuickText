@@ -3,12 +3,15 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.HashMap;
 
 import data.FileItem;
+import enums.Charsets;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import managers.FileManager;
+import managers.SettingsManager;
 
 public class PlainTextEditorController extends TextEditorController {
 	
@@ -68,7 +71,10 @@ public class PlainTextEditorController extends TextEditorController {
     }
     
     private void loadFileToTextArea(File file) throws IOException {
-        String text = fileManager.readAllLinesFromFileAsString(file);
+    	HashMap<String, Charsets> charsetsMap = Charsets.getCharsetsHashMap();
+    	String charsetName = SettingsManager.getInstance().getTextCharset();
+    	
+        String text = fileManager.readAllLinesFromFileAsString(file, charsetsMap.get(charsetName).toStandardCharset());
         textArea.setText(text);
     }
 }
