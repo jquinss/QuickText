@@ -3,12 +3,15 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.HashMap;
 
 import data.FileItem;
+import enums.Charsets;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.web.HTMLEditor;
 import managers.FileManager;
+import managers.SettingsManager;
 
 public class HTMLEditorController extends TextEditorController {
 	private static final String HTML_EXT = ".html";
@@ -54,7 +57,9 @@ public class HTMLEditorController extends TextEditorController {
     }
     
     private void loadFileToHTMLEditor(File file) throws IOException {
-        String text = fileManager.readAllLinesFromFileAsString(file);
+    	HashMap<String, Charsets> charsetsMap = Charsets.getCharsetsHashMap();
+    	String charsetName = SettingsManager.getInstance().getTextCharset();
+        String text = fileManager.readAllLinesFromFileAsString(file, charsetsMap.get(charsetName).toStandardCharset());
         htmlEditor.setHtmlText(text);
     }
 }
