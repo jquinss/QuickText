@@ -6,7 +6,6 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -27,7 +26,6 @@ import managers.FileManager;
 import managers.SettingsManager;
 import util.DialogBuilder;
 import util.FileItemBuilder;
-import util.OSChecker;
 import util.StringCache;
 import util.XMLConverter;
 import javafx.event.ActionEvent;
@@ -118,14 +116,11 @@ public class QuickTextController {
     @FXML
     private TextField descriptionTextField;
     
-    private static final String APP_FOLDER_NAME = "QuickText";
-    private static final String TEMPLATES_FOLDER_NAME = "templates";
-    private static final String XML_FOLDER_NAME = "xml";
-    private static final String XML_FILE_NAME = "filetree.xml";
+    private String templatesDir;
     
-    private static final String TEMPLATES_DIR_PROP = "templates_dir";
-    private static final String XML_DIR_PROP = "xml_dir";
-    private static final String CACHE_MAX_ITEMS_PROP = "cache_max_items";
+    private String xmlDir;
+    
+    private String xmlPath;
     
     private Stage stage;
     
@@ -156,8 +151,6 @@ public class QuickTextController {
     	if (result.isPresent()) {
     		String folderName = result.get().getKey();
     		String folderDescription = result.get().getValue();
-    		
-    		String templatesDir = getRootDirectoryPath();
     		
     		try {
     			File destDir = fileManager.buildFilePath(templatesDir, folderName);
@@ -356,6 +349,26 @@ public class QuickTextController {
     	}
     }
     
+    @FXML
+	void openSettingsDialog(ActionEvent event) throws IOException {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\SettingsPane.fxml"));
+		Parent parent = fxmlLoader.load();
+		
+		SettingsPaneController settingsPaneController = fxmlLoader.getController();
+		
+		Scene scene = new Scene(parent, 450, 250);
+		scene.getStylesheets().add(getClass().getResource("..\\styles\\application.css").toExternalForm());
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        stage.setTitle("Settings");
+        
+        settingsPaneController.setStage(stage);
+        
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+	}
+    
     void viewTemplate() {
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
     	
@@ -397,39 +410,26 @@ public class QuickTextController {
     
     @FXML
 	public void initialize() {
-		loadSettings();
+		loadDefaultSettings();
 		initializeBuilders();
 		initializeCache();
 		initializeTreeView();
 		initializeDescriptionPane();
 	}
     
-    private void loadSettings() {
-    	Properties defaultSettings = getDefaultSettings();
-    	SettingsManager.getInstance().loadSettings(defaultSettings);
-    }
-    
-    private Properties getDefaultSettings() {
-    	Properties settings = new Properties();
-    	String appDir = fileManager.buildFilePath(OSChecker.getOSDataDirectory(), APP_FOLDER_NAME).toString();
-    	String templatesDir = fileManager.buildFilePath(appDir, TEMPLATES_FOLDER_NAME).toString();
-    	String xmlDir = fileManager.buildFilePath(appDir, XML_FOLDER_NAME).toString();
-    	String cacheMaxItems = "10";
-    	settings.setProperty(TEMPLATES_DIR_PROP, templatesDir);
-    	settings.setProperty(XML_DIR_PROP, xmlDir);
-    	settings.setProperty(CACHE_MAX_ITEMS_PROP, cacheMaxItems);
-    	
-    	return settings;
+    private void loadDefaultSettings() {
+    	templatesDir = SettingsManager.getInstance().getTemplatesDir();
+    	xmlDir = SettingsManager.getInstance().getXMLDir();
+    	xmlPath = SettingsManager.getInstance().getXMLPath();
     }
     
     private void initializeCache() {
-    	String cacheMaxItems = (String) SettingsManager.getInstance().getSettings().get(CACHE_MAX_ITEMS_PROP);
+    	String cacheMaxItems = (String) SettingsManager.getInstance().getCacheMaxItems();
     	cacheManager = new CacheManager(new StringCache(Integer.parseInt(cacheMaxItems)));
     }
     
     private void initializeBuilders() {
-    	String root = getRootDirectoryPath();
-    	fileItemBuilder = new FileItemBuilder(new File(root));
+    	fileItemBuilder = new FileItemBuilder(new File(templatesDir));
     	contextMenuBuilder = new ContextMenuBuilder();
     }
     
@@ -451,8 +451,6 @@ public class QuickTextController {
     }
     
     private void setRootDirectory() {
-    	String templatesDir = getRootDirectoryPath();
-    	
     	try {
     		fileManager.createDirPath(templatesDir);
     		FileTreeItem rootTreeItem = buildFileTreeItem(new File(templatesDir));
@@ -463,27 +461,12 @@ public class QuickTextController {
     	}
     }
     
-    private String getRootDirectoryPath() {
-    	Properties settings = SettingsManager.getInstance().getSettings();
-    	String templatesDir = settings.getProperty(TEMPLATES_DIR_PROP);
-    	
-    	return templatesDir;
-    }
-    
     private void setXMLDirectory() {
-    	String xmlDir = getXMLDirectoryPath();
     	try {
 			fileManager.createDirPath(xmlDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    }
-    
-    private String getXMLDirectoryPath() {
-    	Properties settings = SettingsManager.getInstance().getSettings();
-    	String xmlDir = settings.getProperty(XML_DIR_PROP);
-    	
-    	return xmlDir;
     }
     
     private void setSelectedTreeItemListener() {
@@ -623,11 +606,9 @@ public class QuickTextController {
 	}
     
     private void buildTreeViewFromXML() throws SAXException, ParserConfigurationException, IOException {
-    	Properties settings = SettingsManager.getInstance().getSettings();
-    	File root = new File(settings.getProperty(TEMPLATES_DIR_PROP));
-    	File xmlFilePath = fileManager.buildFilePath(settings.getProperty(XML_DIR_PROP), XML_FILE_NAME);
+    	File root = new File(templatesDir);
     	XMLConverter xmlConverter = new XMLConverter(root);
-		xmlConverter.initializeTreeViewFromXML(xmlFilePath, treeView);
+		xmlConverter.initializeTreeViewFromXML(new File(xmlPath), treeView);
 
     }
     
@@ -734,7 +715,7 @@ public class QuickTextController {
     
     private void openPlainTextEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\PlainTextEditor.fxml"));
-    	File root = new File(getRootDirectoryPath());
+    	File root = new File(templatesDir);
     	TextEditorController plainTextEditorController = new PlainTextEditorController(selectedTreeItem, fileManager, root);
     	fxmlLoader.setController(plainTextEditorController);
  
@@ -750,7 +731,7 @@ public class QuickTextController {
     
     private void openHTMLEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\HTMLTextEditor.fxml"));
-    	File root = new File(getRootDirectoryPath());
+    	File root = new File(templatesDir);
     	HTMLEditorController htmlEditorController = new HTMLEditorController(selectedTreeItem, fileManager, root);
     	fxmlLoader.setController(htmlEditorController);
     	
@@ -861,11 +842,10 @@ public class QuickTextController {
     }
     
     private void saveTreeViewToXML() {
-    	File root = new File(getRootDirectoryPath());
-    	File xmlFilePath = fileManager.buildFilePath(getXMLDirectoryPath(), XML_FILE_NAME);
+    	File root = new File(templatesDir);
     	XMLConverter xmlConverter = new XMLConverter(root);
     	try {
-			xmlConverter.convertTreeViewToXML(treeView, xmlFilePath, true);
+			xmlConverter.convertTreeViewToXML(treeView, new File(xmlPath), true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
