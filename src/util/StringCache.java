@@ -1,5 +1,6 @@
 package util;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,11 +20,26 @@ public class StringCache extends LinkedHashMap<String, String>  {
 		if (maxItems <= 0) {
 			throw new IllegalArgumentException("The number of items must be greater than 0");
 		}
+		
+		int excess = this.maxItems - maxItems;
+		if (excess > 0) {
+			removeEldestEntries(excess);
+		}
 		this.maxItems = maxItems;
 	}
 	
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
 		return size() > maxItems;
+	}
+	
+	private void removeEldestEntries(int num) {
+		int numEntries = num;
+		Iterator<String> iterator = this.keySet().iterator();
+		while (iterator.hasNext() & numEntries > 0) {
+			iterator.next();
+			iterator.remove();
+			--numEntries;
+		}
 	}
 }
