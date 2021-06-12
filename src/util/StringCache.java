@@ -33,8 +33,7 @@ public class StringCache extends LinkedHashMap<String, String>  {
 		return size() > maxItems;
 	}
 	
-	private void removeEldestEntries(int num) {
-		int numEntries = num;
+	private void removeEldestEntries(int numEntries) {
 		Iterator<String> iterator = this.keySet().iterator();
 		while (iterator.hasNext() & numEntries > 0) {
 			iterator.next();
