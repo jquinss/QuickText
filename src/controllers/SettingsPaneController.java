@@ -23,13 +23,15 @@ public class SettingsPaneController {
     @FXML
     private TextField numCachedTemplatesTextField;
     
+    private QuickTextController quickTextController;
+    
     private Stage stage;
     
     private final ObservableList<Charsets> charsetObsList = FXCollections.observableArrayList();
 
     @FXML
     void clearCache(ActionEvent event) {
-    	System.out.println("Clearing cache");
+    	quickTextController.clearCache();
     }
     
     @FXML
@@ -53,11 +55,16 @@ public class SettingsPaneController {
 
     @FXML
     void resetSettings(ActionEvent event) {
-
+    	SettingsManager.getInstance().resetSettings();
+    	applySettings();
     }
     
-    public void setStage(Stage stage) {
+    void setStage(Stage stage) {
     	this.stage = stage;
+    }
+    
+    void setQuickTextController(QuickTextController quickTextController) {
+    	this.quickTextController = quickTextController;
     }
     
     @FXML
@@ -132,9 +139,15 @@ public class SettingsPaneController {
     	return validationText.toString();
     }
     
-    private void saveSettings() {
-    	SettingsManager.getInstance().setCacheMaxItems(numCachedTemplatesTextField.getText());
+    private void applySettings() {
+    	String cacheMaxItems = numCachedTemplatesTextField.getText();
+    	SettingsManager.getInstance().setCacheMaxItems(cacheMaxItems);
+    	quickTextController.setCacheMaxItems(Integer.parseInt(cacheMaxItems));
     	SettingsManager.getInstance().setTextCharset(charEncodingComboBox.getSelectionModel().getSelectedItem().toString());
+    }
+    
+    private void saveSettings() {
+    	applySettings();
     	SettingsManager.getInstance().saveSettings();
     }
     
