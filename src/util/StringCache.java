@@ -21,7 +21,7 @@ public class StringCache extends LinkedHashMap<String, String>  {
 			throw new IllegalArgumentException("The number of items must be greater than 0");
 		}
 		
-		int excess = this.maxItems - maxItems;
+		int excess = size() - maxItems;
 		if (excess > 0) {
 			removeEldestEntries(excess);
 		}
