@@ -113,11 +113,15 @@ public class SettingsManager {
 			return optSettings.getProperty(CACHE_MAX_ITEMS_PROP);
 		}
 		
-		return defaultSettings.getProperty(CACHE_MAX_ITEMS_PROP);
+		return getDefaultCacheMaxItems();
 	}
 	
 	public void setCacheMaxItems(String maxItems) {
 		optSettings.setProperty(CACHE_MAX_ITEMS_PROP, maxItems);
+	}
+	
+	public String getDefaultCacheMaxItems() {
+		return defaultSettings.getProperty(CACHE_MAX_ITEMS_PROP);
 	}
 	
 	public String getTextCharset() {
@@ -125,10 +129,14 @@ public class SettingsManager {
 			return optSettings.getProperty(TEXT_CHARSET_PROP);
 		}
 		
-		return defaultSettings.getProperty(TEXT_CHARSET_PROP);
+		return getDefaultTextCharset();
 	}
 	
 	public void setTextCharset(String charset) {
 		optSettings.setProperty(TEXT_CHARSET_PROP, charset);
+	}
+	
+	public String getDefaultTextCharset() {
+		return defaultSettings.getProperty(TEXT_CHARSET_PROP);
 	}
 }
