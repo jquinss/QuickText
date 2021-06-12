@@ -55,8 +55,7 @@ public class SettingsPaneController {
 
     @FXML
     void resetSettings(ActionEvent event) {
-    	SettingsManager.getInstance().resetSettings();
-    	applySettings();
+    	loadDefaultSettings();
     }
     
     void setStage(Stage stage) {
@@ -69,32 +68,31 @@ public class SettingsPaneController {
     
     @FXML
     public void initialize() {
-    	initializeSettingsTabs();
-    }
-    
-    private void initializeSettingsTabs() {
-    	initializeCacheSettingsTab();
     	initializeCharsetSettingsTab();
+    	loadSettings();
     }
     
-    private void initializeCacheSettingsTab() {
-    	numCachedTemplatesTextField.setText(SettingsManager.getInstance().getCacheMaxItems());
+    private void loadSettings() {
+    	initializeCacheSettings(SettingsManager.getInstance().getCacheMaxItems());
+    	initializeCharsetSettings(SettingsManager.getInstance().getTextCharset());
+    }
+    
+    private void loadDefaultSettings() {
+    	initializeCacheSettings(SettingsManager.getInstance().getDefaultCacheMaxItems());
+    	initializeCharsetSettings(SettingsManager.getInstance().getDefaultTextCharset());
+    }
+    
+    private void initializeCacheSettings(String numEntries) {
+    	numCachedTemplatesTextField.setText(numEntries);
     }
     
     private void initializeCharsetSettingsTab() {
     	initializeCharsetComboBoxCell();
     	
-    	String defaultCharset = SettingsManager.getInstance().getTextCharset();
-    	Charsets defaultCharsetEnum = null;
-    	
     	for (Charsets charset : Charsets.values()) {
     		charsetObsList.add(charset);
-    		if (charset.toString().equals(defaultCharset)) {
-    			defaultCharsetEnum = charset;
-    		}
     	}
     	charEncodingComboBox.setItems(charsetObsList);
-    	charEncodingComboBox.getSelectionModel().select(defaultCharsetEnum);
     }
     
     private void initializeCharsetComboBoxCell() {
@@ -131,6 +129,10 @@ public class SettingsPaneController {
                 }
             }
         });
+    }
+    
+    private void initializeCharsetSettings(String charset) {
+    	charEncodingComboBox.getSelectionModel().select(Charsets.getCharsetsHashMap().get(charset));
     }
     
     private String validateInput() {
