@@ -88,6 +88,10 @@ public class SettingsManager {
     	return settings;
 	}
 	
+	public void resetSettings() {
+		optSettings.clear();
+	}
+	
 	public String getTemplatesDir() {
 		return defaultSettings.getProperty(TEMPLATES_DIR_PROP);
 	}
