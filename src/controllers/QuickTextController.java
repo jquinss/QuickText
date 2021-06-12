@@ -358,6 +358,7 @@ public class QuickTextController {
 		Parent parent = fxmlLoader.load();
 		
 		SettingsPaneController settingsPaneController = fxmlLoader.getController();
+		settingsPaneController.setQuickTextController(this);
 		
 		Scene scene = new Scene(parent, 450, 250);
 		scene.getStylesheets().add(getClass().getResource("..\\styles\\application.css").toExternalForm());
@@ -836,8 +837,12 @@ public class QuickTextController {
     		cacheManager.removeFromCache(key);
     	}
     }
+    
+    void setCacheMaxItems(int maxItems) {
+    	cacheManager.setCacheMaxItems(maxItems);
+    }
      
-    private void clearCache() {
+    void clearCache() {
     	cacheManager.clearCache();
     }
     
