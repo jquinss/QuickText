@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.function.UnaryOperator;
+
 import enums.Charsets;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,8 +12,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.converter.IntegerStringConverter;
 import javafx.fxml.FXML;
 import managers.SettingsManager;
 import util.DialogBuilder;
@@ -69,20 +73,27 @@ public class SettingsPaneController {
     @FXML
     public void initialize() {
     	initializeCharsetSettingsTab();
+    	initializeCacheSettingsTab();
     	loadSettings();
     }
     
+    private void initializeCacheSettingsTab() {
+    	String defaultCacheMaxItems = SettingsManager.getInstance().getDefaultCacheMaxItems();
+    	UnaryOperator<TextFormatter.Change> numCachedTemplatesFilter = createInputFilter("[1-9][0-9]{0,2}", "1");
+    	numCachedTemplatesTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), Integer.parseInt(defaultCacheMaxItems), numCachedTemplatesFilter));
+    }
+    
     private void loadSettings() {
-    	initializeCacheSettings(SettingsManager.getInstance().getCacheMaxItems());
-    	initializeCharsetSettings(SettingsManager.getInstance().getTextCharset());
+    	loadCacheSettings(SettingsManager.getInstance().getCacheMaxItems());
+    	loadCharsetSettings(SettingsManager.getInstance().getTextCharset());
     }
     
     private void loadDefaultSettings() {
-    	initializeCacheSettings(SettingsManager.getInstance().getDefaultCacheMaxItems());
-    	initializeCharsetSettings(SettingsManager.getInstance().getDefaultTextCharset());
+    	loadCacheSettings(SettingsManager.getInstance().getDefaultCacheMaxItems());
+    	loadCharsetSettings(SettingsManager.getInstance().getDefaultTextCharset());
     }
     
-    private void initializeCacheSettings(String numEntries) {
+    private void loadCacheSettings(String numEntries) {
     	numCachedTemplatesTextField.setText(numEntries);
     }
     
@@ -131,7 +142,7 @@ public class SettingsPaneController {
         });
     }
     
-    private void initializeCharsetSettings(String charset) {
+    private void loadCharsetSettings(String charset) {
     	charEncodingComboBox.getSelectionModel().select(Charsets.getCharsetsHashMap().get(charset));
     }
     
@@ -153,5 +164,21 @@ public class SettingsPaneController {
     	SettingsManager.getInstance().saveSettings();
     }
     
+	private UnaryOperator<TextFormatter.Change> createInputFilter(String validInputRegEx, String defaultText) {
+		UnaryOperator<TextFormatter.Change> filter = change -> {
+			String newText = change.getControlNewText();
+			if (newText.matches(validInputRegEx)) {
+				return change;
+			} else if (newText.matches("")) {
+				change.setText(defaultText);
+				change.setCaretPosition(change.getCaretPosition() + 1);
 
+				return change;
+			}
+
+			return null;
+		};
+
+		return filter;
+	}
 }
