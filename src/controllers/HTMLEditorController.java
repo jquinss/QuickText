@@ -10,6 +10,7 @@ import enums.Charsets;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.web.HTMLEditor;
+import javafx.scene.web.WebView;
 import managers.FileManager;
 import managers.SettingsManager;
 
@@ -33,10 +34,12 @@ public class HTMLEditorController extends TextEditorController {
 		
     	writeHTMLEditorToFile(file);
     	addFileTreeItemToFolderTreeItem(file, description);
+    	setIsSavedStatus();
     }
     
     void saveExistingFile(File file) throws IOException {
 		writeHTMLEditorToFile(file);
+		setIsSavedStatus();
     }
     
     private void writeHTMLEditorToFile(File file) throws IOException {
@@ -44,11 +47,20 @@ public class HTMLEditorController extends TextEditorController {
     	writeTextToFile(text, file);
     }
     
+    private void initializeListeners() {
+    	WebView webView = (WebView) htmlEditor.lookup("WebView");
+    	webView.setOnKeyTyped(e -> {
+    		setIsNotSavedStatus();
+    	});
+    }
+    
     public void initialize() {
+    	initializeListeners();
     	if (fileTreeItem != null) {
     		try {
     			File file = fileTreeItem.getValue().getFile();
     			loadFileToHTMLEditor(file);
+    			setIsSavedStatus();
     		}
     		catch (IOException e) {
     			e.printStackTrace();
