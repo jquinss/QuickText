@@ -240,13 +240,11 @@ public class QuickTextController {
     			String srcFileName = srcFile.getName();
     			File destFile = fileManager.buildFilePath(destFolder, srcFileName);
     			try {
-					fileManager.copyFile(srcFile, destFile);
-					FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
-					folderTreeItem.getChildren().add(fileTreeItem);
+    				copyTemplate(srcFile, destFile, folderTreeItem);
 				} catch (FileAlreadyExistsException e) {
 					DialogBuilder.buildAlertDialog("Error", "Error importing the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
 				} catch (IOException e) {
-					e.printStackTrace();
+					DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR).showAndWait();
 				}
     		}
     	}
@@ -322,11 +320,11 @@ public class QuickTextController {
     		String newPrefix = result.get();
     		File destFile = fileManager.buildFilePath(dirName, newPrefix, suffix);
     		try {
-				fileManager.copyFile(srcFile, destFile);
-				FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
-				folderTreeItem.getChildren().add(fileTreeItem);
+    			copyTemplate(srcFile, destFile, folderTreeItem);
+    		} catch (FileAlreadyExistsException e) {
+				DialogBuilder.buildAlertDialog("Error", "Error copying the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
 			} catch (IOException e) {
-				e.printStackTrace();
+				DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR).showAndWait();
 			}
     	}	
     }
@@ -391,6 +389,12 @@ public class QuickTextController {
     			e.printStackTrace();
     		}
     	}
+    }
+    
+    private void copyTemplate(File srcFile, File destFile, TreeItem<FileItem> folderTreeItem) throws IOException {
+    	fileManager.copyFile(srcFile, destFile);
+		FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
+		folderTreeItem.getChildren().add(fileTreeItem);
     }
     
 
