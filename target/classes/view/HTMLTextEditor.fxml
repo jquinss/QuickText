@@ -15,7 +15,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#save" text="Save" accelerator="Shortcut+S" />
+              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#save" disable="true" text="Save" accelerator="Shortcut+S" />
               <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAs" text="Save As..." />
               <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quit" text="Quit" accelerator="Shortcut+Q" />
             </items>
