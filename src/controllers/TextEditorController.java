@@ -65,7 +65,6 @@ public abstract class TextEditorController {
     @FXML
     void quit(ActionEvent event) {
     	if (!isSavedText) {
-    		System.out.println("Text has been modified since last save.");
     		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "Some changes made have not been saved", 
     				"Are you sure you want to exit?", AlertType.CONFIRMATION);
     		alertDialog.showAndWait().ifPresent(response -> {
