@@ -1,9 +1,4 @@
-/controllers/
-/control/
-/data/
-/managers/
-/util/
-/view/
-/enums/
 /images/
 /styles/
+/view/
+/controllers/
