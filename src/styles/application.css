@@ -18,13 +18,22 @@
 	-fx-background-color: #e7e4e4;
 }
 
-#save_button {
+#information-msg {
+	-fx-font-size: 11.0;
+}
+
+.button {
 	-fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-color: linear-gradient(#0073e6, #004080);
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 )
 }
 
-#save_button:hover {
+.button:hover {
 	-fx-background-color: linear-gradient(#004080, #0073e6);
+}
+
+.secondary-settings-btn {
+    -fx-font-size: 11.0;
+    -fx-font-weight: normal;
 }
