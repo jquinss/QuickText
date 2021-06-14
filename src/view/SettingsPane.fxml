@@ -32,7 +32,13 @@
                     </rowConstraints>
                      <children>
                         <Label text="Cache size (number of templates cached):" />
-                        <Button mnemonicParsing="false" onAction="#clearCache" text="Clear Cache" GridPane.rowIndex="1"/>
+                        <HBox GridPane.rowIndex="1" spacing="10">
+                     		<children>
+                     		<Button mnemonicParsing="false" onAction="#clearCache" text="Clear Cache" styleClass="secondary-settings-btn" />
+                     		<Text text="Cache has been cleared" visible="false" fx:id="clearCacheSuccessText" id="information-msg"></Text>
+                     		</children>
+                     	</HBox>
+                        
                         <TextField fx:id="numCachedTemplatesTextField" GridPane.columnIndex="1" />
                      </children>
                      <padding>
@@ -65,7 +71,7 @@
       </TabPane>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#resetSettings" text="Reset to Default" />
+            <Button mnemonicParsing="false" onAction="#resetSettings" text="Reset to Default" styleClass="secondary-settings-btn" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#cancelSettings" text="Cancel" />
