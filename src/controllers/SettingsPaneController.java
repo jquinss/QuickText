@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.text.Text;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -27,6 +28,9 @@ public class SettingsPaneController {
     @FXML
     private TextField numCachedTemplatesTextField;
     
+    @FXML
+    Text clearCacheSuccessText;
+    
     private QuickTextController quickTextController;
     
     private Stage stage;
@@ -36,6 +40,7 @@ public class SettingsPaneController {
     @FXML
     void clearCache(ActionEvent event) {
     	quickTextController.clearCache();
+    	clearCacheSuccessText.setVisible(true);
     }
     
     @FXML
