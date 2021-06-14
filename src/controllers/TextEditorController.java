@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import control.FileTreeItem;
 import data.FileItem;
 import data.FolderItem;
 import data.TemplateItem;
+import enums.Charsets;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -20,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import managers.FileManager;
+import managers.SettingsManager;
 import util.DialogBuilder;
 import util.FileItemBuilder;
 
@@ -143,7 +146,8 @@ public abstract class TextEditorController {
     }
     
     void writeTextToFile(String text, File file) throws IOException {
-    	fileManager.writeStringToFile(text, file);
+    	Charset charset = Charsets.getCharsetsHashMap().get(SettingsManager.getInstance().getTextCharset()).toStandardCharset();
+    	fileManager.writeStringToFile(text, file, charset);
     	quickTextController.updateTextInCache(file, text);
     }
     
