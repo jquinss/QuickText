@@ -351,14 +351,14 @@ public class QuickTextController {
     
     @FXML
 	void openSettingsDialog(ActionEvent event) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\SettingsPane.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SettingsPane.fxml"));
 		Parent parent = fxmlLoader.load();
 		
 		SettingsPaneController settingsPaneController = fxmlLoader.getController();
 		settingsPaneController.setQuickTextController(this);
 		
 		Scene scene = new Scene(parent, 450, 250);
-		scene.getStylesheets().add(getClass().getResource("..\\styles\\application.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setTitle("Settings");
@@ -721,7 +721,7 @@ public class QuickTextController {
     }
     
     private void openPlainTextEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
-    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\PlainTextEditor.fxml"));
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PlainTextEditor.fxml"));
     	File root = new File(templatesDir);
     	TextEditorController plainTextEditorController = new PlainTextEditorController(selectedTreeItem, fileManager, root);
     	fxmlLoader.setController(plainTextEditorController);
@@ -737,7 +737,7 @@ public class QuickTextController {
     }
     
     private void openHTMLEditor(TreeItem<FileItem> selectedTreeItem) throws IOException {
-    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..\\view\\HTMLTextEditor.fxml"));
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HTMLTextEditor.fxml"));
     	File root = new File(templatesDir);
     	HTMLEditorController htmlEditorController = new HTMLEditorController(selectedTreeItem, fileManager, root);
     	fxmlLoader.setController(htmlEditorController);
