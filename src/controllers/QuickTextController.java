@@ -754,7 +754,7 @@ public class QuickTextController {
     
     private Scene buildTextEditorScene(Parent parent) {
     	Scene scene = new Scene(parent, 800, 600);
-		scene.getStylesheets().add(getClass().getResource("..\\styles\\application.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 		
 		return scene;
     }
