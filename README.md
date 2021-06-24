@@ -27,7 +27,8 @@ No special instructions are required to use the application. You can export the 
 * Users can duplicate templates.
 * Users can view templates.
 * Users can copy template contents to the clipboard.
-* Users can change encoding settings
+* Users can change encoding settings.
+* Templates can be cached for later reuse.
 
 ### To Do
 * To be able to rename folders.
