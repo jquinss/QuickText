@@ -32,6 +32,7 @@ No special instructions are required to use the application. You can export the 
 * To be able to rename folders.
 * To be able to rename templates.
 * To be able to move templates by drag and drop.
+* To be able to create backups.
 
 ## Status
 This project is still in In Progress status
