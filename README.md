@@ -13,7 +13,7 @@ This a application created in JavaFX used for managing templates of text from a 
 ## Technologies
 * JavaFX Version: 8.0.291
 * JavaFX Runtime Version: 8.0.291-b09
-* jsoup 1.13.1
+* jsoup 1.14.3
 
 ## Setup
 No special instructions are required to use the application. You can export the project as a runnable Jar file and execute it.
