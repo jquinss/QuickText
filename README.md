@@ -8,7 +8,7 @@
 * [Status](#status)
 
 ## General info
-This a application created in JavaFX used for managing templates of text from a centralized UI.
+This a application created in JavaFX used for managing text templates from a centralized UI.
 
 ## Technologies
 * JavaFX Version: 8.0.291
