@@ -6,6 +6,7 @@
 * [Setup](#setup)
 * [Features](#features)
 * [Status](#status)
+* [To Do](#to-do)
 
 ## General info
 This a application created in JavaFX used for managing text templates from a centralized UI.
@@ -28,11 +29,12 @@ No special instructions are required to use the application. You can export the 
 * Users can change encoding settings.
 * Templates can be cached for later reuse.
 
-### To Do
+## Status
+This project is still in In Progress status
+
+
+## To-Do
 * To be able to rename folders.
 * To be able to rename templates.
 * To be able to move templates by drag and drop.
 * To be able to create backups.
-
-## Status
-This project is still in In Progress status
