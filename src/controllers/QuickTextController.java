@@ -390,6 +390,10 @@ public class QuickTextController {
     	}
     }
     
+    private void renameTemplate() {
+    	System.out.println("Renaming template");
+    }
+    
     private void copyTemplate(File srcFile, File destFile, TreeItem<FileItem> folderTreeItem) throws IOException {
     	fileManager.copyFile(srcFile, destFile);
 		FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
@@ -676,6 +680,7 @@ public class QuickTextController {
     	MenuItem duplicateTemplateItem = new MenuItem("Duplicate");
     	MenuItem viewTemplateItem = new MenuItem("View");
     	MenuItem editTemplateItem = new MenuItem("Edit");
+    	MenuItem renameTemplateItem = new MenuItem("Rename");
 		MenuItem deleteTemplateItem = new MenuItem("Delete");
 		
 		FileContextMenu() {
@@ -684,6 +689,7 @@ public class QuickTextController {
 			viewTemplateItem.setOnAction(e -> viewTemplate());
 			editTemplateItem.setOnAction(e -> editTemplate(e));
 			deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
+			renameTemplateItem.setOnAction(e -> renameTemplate());
 			
 			getItems().addAll(copyTemplateItem, viewTemplateItem, duplicateTemplateItem, editTemplateItem, deleteTemplateItem);
 		}
