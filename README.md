@@ -28,6 +28,7 @@ No special instructions are required to use the application. You can export the 
 * Users can copy template contents to the clipboard.
 * Users can change encoding settings.
 * Templates can be cached for later reuse.
+* Users can rename templates.
 
 ## Status
 This project is still in In Progress status
@@ -35,6 +36,5 @@ This project is still in In Progress status
 
 ## To-Do
 * To be able to rename folders.
-* To be able to rename templates.
 * To be able to move templates by drag and drop.
 * To be able to create backups.
