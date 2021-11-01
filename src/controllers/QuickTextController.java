@@ -724,7 +724,7 @@ public class QuickTextController {
 			deleteTemplateItem.setOnAction(e -> deleteTemplate(e));
 			renameTemplateItem.setOnAction(e -> renameTemplate());
 			
-			getItems().addAll(copyTemplateItem, viewTemplateItem, duplicateTemplateItem, editTemplateItem, deleteTemplateItem);
+			getItems().addAll(copyTemplateItem, viewTemplateItem, duplicateTemplateItem, editTemplateItem, renameTemplateItem, deleteTemplateItem);
 		}
     }
     
