@@ -391,13 +391,46 @@ public class QuickTextController {
     }
     
     private void renameTemplate() {
-    	System.out.println("Renaming template");
+    	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+    	TreeItem<FileItem> folderTreeItem = selectedTreeItem.getParent();
+    	
+    	File srcFile = selectedTreeItem.getValue().getFile();
+    	String dirName = srcFile.getParent();
+    	String fileName = srcFile.getName();
+    	String suffix = fileManager.getExtensionFromFile(fileName);
+    	String prefix = fileManager.removeFileExtension(fileName, suffix);
+    	
+    	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Rename template", "Rename the selected template", "Name of the template", 
+    																				prefix);
+    	
+    	Optional<String> result = inputDialog.showAndWait();
+    	
+    	if (result.isPresent()) {
+    		String newPrefix = result.get();
+    		File destFile = fileManager.buildFilePath(dirName, newPrefix, suffix);
+    		try {
+    			moveTemplate(srcFile, destFile, selectedTreeItem, folderTreeItem, folderTreeItem);
+    		} catch (FileAlreadyExistsException e) {
+				DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+			} catch (IOException e) {
+				DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "An error has occurred when renaming the file", AlertType.ERROR).showAndWait();
+			}
+    	}	
     }
     
     private void copyTemplate(File srcFile, File destFile, TreeItem<FileItem> folderTreeItem) throws IOException {
     	fileManager.copyFile(srcFile, destFile);
 		FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
 		folderTreeItem.getChildren().add(fileTreeItem);
+    }
+    
+    private void moveTemplate(File srcFile, File destFile, TreeItem<FileItem> srcTemplateTreeItem, TreeItem<FileItem> srcFolderTreeItem, 
+    		TreeItem<FileItem> destFolderTreeItem) throws IOException {
+    	fileManager.moveFile(srcFile, destFile);
+    	srcFolderTreeItem.getChildren().remove(srcTemplateTreeItem);
+    	FileTreeItem fileTreeItem = buildFileTreeItem(destFile);
+    	destFolderTreeItem.getChildren().add(fileTreeItem);
+    	removeTextFromCache(srcFile);
     }
     
 
