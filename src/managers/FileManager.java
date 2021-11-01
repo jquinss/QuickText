@@ -40,6 +40,10 @@ public class FileManager {
 		Files.copy(sourceFileName.toPath(), destFileName.toPath());
 	}
 	
+	public void moveFile(File sourceFileName, File destFileName) throws IOException {
+		Files.move(sourceFileName.toPath(), destFileName.toPath());
+	}
+	
 	public String getNextAvailableFileName(String dirName, String fileName, String extension) {
 		int i = 0;
 		StringBuilder resultFileName = new StringBuilder();
