@@ -695,16 +695,18 @@ public class QuickTextController {
 		MenuItem createPlainTextTemplateMenuItem = new MenuItem("Plain-Text Template");
 		MenuItem createHTMLTemplateMenuItem = new MenuItem("HTML Template");
 		MenuItem importTemplatesMenuItem = new MenuItem("Import Templates...");
+		MenuItem renameFolderMenuItem = new MenuItem("Rename folder");
 		MenuItem deleteFolderMenuItem = new MenuItem("Delete");
 		
 		FolderContextMenu() {
 			createPlainTextTemplateMenuItem.setOnAction(e -> createPlainTextTemplate(e));
 			createHTMLTemplateMenuItem.setOnAction(e -> createHTMLTemplate(e));
 			importTemplatesMenuItem.setOnAction(e -> importTemplates(e));
+			renameFolderMenuItem.setOnAction(e -> renameFolder());
 			deleteFolderMenuItem.setOnAction(e -> deleteFolder(e));
 			
 			createTemplateMenu.getItems().addAll(createPlainTextTemplateMenuItem, createHTMLTemplateMenuItem);
-			getItems().addAll(createTemplateMenu, importTemplatesMenuItem, deleteFolderMenuItem);
+			getItems().addAll(createTemplateMenu, importTemplatesMenuItem, renameFolderMenuItem, deleteFolderMenuItem);
 		}
     }
     
