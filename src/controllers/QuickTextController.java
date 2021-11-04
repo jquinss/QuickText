@@ -203,6 +203,10 @@ public class QuickTextController {
 		}
     }
     
+    private void renameFolder() {
+    	//TO-DO
+    }
+    
     @FXML
     void deleteAllFolders(ActionEvent event) {
     	deleteAllFilesAndFolders(treeView.getRoot(), false);
