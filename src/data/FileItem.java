@@ -18,6 +18,10 @@ public abstract class FileItem {
 		return description;
 	}
 	
+	public void setFile(File file) {
+		this.file = file;
+	}
+	
 	public File getFile() {
 		return file;
 	}
