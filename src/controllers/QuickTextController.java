@@ -204,7 +204,46 @@ public class QuickTextController {
     }
     
     private void renameFolder() {
-    	//TO-DO
+    	TreeItem<FileItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+    	TreeItem<FileItem> parentFolderTreeItem = selectedTreeItem.getParent();
+    	
+    	File srcFolder = selectedTreeItem.getValue().getFile();
+    	String parentDirName = srcFolder.getParent();
+    	String folderName = srcFolder.getName();
+    	
+    	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Rename folder", "Rename the selected folder", "Name of the folder", 
+    																				folderName);
+    	
+    	Optional<String> result = inputDialog.showAndWait();
+    	
+    	if (result.isPresent()) {
+    		String newFolderName = result.get();
+    		File destFolder = fileManager.buildFilePath(parentDirName, newFolderName);
+    		
+    		try {
+    			moveFolder(srcFolder, destFolder, selectedTreeItem, parentFolderTreeItem, parentFolderTreeItem);
+    		} catch (FileAlreadyExistsException e) {
+				DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "The folder " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+			} catch (IOException e) {
+				DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "An error has occurred when renaming the folder", AlertType.ERROR).showAndWait();
+			}
+    	}	
+    }
+    
+    private void moveFolder(File srcFolder, File destFolder, TreeItem<FileItem> srcFolderTreeItem, TreeItem<FileItem> srcParentFolderTreeItem, 
+	TreeItem<FileItem> destParentFolderTreeItem) throws IOException {
+    	fileManager.moveFile(srcFolder, destFolder);
+    	
+    	if (destFolder.getParent().equals(srcFolder.getParent())) {
+    		srcFolderTreeItem.getValue().setFile(destFolder);
+    		for (TreeItem<FileItem> templateTreeItem : srcFolderTreeItem.getChildren()) {
+    			FileItem templateFileItem = templateTreeItem.getValue();
+    			String fileName = templateFileItem.getFile().getName();
+    			File destTemplateFile = fileManager.buildFilePath(destFolder, fileName);
+    			templateFileItem.setFile(destTemplateFile);
+    		}
+    		treeView.refresh();
+    	}
     }
     
     @FXML
@@ -699,7 +738,7 @@ public class QuickTextController {
 		MenuItem createPlainTextTemplateMenuItem = new MenuItem("Plain-Text Template");
 		MenuItem createHTMLTemplateMenuItem = new MenuItem("HTML Template");
 		MenuItem importTemplatesMenuItem = new MenuItem("Import Templates...");
-		MenuItem renameFolderMenuItem = new MenuItem("Rename folder");
+		MenuItem renameFolderMenuItem = new MenuItem("Rename");
 		MenuItem deleteFolderMenuItem = new MenuItem("Delete");
 		
 		FolderContextMenu() {
