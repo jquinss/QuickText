@@ -413,6 +413,27 @@ public class QuickTextController {
         stage.showAndWait();
 	}
     
+    @FXML
+    void openBackupsPane(ActionEvent event) throws IOException {
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/BackupsPane.fxml"));
+    	Parent parent = fxmlLoader.load();
+		
+		BackupsPaneController backupsPaneController = fxmlLoader.getController();
+		backupsPaneController.setQuickTextController(this);
+		
+		Scene scene = new Scene(parent, 450, 500);
+		scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        stage.setTitle("Manage backups");
+        
+        backupsPaneController.setStage(stage);
+        
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+    
     void viewTemplate() {
     	FileItem fileItem = treeView.getSelectionModel().getSelectedItem().getValue();
     	
