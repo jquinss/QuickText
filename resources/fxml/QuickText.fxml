@@ -55,6 +55,7 @@
         <Menu mnemonicParsing="false" text="Options">
         	<items>
           		<MenuItem mnemonicParsing="false" disable="false" onAction="#openSettingsDialog" text="Settings" accelerator="Shortcut+Shift+S"/>
+          		<MenuItem mnemonicParsing="false" disable="false" onAction="#openBackupsPane" text="Manage Backups" accelerator="Shortcut+Shift+B"/>
             </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
