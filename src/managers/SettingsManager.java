@@ -11,6 +11,7 @@ public class SettingsManager {
     private static final String APP_FOLDER_NAME = "QuickText";
     private static final String TEMPLATES_FOLDER_NAME = "templates";
     private static final String XML_FOLDER_NAME = "xml";
+    private static final String BACKUPS_FOLDER_NAME = "backups";
     private static final String XML_FILE_NAME = "filetree.xml";
     private static final String SETTINGS_FILE_NAME = "settings.txt";
     private static final String CACHE_MAX_ITEMS = "10";
@@ -18,6 +19,7 @@ public class SettingsManager {
     private static final String KEY_VALUE_SEPARATOR = "=";
     
     private static final String TEMPLATES_DIR_PROP = "templates_dir";
+    private static final String BACKUPS_DIR_PROP = "backups_dir";
     private static final String XML_DIR_PROP = "xml_dir";
     private static final String XML_PATH_PROP = "xml_path";
     private static final String SETTINGS_PATH_PROP = "settings_path";
@@ -77,6 +79,7 @@ public class SettingsManager {
     	String xmlDir = fileManager.buildFilePath(appDir, XML_FOLDER_NAME).toString();
     	String xmlPath = fileManager.buildFilePath(xmlDir, XML_FILE_NAME).toString();
     	String settingsPath = fileManager.buildFilePath(appDir, SETTINGS_FILE_NAME).toString();
+    	String backupsPath = fileManager.buildFilePath(appDir, BACKUPS_FOLDER_NAME).toString();
     	
     	settings.setProperty(TEMPLATES_DIR_PROP, templatesDir);
     	settings.setProperty(XML_DIR_PROP, xmlDir);
@@ -84,6 +87,7 @@ public class SettingsManager {
     	settings.setProperty(SETTINGS_PATH_PROP, settingsPath);
     	settings.setProperty(CACHE_MAX_ITEMS_PROP, CACHE_MAX_ITEMS);
     	settings.setProperty(TEXT_CHARSET_PROP, TEXT_CHARSET);
+    	settings.setProperty(BACKUPS_DIR_PROP, backupsPath);
     	
     	return settings;
 	}
@@ -94,6 +98,10 @@ public class SettingsManager {
 	
 	public String getTemplatesDir() {
 		return defaultSettings.getProperty(TEMPLATES_DIR_PROP);
+	}
+	
+	public String getBackupsDir() {
+		return defaultSettings.getProperty(BACKUPS_DIR_PROP);
 	}
 	
 	public String getXMLDir() {
