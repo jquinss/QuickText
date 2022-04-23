@@ -24,3 +24,4 @@ hs_err_pid*
 
 # ignore target directory and anything under it
 */target/*
+target/
