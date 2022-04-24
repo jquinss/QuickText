@@ -43,7 +43,7 @@
          <content>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="362.0" spacing="10.0">
                <children>
-                  <TableView fx:id="scheduledBackupsTableView" prefHeight="246.0" prefWidth="410.0">
+                  <TableView fx:id="scheduledBackupTasksTableView" prefHeight="246.0" prefWidth="410.0">
                     <columns>
                       <TableColumn prefWidth="99.0" text="Task name" />
                       <TableColumn minWidth="2.0" prefWidth="107.0" text="Date/Time" />
