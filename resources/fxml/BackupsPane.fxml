@@ -87,8 +87,8 @@
                   </VBox>
                   <HBox alignment="CENTER" prefHeight="52.0" prefWidth="410.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#createScheduledBackup" text="Create" />
-                        <Button mnemonicParsing="false" onAction="#deleteScheduledBackup" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#createScheduledBackupTask" text="Create" />
+                        <Button mnemonicParsing="false" onAction="#deleteScheduledBackupTask" text="Delete" />
                      </children>
                   </HBox>
                </children>
