@@ -18,6 +18,7 @@ public class SettingsManager {
     private static final String TEXT_CHARSET = Charsets.UTF_8.toString();
     private static final String KEY_VALUE_SEPARATOR = "=";
     
+    private static final String APP_DIR_PROP = "app_dir";
     private static final String TEMPLATES_DIR_PROP = "templates_dir";
     private static final String BACKUPS_DIR_PROP = "backups_dir";
     private static final String XML_DIR_PROP = "xml_dir";
@@ -81,6 +82,7 @@ public class SettingsManager {
     	String settingsPath = fileManager.buildFilePath(appDir, SETTINGS_FILE_NAME).toString();
     	String backupsPath = fileManager.buildFilePath(appDir, BACKUPS_FOLDER_NAME).toString();
     	
+    	settings.setProperty(APP_DIR_PROP, appDir);
     	settings.setProperty(TEMPLATES_DIR_PROP, templatesDir);
     	settings.setProperty(XML_DIR_PROP, xmlDir);
     	settings.setProperty(XML_PATH_PROP, xmlPath);
@@ -94,6 +96,10 @@ public class SettingsManager {
 	
 	public void resetSettings() {
 		optSettings.clear();
+	}
+	
+	public String getAppDir() {
+		return defaultSettings.getProperty(APP_DIR_PROP);
 	}
 	
 	public String getTemplatesDir() {
@@ -112,7 +118,7 @@ public class SettingsManager {
 		return defaultSettings.getProperty(XML_PATH_PROP);
 	}
 	
-	private String getSettingsPath() {
+	public String getSettingsPath() {
 		return defaultSettings.getProperty(SETTINGS_PATH_PROP);
 	}
 	
