@@ -109,9 +109,13 @@ public class BackupsPaneController {
 		return name.toString();
 	}
 	
-	void saveBackupData() throws FileNotFoundException, IOException {
+	void saveBackupData() {
 		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(SettingsManager.getInstance().getBackupDataPath()))) {
 			output.writeObject(new ArrayList<FileBackup>(fileBackupObsList));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
     
