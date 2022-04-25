@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
@@ -426,6 +427,15 @@ public class QuickTextController {
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setTitle("Manage backups");
+        stage.setOnCloseRequest(e -> {
+        	try {
+				backupsPaneController.saveBackupData();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
         
         backupsPaneController.setStage(stage);
         
