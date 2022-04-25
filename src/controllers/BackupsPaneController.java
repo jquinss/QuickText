@@ -1,11 +1,13 @@
 package controllers;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import data.FileBackup;
@@ -28,6 +31,12 @@ public class BackupsPaneController {
 
     @FXML
     private TableView<?> scheduledBackupTasksTableView;
+    
+    @FXML
+    private TableColumn<FileBackup, String> fileNameColumn;
+    
+    @FXML
+    private TableColumn<FileBackup, String> dateTimeColumn;
 
     @FXML
     private DatePicker scheduledDateTime;
@@ -99,11 +108,40 @@ public class BackupsPaneController {
     @FXML
     public void initialize() {
     	try {
-			Files.createDirectory(new File(SettingsManager.getInstance().getBackupsDir()).toPath());
+			Files.createDirectories(new File(SettingsManager.getInstance().getBackupsDir()).toPath());
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	initializeTableView();
+    	// fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("file"));
+
+    }
+    
+    private void initializeTableView() {
     	backupsTableView.setItems(fileBackupObsList);
+    	setTableViewCellValueFactory();
+    }
+    
+    private void setTableViewCellValueFactory() {
+    	fileNameColumn.setCellValueFactory(cellData -> {
+    		return new SimpleStringProperty(cellData.getValue().getFile().getName());
+    	});
+    	
+    	DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    	
+    	dateTimeColumn.setCellValueFactory(cellData -> {
+    		try {
+    			LocalDateTime creationDateTime = cellData.getValue().getCreationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    			return new SimpleStringProperty(creationDateTime.format(dateTimeFormatter));
+    		}
+    		catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		
+    		return new SimpleStringProperty("<no data>");
+    	});
+    	
     	loadBackupFiles();
     }
 
