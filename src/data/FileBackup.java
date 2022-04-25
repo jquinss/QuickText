@@ -3,13 +3,15 @@ package data;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.security.NoSuchAlgorithmException;
 
 import util.HashCalculator;
 
-public class FileBackup {
+public class FileBackup implements Serializable {
+	private static final long serialVersionUID = 5961329031476444943L;
 	private File file;
 	private String fileSHA256;
 	
