@@ -12,13 +12,17 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import data.FileBackup;
 import util.ZipUtil;
@@ -104,6 +108,12 @@ public class BackupsPaneController {
 		name.append(".zip");
 		return name.toString();
 	}
+	
+	void saveBackupData() throws FileNotFoundException, IOException {
+		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(SettingsManager.getInstance().getBackupDataPath()))) {
+			output.writeObject(new ArrayList<FileBackup>(fileBackupObsList));
+		}
+	}
     
     @FXML
     public void initialize() {
@@ -115,7 +125,6 @@ public class BackupsPaneController {
 		}
     	initializeTableView();
     	// fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("file"));
-
     }
     
     private void initializeTableView() {
