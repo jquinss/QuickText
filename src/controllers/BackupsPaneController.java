@@ -12,9 +12,11 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import data.FileBackup;
 import util.ZipUtil;
@@ -97,8 +100,23 @@ public class BackupsPaneController {
     }
     
     private void loadBackupFiles() {
-    	System.out.println("Loading backup files");
-    	/* TO DO */
+    	fileBackupObsList.clear();
+    	try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(SettingsManager.getInstance().getBackupDataPath()))) {
+    		List<FileBackup> backupData = (ArrayList<FileBackup>) input.readObject();
+    		
+    		for (FileBackup file : backupData) {
+    			// only import files that exist and had not been modified
+    			if (file.getFile().exists() && file.getFileSHA256().equals(file.getOrigFileSHA256())) {
+    				fileBackupObsList.add(file);
+    			}
+    		}
+    	}
+    	catch (FileNotFoundException e) {
+    		// if file does not exist, ignore the error
+    	}
+    	catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
     }
     
 	private String generateBackupName() {
@@ -112,8 +130,6 @@ public class BackupsPaneController {
 	void saveBackupData() {
 		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(SettingsManager.getInstance().getBackupDataPath()))) {
 			output.writeObject(new ArrayList<FileBackup>(fileBackupObsList));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,11 +140,9 @@ public class BackupsPaneController {
     	try {
 			Files.createDirectories(new File(SettingsManager.getInstance().getBackupsDir()).toPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	initializeTableView();
-    	// fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("file"));
     }
     
     private void initializeTableView() {
