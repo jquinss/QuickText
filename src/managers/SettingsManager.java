@@ -12,6 +12,7 @@ public class SettingsManager {
     private static final String TEMPLATES_FOLDER_NAME = "templates";
     private static final String XML_FOLDER_NAME = "xml";
     private static final String BACKUPS_FOLDER_NAME = "backups";
+    private static final String BACKUP_DATA_FILE_NAME = "backup_data.dat";
     private static final String XML_FILE_NAME = "filetree.xml";
     private static final String SETTINGS_FILE_NAME = "settings.txt";
     private static final String CACHE_MAX_ITEMS = "10";
@@ -21,6 +22,7 @@ public class SettingsManager {
     private static final String APP_DIR_PROP = "app_dir";
     private static final String TEMPLATES_DIR_PROP = "templates_dir";
     private static final String BACKUPS_DIR_PROP = "backups_dir";
+    private static final String BACKUP_DATA_PATH_PROP = "backup_data_path";
     private static final String XML_DIR_PROP = "xml_dir";
     private static final String XML_PATH_PROP = "xml_path";
     private static final String SETTINGS_PATH_PROP = "settings_path";
@@ -81,6 +83,7 @@ public class SettingsManager {
     	String xmlPath = fileManager.buildFilePath(xmlDir, XML_FILE_NAME).toString();
     	String settingsPath = fileManager.buildFilePath(appDir, SETTINGS_FILE_NAME).toString();
     	String backupsPath = fileManager.buildFilePath(appDir, BACKUPS_FOLDER_NAME).toString();
+    	String backupDataPath = fileManager.buildFilePath(backupsPath, BACKUP_DATA_FILE_NAME).toString();
     	
     	settings.setProperty(APP_DIR_PROP, appDir);
     	settings.setProperty(TEMPLATES_DIR_PROP, templatesDir);
@@ -90,6 +93,7 @@ public class SettingsManager {
     	settings.setProperty(CACHE_MAX_ITEMS_PROP, CACHE_MAX_ITEMS);
     	settings.setProperty(TEXT_CHARSET_PROP, TEXT_CHARSET);
     	settings.setProperty(BACKUPS_DIR_PROP, backupsPath);
+    	settings.setProperty(BACKUP_DATA_PATH_PROP, backupDataPath);
     	
     	return settings;
 	}
@@ -108,6 +112,10 @@ public class SettingsManager {
 	
 	public String getBackupsDir() {
 		return defaultSettings.getProperty(BACKUPS_DIR_PROP);
+	}
+	
+	public String getBackupDataPath() {
+		return defaultSettings.getProperty(BACKUP_DATA_PATH_PROP);
 	}
 	
 	public String getXMLDir() {
