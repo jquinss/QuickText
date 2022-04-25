@@ -21,8 +21,8 @@
                <children>
                   <TableView fx:id="backupsTableView" prefHeight="263.0" prefWidth="315.0">
                     <columns>
-                      <TableColumn prefWidth="150.0" text="File name" />
-                      <TableColumn minWidth="0.0" prefWidth="164.0" text="Date/time" />
+                      <TableColumn fx:id="fileNameColumn" prefWidth="150.0" text="File name" />
+                      <TableColumn fx:id="dateTimeColumn" minWidth="0.0" prefWidth="164.0" text="Date/time" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0" spacing="20.0">
