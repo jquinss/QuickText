@@ -428,13 +428,7 @@ public class QuickTextController {
         stage.setResizable(false);
         stage.setTitle("Manage backups");
         stage.setOnCloseRequest(e -> {
-        	try {
-				backupsPaneController.saveBackupData();
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+        	backupsPaneController.saveBackupData();
         });
         
         backupsPaneController.setStage(stage);
