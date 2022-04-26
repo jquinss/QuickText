@@ -717,7 +717,7 @@ public class QuickTextController {
 		});
 	}
     
-    private void buildTreeViewFromXML() throws SAXException, ParserConfigurationException, IOException {
+    void buildTreeViewFromXML() throws SAXException, ParserConfigurationException, IOException {
     	File root = new File(templatesDir);
     	XMLConverter xmlConverter = new XMLConverter(root);
 		xmlConverter.initializeTreeViewFromXML(new File(xmlPath), treeView);
