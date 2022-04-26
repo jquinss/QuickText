@@ -29,6 +29,7 @@ import java.util.List;
 
 import data.FileBackup;
 import util.ZipUtil;
+import managers.FileManager;
 import managers.SettingsManager;
 
 public class BackupsPaneController {
@@ -58,8 +59,10 @@ public class BackupsPaneController {
     
     private Stage stage;
     
-    private ObservableList<FileBackup> fileBackupObsList = FXCollections.observableArrayList();
-
+    private final ObservableList<FileBackup> fileBackupObsList = FXCollections.observableArrayList();
+    
+    private final FileManager fileManager = new FileManager();
+    
     @FXML
     void createBackup(ActionEvent event) {
     	Path source = Paths.get(SettingsManager.getInstance().getAppDir());
@@ -102,8 +105,19 @@ public class BackupsPaneController {
 
     @FXML
     void loadBackup(ActionEvent event) {
-    	System.out.println("Loading backup");
-    	/* TO DO */
+    	FileBackup fileBackup = backupsTableView.getSelectionModel().getSelectedItem();
+    	if (fileBackup != null) {
+    		try {
+    			//delete existing templates am xml folders
+    			fileManager.deleteFileTree(new File(SettingsManager.getInstance().getTemplatesDir()), true);
+    			fileManager.deleteFileTree(new File(SettingsManager.getInstance().getXMLDir()), true);
+    			// replace with extracted backed up files
+				ZipUtil.unzipFiles(fileBackup.getFile().toString(), SettingsManager.getInstance().getAppDir());
+				quickTextController.initializeTreeView();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
     }
     
     private void loadBackupFiles() {
