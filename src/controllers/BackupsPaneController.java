@@ -83,8 +83,15 @@ public class BackupsPaneController {
 
     @FXML
     void deleteBackup(ActionEvent event) {
-    	System.out.println("Deleting a backup file");
-    	/* TO DO */
+    	FileBackup fileBackup = backupsTableView.getSelectionModel().getSelectedItem();
+    	if (fileBackup != null) {
+    		try {
+				Files.deleteIfExists(fileBackup.getFile().toPath());
+				fileBackupObsList.remove(fileBackup);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 
     @FXML
