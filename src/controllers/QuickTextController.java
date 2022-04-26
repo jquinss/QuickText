@@ -545,7 +545,7 @@ public class QuickTextController {
     	contextMenuBuilder = new ContextMenuBuilder();
     }
     
-    private void initializeTreeView() {
+    void initializeTreeView() {
     	setXMLDirectory();
     	setSelectedTreeItemListener();
     	try {
