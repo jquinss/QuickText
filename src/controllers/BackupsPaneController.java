@@ -129,7 +129,7 @@ public class BackupsPaneController {
 	private String generateBackupName() {
 		StringBuilder name = new StringBuilder();
 		name.append("backup-");
-		name.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss")));
+		name.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss.S")));
 		name.append(".zip");
 		return name.toString();
 	}
