@@ -14,7 +14,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 public class FileManager {	
 	public void createDir(File dirName) throws IOException {
@@ -99,8 +101,21 @@ public class FileManager {
 		return root.toPath().relativize(file.toPath()).toString();
 	}
 	
-	public void deleteFileTree(File startDirectory, boolean includeStartDirectory) throws IOException {
+	public void deleteFileTree(File startDirectory, boolean includeStartDirectory, String... ignoredFiles) throws IOException {
+		List<String> ignored = Arrays.asList(ignoredFiles);
+		
 		Files.walkFileTree(startDirectory.toPath(), new SimpleFileVisitor<Path>() {
+			@Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                throws IOException
+            {
+        		if (ignored.contains(dir.toString())) {
+        			return FileVisitResult.SKIP_SUBTREE;
+        		}
+                
+                return FileVisitResult.CONTINUE;
+            }
+			
 			@Override
 			public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 				if (e == null) {
@@ -117,7 +132,12 @@ public class FileManager {
 			
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            	if (ignored.contains(file.toString())) {
+            		return FileVisitResult.CONTINUE;
+            	}
+            	
 				Files.delete(file);
+				
 				return FileVisitResult.CONTINUE;
 			}
 		});
