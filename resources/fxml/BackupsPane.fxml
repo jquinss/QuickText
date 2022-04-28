@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -60,13 +61,21 @@
                            <children>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" />
+                                  	<RadioButton fx:id="noRecurrencyRadioButton"  mnemonicParsing="false">
+                                		<toggleGroup>
+       										<ToggleGroup fx:id="group"/>
+   										</toggleGroup>
+                                 	</RadioButton>
                                     <Label text="No recurrent" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" />
+                                 	<RadioButton fx:id="hoursRadioButton"  mnemonicParsing="false">
+                                		<toggleGroup>
+       										<fx:reference source="group"/>
+   										</toggleGroup>
+                                 	</RadioButton>
                                     <Label text="Every:" />
                                     <Spinner fx:id="hoursSpinner" >
       									<valueFactory>
@@ -78,7 +87,11 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" />
+                                 	<RadioButton fx:id="daysRadioButton"  mnemonicParsing="false">
+                                		<toggleGroup>
+       										<fx:reference source="group"/>
+   										</toggleGroup>
+                                 	</RadioButton>
                                     <Label text="Every:" />
 									<Spinner fx:id="daysSpinner" >
       									<valueFactory>
