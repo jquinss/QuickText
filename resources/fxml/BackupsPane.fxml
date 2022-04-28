@@ -10,6 +10,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -66,7 +68,11 @@
                                  <children>
                                     <RadioButton mnemonicParsing="false" />
                                     <Label text="Every:" />
-                                    <ComboBox fx:id="hoursComboBox" prefWidth="150.0" />
+                                    <Spinner fx:id="hoursSpinner" >
+      									<valueFactory>
+        									<SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="23"/>
+      									</valueFactory>
+    								</Spinner>
                                     <Label layoutX="34.0" layoutY="10.0" text="hours" />
                                  </children>
                               </HBox>
@@ -74,7 +80,11 @@
                                  <children>
                                     <RadioButton mnemonicParsing="false" />
                                     <Label text="Every:" />
-                                    <ComboBox fx:id="daysComboBox" prefWidth="150.0" />
+									<Spinner fx:id="daysSpinner" >
+      									<valueFactory>
+        									<SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="30"/>
+      									</valueFactory>
+    								</Spinner>
                                     <Label layoutX="34.0" layoutY="10.0" text="days" />
                                  </children>
                               </HBox>
