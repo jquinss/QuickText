@@ -61,7 +61,7 @@
                            <children>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                  <children>
-                                  	<RadioButton fx:id="noRecurrencyRadioButton"  mnemonicParsing="false">
+                                  	<RadioButton fx:id="noRecurrencyRadioButton" selected="true" mnemonicParsing="false">
                                 		<toggleGroup>
        										<ToggleGroup fx:id="toggleRadioButtonGroup"/>
    										</toggleGroup>
@@ -73,7 +73,7 @@
                                  <children>
                                  	<RadioButton fx:id="hoursRadioButton"  mnemonicParsing="false">
                                 		<toggleGroup>
-       										<fx:reference source="group"/>
+       										<fx:reference source="toggleRadioButtonGroup"/>
    										</toggleGroup>
                                  	</RadioButton>
                                     <Label text="Every:" />
@@ -89,7 +89,7 @@
                                  <children>
                                  	<RadioButton fx:id="daysRadioButton"  mnemonicParsing="false">
                                 		<toggleGroup>
-       										<fx:reference source="group"/>
+       										<fx:reference source="toggleRadioButtonGroup"/>
    										</toggleGroup>
                                  	</RadioButton>
                                     <Label text="Every:" />
