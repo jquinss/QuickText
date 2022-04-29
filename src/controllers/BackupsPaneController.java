@@ -5,7 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
@@ -55,6 +55,9 @@ public class BackupsPaneController {
 
     @FXML
     private Spinner<?> daysSpinner;
+    
+    @FXML
+    private ToggleGroup toggleRadioButtonGroup;
     
     private QuickTextController quickTextController;
     
