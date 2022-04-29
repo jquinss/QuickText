@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
@@ -58,6 +59,15 @@ public class BackupsPaneController {
     
     @FXML
     private ToggleGroup toggleRadioButtonGroup;
+    
+    @FXML
+    private RadioButton noRecurrencyRadioButton;
+    
+    @FXML
+    private RadioButton hoursRadioButton;
+    
+    @FXML
+    private RadioButton daysRadioButton;
     
     private QuickTextController quickTextController;
     
