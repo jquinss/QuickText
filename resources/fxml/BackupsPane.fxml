@@ -63,7 +63,7 @@
                                  <children>
                                   	<RadioButton fx:id="noRecurrencyRadioButton"  mnemonicParsing="false">
                                 		<toggleGroup>
-       										<ToggleGroup fx:id="group"/>
+       										<ToggleGroup fx:id="toggleRadioButtonGroup"/>
    										</toggleGroup>
                                  	</RadioButton>
                                     <Label text="No recurrent" />
