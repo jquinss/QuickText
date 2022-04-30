@@ -11,6 +11,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Toggle;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -77,6 +78,8 @@ public class BackupsPaneController {
     
     private final FileManager fileManager = new FileManager();
     
+    private enum BackupRecurrency { NO_RECURRENT, HOURLY, DAILY }
+    
     @FXML
     void createBackup(ActionEvent event) {
     	Path source = Paths.get(SettingsManager.getInstance().getAppDir());
@@ -95,6 +98,20 @@ public class BackupsPaneController {
     @FXML
     void createScheduledBackupTask(ActionEvent event) {
     	System.out.println("Creating a backup task");
+    	Toggle selectedToggle = toggleRadioButtonGroup.getSelectedToggle();
+    	BackupRecurrency recurrency = (BackupRecurrency) selectedToggle.getUserData();
+    	
+    	switch (recurrency) {
+    	case NO_RECURRENT:
+    		System.out.println("No recurrent");
+    		break;
+    	case HOURLY:
+    		System.out.println("Hourly");
+    		break;
+    	case DAILY:
+    		System.out.println("Daily");
+    		break;
+    	}
     	/* TO DO */
     }
 
@@ -178,11 +195,18 @@ public class BackupsPaneController {
 			e.printStackTrace();
 		}
     	initializeTableView();
+    	initializeRadioButtons();
     }
     
     private void initializeTableView() {
     	backupsTableView.setItems(fileBackupObsList);
     	setTableViewCellValueFactory();
+    }
+    
+    private void initializeRadioButtons() {
+    	noRecurrencyRadioButton.setUserData(BackupRecurrency.NO_RECURRENT);
+    	hoursRadioButton.setUserData(BackupRecurrency.HOURLY);
+    	daysRadioButton.setUserData(BackupRecurrency.DAILY);
     }
     
     private void setTableViewCellValueFactory() {
