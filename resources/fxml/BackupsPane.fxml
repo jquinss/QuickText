@@ -15,6 +15,7 @@
 <?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import control.DateTimePicker?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="430.0" tabClosingPolicy="UNAVAILABLE" fx:controller="controllers.BackupsPaneController" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
@@ -54,7 +55,7 @@
                       <TableColumn prefWidth="108.0" text="Recurrency" />
                     </columns>
                   </TableView>
-                  <DatePicker fx:id="scheduledDateTime" />
+                  <DateTimePicker fx:id="scheduledDateTime" promptText="Pick a date" />
                   <VBox prefHeight="107.0" prefWidth="350.0" spacing="10.0">
                      <children>
                         <Label text="Recurrency:" />
