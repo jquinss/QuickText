@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -34,6 +33,7 @@ import data.FileBackup;
 import util.ZipUtil;
 import managers.FileManager;
 import managers.SettingsManager;
+import control.DateTimePicker;
 
 public class BackupsPaneController {
 
@@ -50,7 +50,7 @@ public class BackupsPaneController {
     private TableColumn<FileBackup, String> dateTimeColumn;
 
     @FXML
-    private DatePicker scheduledDateTime;
+    private DateTimePicker scheduledDateTime;
 
     @FXML
     private Spinner<?> hoursSpinner;
