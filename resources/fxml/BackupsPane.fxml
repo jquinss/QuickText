@@ -48,9 +48,10 @@
                <children>
                   <TableView fx:id="scheduledBackupTasksTableView" prefHeight="246.0" prefWidth="410.0">
                     <columns>
-                      <TableColumn prefWidth="99.0" text="Task name" />
-                      <TableColumn minWidth="2.0" prefWidth="107.0" text="Date/Time" />
-                        <TableColumn prefWidth="108.0" text="Recurrency" />
+                      <TableColumn prefWidth="99.0" text="Next Run" />
+                      <TableColumn minWidth="2.0" prefWidth="107.0" text="Last Run" />
+                      <TableColumn prefWidth="107.0" text="Last Result" />
+                      <TableColumn prefWidth="108.0" text="Recurrency" />
                     </columns>
                   </TableView>
                   <DatePicker fx:id="scheduledDateTime" />
