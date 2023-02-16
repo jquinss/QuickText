@@ -1,0 +1,47 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root {
+    -fx-font-family: "Verdana";
+    -fx-accent: #b3ecff;
+}
+
+.menu-bar {
+  -fx-background-color: #f2f0f0; 
+}
+
+#description-label {
+	-fx-font-weight: bold;
+	-fx-text-fill: #004080;
+}
+
+#description-pane {
+	-fx-background-color: #e7e4e4;
+}
+
+#information-msg {
+	-fx-font-size: 11.0;
+}
+
+.button {
+	-fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#0073e6, #004080);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 )
+}
+
+.button:hover {
+	-fx-background-color: linear-gradient(#004080, #0073e6);
+}
+
+.secondary-settings-btn {
+    -fx-font-size: 11.0;
+    -fx-font-weight: normal;
+}
+
+.toggle-button {
+	-fx-opacity: 0.4;
+}
+
+.toggle-button:selected {
+	-fx-opacity: 1;
+}
