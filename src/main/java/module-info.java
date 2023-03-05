@@ -1,4 +1,4 @@
-module com.example.quicktext {
+module com.jquinss.quicktext {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
