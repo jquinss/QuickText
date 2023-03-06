@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.jquinss.quicktext.data.ReusableText;
 import com.jquinss.quicktext.managers.ReusableTextManager;
+import com.jquinss.quicktext.managers.SettingsManager;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -82,10 +84,11 @@ public class ReusableTextPaneController {
 		
 		Parent parent = fxmlLoader.load();
 		Scene scene = new Scene(parent, 400, 320);
-		scene.getStylesheets().add(getClass().getResource("/com/jquinss/quicktext/styles/application.css").toString());
+		scene.getStylesheets().add(getClass().getResource(SettingsManager.getInstance().getCSSPath()).toString());
         dialogStage = new Stage();
         dialogStage.setResizable(false);
         dialogStage.setTitle("Add reusable text");
+		dialogStage.getIcons().add(new Image(getClass().getResource(SettingsManager.getInstance().getLogoPath()).toString()));
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
