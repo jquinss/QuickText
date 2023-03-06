@@ -57,7 +57,7 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#showAboutMenu" text="About" />
+            <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
           </items>
         </Menu>
       </menus>
@@ -91,7 +91,7 @@
                            			<children>
                               			<Label text="Add/Modify Description:" id="description-label" />
                               			<TextField fx:id="descriptionTextField"/>
-                              			<Button mnemonicParsing="false" text="Save" onAction="#saveDescription" />
+                              			<Button mnemonicParsing="false" text="Save" onAction="#saveDescription" styleClass="main-btn" />
                            			</children>
                         		</VBox>
                      		</children>
