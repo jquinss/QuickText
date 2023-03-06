@@ -93,8 +93,8 @@
             <Button mnemonicParsing="false" onAction="#resetSettings" text="Reset to Default" styleClass="secondary-settings-btn" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#cancelSettings" text="Cancel" />
-                  <Button mnemonicParsing="false" onAction="#applySettings" text="Apply" />
+                  <Button mnemonicParsing="false" onAction="#cancelSettings" text="Cancel" styleClass="main-btn" />
+                  <Button mnemonicParsing="false" onAction="#applySettings" text="Apply" styleClass="main-btn" />
                </children>
             </HBox>
          </children>
