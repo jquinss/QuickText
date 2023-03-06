@@ -17,6 +17,8 @@ public class SettingsManager {
     private static final String REUSABLE_TEXT_DATA_FILE_NAME = "reusable_text.json";
     private static final String XML_FILE_NAME = "filetree.xml";
     private static final String SETTINGS_FILE_NAME = "settings.txt";
+	private static final String APP_LOGO = "/com/jquinss/quicktext/images/logo.png";
+	private static final String APP_CSS = "/com/jquinss/quicktext/styles/application.css";
     private static final String CACHE_MAX_ITEMS = "10";
     private static final String TEXT_CHARSET = Charsets.UTF_8.toString();
     private static final String BACKUP_MAX_ITEMS = "10";
@@ -34,6 +36,8 @@ public class SettingsManager {
     private static final String CACHE_MAX_ITEMS_PROP = "cache_max_items";
     private static final String TEXT_CHARSET_PROP = "text_charset";
     private static final String BACKUP_MAX_ITEMS_PROP = "backup_max_items";
+	private static final String APP_LOGO_PROP = "app_logo";
+	private static final String APP_CSS_PROP = "app_css";
 
 	private final FileManager fileManager = new FileManager();
 	private static SettingsManager instance;
@@ -104,6 +108,8 @@ public class SettingsManager {
     	settings.setProperty(BACKUP_DATA_PATH_PROP, backupDataPath);
     	settings.setProperty(SCHEDULED_BACKUP_DATA_PATH_PROP, scheduledBackupDataPath);
     	settings.setProperty(REUSABLE_TEXT_DATA_PATH_PROP, reusableTextDataPath);
+		settings.setProperty(APP_LOGO_PROP, APP_LOGO);
+		settings.setProperty(APP_CSS_PROP, APP_CSS);
     	
     	return settings;
 	}
@@ -147,6 +153,8 @@ public class SettingsManager {
 	public String getSettingsPath() {
 		return defaultSettings.getProperty(SETTINGS_PATH_PROP);
 	}
+	public String getLogoPath() { return defaultSettings.getProperty(APP_LOGO_PROP); }
+	public String getCSSPath() { return defaultSettings.getProperty(APP_CSS_PROP); }
 	
 	public String getCacheMaxItems() {
 		if (optSettings.containsKey(CACHE_MAX_ITEMS_PROP)) {
