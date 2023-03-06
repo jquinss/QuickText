@@ -134,7 +134,10 @@ public class BackupsPaneController implements Initializable {
     		backupManager.scheduleBackupTask(scheduledBackupTask);
     	}
     	catch (InvalidDateTimeException e) {
-    		DialogBuilder.buildAlertDialog("Error", "Error scheduling backup task", e.getMessage(), AlertType.ERROR).showAndWait();
+    		Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error scheduling backup task", e.getMessage(), AlertType.ERROR);
+			quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+			quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+			alertDialog.showAndWait();
     	}
     }
 
@@ -160,7 +163,9 @@ public class BackupsPaneController implements Initializable {
     	if (fileBackup != null) {
     		if (!quickTextController.isEmptyTreeView()) {
     			Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "The root folder is not empty", "After loading the backup, all existing templates and folders will be deleted. Are you sure?", AlertType.CONFIRMATION);
-    	    	alertDialog.showAndWait().ifPresent(response -> {
+				quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait().ifPresent(response -> {
     	    		if (response == ButtonType.OK) {
     	    			try {
 							loadBackup(fileBackup);
