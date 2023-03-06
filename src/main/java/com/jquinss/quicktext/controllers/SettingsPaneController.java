@@ -51,8 +51,10 @@ public class SettingsPaneController {
     	String validationResult = validateInput();
     	
     	if (!validationResult.isEmpty()) {
-    		Alert alert = DialogBuilder.buildAlertDialog("Error", "Invalid Input", validationResult, AlertType.ERROR);
-    		alert.showAndWait();
+    		Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Invalid Input", validationResult, AlertType.ERROR);
+            quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+            quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+            alertDialog.showAndWait();
     	}
     	else {
     		saveSettings();
