@@ -76,6 +76,8 @@ public abstract class TextEditorController {
     	if (!isSavedText) {
     		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "Some changes made have not been saved", 
     				"Are you sure you want to exit?", AlertType.CONFIRMATION);
+			quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+			quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     		alertDialog.showAndWait().ifPresent(response -> {
     			if (response == ButtonType.OK) {
     				stage.close();
@@ -98,7 +100,10 @@ public abstract class TextEditorController {
     			saveExistingFile(template);
     		}
     		catch (IOException e) {
-    			DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+    			Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+				quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
     		}
     	}
     }
@@ -107,6 +112,8 @@ public abstract class TextEditorController {
     void saveAs(ActionEvent event) {
     	Dialog<Pair<String, String>> dialog = DialogBuilder.buildTwoTextFieldInputDialog("Create template", "Create a new template:", "Template name", 
     			"Description", true);
+		quickTextController.setLogo(dialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+		quickTextController.setStyle(dialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     	
     	Optional<Pair<String, String>> result = dialog.showAndWait();
     	
@@ -118,10 +125,16 @@ public abstract class TextEditorController {
 				saveNewFile(fileName, fileDescription);
 			}
     		catch (FileAlreadyExistsException e) {
-    			DialogBuilder.buildAlertDialog("Error", "Error saving the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+    			Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error saving the file", "The file " + e.getFile() + " already exists", AlertType.ERROR);
+				quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
     		}
 			catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error saving the file", "An error has occurred while saving the file", AlertType.ERROR);
+				quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			}
     	}
     }
@@ -133,11 +146,12 @@ public abstract class TextEditorController {
 		fxmlLoader.setController(textEditorReusableTextDialogController); 
 		Parent parent = fxmlLoader.load();
 		Scene scene = new Scene(parent, 400, 320);
-		scene.getStylesheets().add(getClass().getResource("/com/jquinss/quicktext/styles/application.css").toString());
         Stage stage = new Stage();
         textEditorReusableTextDialogController.setStage(stage);
         stage.setResizable(false);
         stage.setTitle("Insert reusable text");
+		quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());
+		quickTextController.setLogo(stage, SettingsManager.getInstance().getLogoPath());
         stage.setScene(scene);
         stage.showAndWait();
 	}
