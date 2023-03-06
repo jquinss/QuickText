@@ -23,17 +23,20 @@
          <content>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <TableView fx:id="backupsTableView" prefHeight="263.0" prefWidth="315.0">
+                  <TableView fx:id="backupsTableView" prefHeight="263.0" prefWidth="430.0">
+                      <placeholder>
+                          <Label text="No backups have been created"/>
+                      </placeholder>
                     <columns>
-                      <TableColumn fx:id="backupFileNameColumn" prefWidth="150.0" text="File name" />
-                      <TableColumn fx:id="backupCreationDateTimeColumn" minWidth="0.0" prefWidth="164.0" text="Date/time" />
+                      <TableColumn fx:id="backupFileNameColumn" minWidth="215.0" prefWidth="215.0" text="File name" />
+                      <TableColumn fx:id="backupCreationDateTimeColumn" minWidth="215.0" prefWidth="215.0" text="Date/time" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#createBackup" text="Create" />
-                        <Button mnemonicParsing="false" onAction="#deleteBackup" text="Delete" />
-                        <Button mnemonicParsing="false" onAction="#loadBackup" text="Load" />
+                        <Button mnemonicParsing="false" onAction="#createBackup" text="Create" styleClass="main-btn" />
+                        <Button mnemonicParsing="false" onAction="#deleteBackup" text="Delete" styleClass="main-btn" />
+                        <Button mnemonicParsing="false" onAction="#loadBackup" text="Load" styleClass="main-btn" />
                      </children>
                   </HBox>
                </children>
@@ -47,12 +50,15 @@
          <content>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="362.0" spacing="10.0">
                <children>
-                  <TableView fx:id="scheduledBackupTasksTableView" prefHeight="246.0" prefWidth="410.0">
+                  <TableView fx:id="scheduledBackupTasksTableView" prefHeight="246.0" prefWidth="430.0">
+                      <placeholder>
+                          <Label text="No scheduled backup tasks have been created"/>
+                      </placeholder>
                     <columns>
-                      <TableColumn fx:id="nextBackupRunDateTimeColumn" prefWidth="99.0" text="Next Run" />
-                      <TableColumn fx:id="lastBackupRunDateTimeColumn" minWidth="2.0" prefWidth="107.0" text="Last Run" />
-                      <TableColumn fx:id="lastBackupResultColumn" prefWidth="107.0" text="Last Result" />
-                      <TableColumn fx:id="backupRecurrenceColumn" prefWidth="108.0" text="Recurrence" />
+                      <TableColumn fx:id="nextBackupRunDateTimeColumn" minWidth="117.0" prefWidth="117.0" text="Next Run" />
+                      <TableColumn fx:id="lastBackupRunDateTimeColumn" minWidth="117.0" prefWidth="117.0" text="Last Run" />
+                      <TableColumn fx:id="lastBackupResultColumn" minWidth="97.0" prefWidth="97.0" text="Last Result" />
+                      <TableColumn fx:id="backupRecurrenceColumn" minWidth="97.0" prefWidth="97.0" text="Recurrence" />
                     </columns>
                   </TableView>
                   <DateTimePicker fx:id="dateTimePicker" promptText="Pick a date" />
@@ -112,8 +118,8 @@
                   </VBox>
                   <HBox alignment="CENTER" prefHeight="52.0" prefWidth="410.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#createScheduledBackupTask" text="Create" />
-                        <Button mnemonicParsing="false" onAction="#deleteScheduledBackupTask" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#createScheduledBackupTask" text="Create" styleClass="main-btn" />
+                        <Button mnemonicParsing="false" onAction="#deleteScheduledBackupTask" text="Delete" styleClass="main-btn" />
                      </children>
                   </HBox>
                </children>
