@@ -17,14 +17,11 @@ import com.jquinss.quicktext.data.FolderItem;
 import com.jquinss.quicktext.data.RootFolderItem;
 import com.jquinss.quicktext.managers.FileManager;
 import com.jquinss.quicktext.managers.SettingsManager;
+import javafx.scene.control.*;
 import org.xml.sax.SAXException;
 
 import com.jquinss.quicktext.data.TemplateItem;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -315,7 +312,10 @@ public class TreeViewPaneController {
 						resultTreeItem = moveTemplate(srcFile, destFile, srcTreeItem, srcTreeItem.getParent(), destTreeItem);
 						e.setDropCompleted(true);
 					} catch (FileAlreadyExistsException e1) {		
-							DialogBuilder.buildAlertDialog("Error", "Error moving the file", "The file " + e1.getFile() + " already exists", AlertType.ERROR).showAndWait();
+							Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error moving the file", "The file " + e1.getFile() + " already exists", AlertType.ERROR);
+							quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+							quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+							alertDialog.showAndWait();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
