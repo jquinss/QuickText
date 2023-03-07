@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jquinss.quicktext.enums.Charsets;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -32,17 +35,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
@@ -136,6 +129,8 @@ public class QuickTextController {
     void createFolder(ActionEvent event) {
     	Dialog<Pair<String, String>> dialog = DialogBuilder.buildTwoTextFieldInputDialog("Create folder", "Create a new folder:", "Folder name", 
     			"Description", true);
+		setLogo(dialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+		setStyle(dialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     	
     	Optional<Pair<String, String>> result = dialog.showAndWait();
     	
@@ -147,10 +142,16 @@ public class QuickTextController {
     			treeViewPaneController.createFolder(folderName, folderDescription);
     		}
         	catch (FileAlreadyExistsException e) {
-        		DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "There is already a folder with the same name", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "There is already a folder with the same name", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
         	}
     		catch (IOException e) {
-    			DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "Folder cannot be created", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error creating the folder", "Folder cannot be created", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
     		}
     	}
     }
@@ -163,7 +164,10 @@ public class QuickTextController {
 			treeViewPaneController.deleteTemplate(treeItem);
     	}
     	catch (IOException e) {
-    		DialogBuilder.buildAlertDialog("Error", "Error removing the file", "An error has occurred while trying to remove the file", AlertType.ERROR).showAndWait();
+			Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error removing the file", "An error has occurred while trying to remove the file", AlertType.ERROR);
+			setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+			setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+			alertDialog.showAndWait();
     	}
     }
     
@@ -176,6 +180,8 @@ public class QuickTextController {
     	}
     	catch (DirectoryNotEmptyException e) {
     		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "The folder is not empty", "Are you sure you want to delete all the files?", AlertType.CONFIRMATION);
+			setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+			setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     		alertDialog.showAndWait().ifPresent(response -> {
     			if (response == ButtonType.OK) {
     				treeViewPaneController.deleteAllFilesAndFolders(treeItem, true);
@@ -192,6 +198,9 @@ public class QuickTextController {
     	
     	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Rename folder", "Rename the selected folder", "Name of the folder", 
     																				folderName);
+		setStyle(inputDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+		setLogo(inputDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+
     	Optional<String> result = inputDialog.showAndWait();
     	
     	if (result.isPresent()) {
@@ -200,9 +209,15 @@ public class QuickTextController {
     		try {
     			treeViewPaneController.renameFolder(treeItem, newFolderName);
     		} catch (FileAlreadyExistsException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "The folder " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "The folder " + e.getFile() + " already exists", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			} catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "An error has occurred when renaming the folder", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error renaming the folder", "An error has occurred when renaming the folder", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			}
     	}	
     }
@@ -211,7 +226,9 @@ public class QuickTextController {
     void deleteAllFolders(ActionEvent event) {
     	if (!isEmptyTreeView()) {
     		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "The folder is not empty", "Are you sure you want to delete all the files and folders?", AlertType.CONFIRMATION);
-    		alertDialog.showAndWait().ifPresent(response -> {
+			setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+			setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+			alertDialog.showAndWait().ifPresent(response -> {
     			if (response == ButtonType.OK) {
     				deleteAllFolders();
     			}
@@ -264,9 +281,15 @@ public class QuickTextController {
     		try {
     			treeViewPaneController.importTemplates(treeItem, selectedFiles);
 			} catch (FileAlreadyExistsException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error importing the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error importing the file", "The file " + e.getFile() + " already exists", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			} catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			}
     	}
     }
@@ -334,6 +357,8 @@ public class QuickTextController {
     	
     	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Duplicate template", "Create a new duplicate template", "Name of the template", 
     																				nextPrefix);
+		setLogo(inputDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+		setStyle(inputDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     	
     	Optional<String> result = inputDialog.showAndWait();
     	
@@ -343,9 +368,15 @@ public class QuickTextController {
     		try {
     			treeViewPaneController.copyTemplate(srcFile, destFile, folderTreeItem);
     		} catch (FileAlreadyExistsException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error copying the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error copying the file", "The file " + e.getFile() + " already exists", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			} catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error copying the file", "An error has occurred when copying the file", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			}
     	}	
     }
@@ -361,8 +392,11 @@ public class QuickTextController {
     }
 
     @FXML
-    void showAboutMenu(ActionEvent event) {
-    	DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nCreated by Joaquin Sampedro", AlertType.INFORMATION).show();
+    void showAboutDialog(ActionEvent event) {
+    	Alert aboutDialog = DialogBuilder.buildAlertDialog("About", "", "QuickText v1.0\n\nCreated by Joaquin Sampedro", AlertType.INFORMATION);
+		setLogo(aboutDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+		setStyle(aboutDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+		aboutDialog.showAndWait();
     }
     
     @FXML
@@ -384,10 +418,11 @@ public class QuickTextController {
 		settingsPaneController.setQuickTextController(this);
 		
 		Scene scene = new Scene(parent, 450, 250);
-		scene.getStylesheets().add(getClass().getResource("/com/jquinss/quicktext/styles/application.css").toString());
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setTitle("Settings");
+		setLogo(stage, SettingsManager.getInstance().getLogoPath());
+		setStyle(scene, SettingsManager.getInstance().getCSSPath());
         
         settingsPaneController.setStage(stage);
         
@@ -407,13 +442,13 @@ public class QuickTextController {
 		
 		Parent parent = fxmlLoader.load();
 		Scene scene = new Scene(parent, 450, 500);
-		scene.getStylesheets().add(getClass().getResource("/com/jquinss/quicktext/styles/application.css").toString());
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setTitle("Manage backups");
+		setLogo(stage, SettingsManager.getInstance().getLogoPath());
+		setStyle(scene, SettingsManager.getInstance().getCSSPath());
         
-        
-       stage.setOnCloseRequest(e -> {
+       	stage.setOnCloseRequest(e -> {
         	this.saveBackups();
         });
         
@@ -427,16 +462,17 @@ public class QuickTextController {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextPane.fxml"));
     	
 		ReusableTextPaneController reusableTextPaneController = new ReusableTextPaneController(reusableTextManager);
-		
 		fxmlLoader.setController(reusableTextPaneController);
 		
 		Parent parent = fxmlLoader.load();
 		Scene scene = new Scene(parent, 400, 320);
-		scene.getStylesheets().add(getClass().getResource("/com/jquinss/quicktext/styles/application.css").toString());
+
         Stage stage = new Stage();
         reusableTextPaneController.setStage(stage);
         stage.setResizable(false);
         stage.setTitle("Manage reusable text");
+		setLogo(stage, SettingsManager.getInstance().getLogoPath());
+		setStyle(scene, SettingsManager.getInstance().getCSSPath());
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
@@ -469,6 +505,8 @@ public class QuickTextController {
     	
     	Dialog<String> inputDialog = DialogBuilder.buildSingleTextFieldInputDialog("Rename template", "Rename the selected template", "Name of the template", 
     																				prefix);
+		setLogo(inputDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+		setStyle(inputDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
     	
     	Optional<String> result = inputDialog.showAndWait();
     	
@@ -478,9 +516,15 @@ public class QuickTextController {
     		try {
     			treeViewPaneController.moveTemplate(srcFile, destFile, selectedTreeItem, folderTreeItem, folderTreeItem);
     		} catch (FileAlreadyExistsException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "The file " + e.getFile() + " already exists", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "The file " + e.getFile() + " already exists", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			} catch (IOException e) {
-				DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "An error has occurred when renaming the file", AlertType.ERROR).showAndWait();
+				Alert alertDialog = DialogBuilder.buildAlertDialog("Error", "Error renaming the file", "An error has occurred when renaming the file", AlertType.ERROR);
+				setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
+				setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
+				alertDialog.showAndWait();
 			}
     	}	
     }
@@ -706,6 +750,7 @@ public class QuickTextController {
 		
 		Scene scene = buildTextEditorScene(parent);
         Stage stage = buildTextEditorStage("Plain-text editor", scene);
+	   	setLogo(stage, SettingsManager.getInstance().getLogoPath());
         
         initializeTextEditorController(plainTextEditorController, stage);
         
@@ -722,6 +767,7 @@ public class QuickTextController {
 		
 		Scene scene = buildTextEditorScene(parent);
         Stage stage = buildTextEditorStage("HTML editor", scene);
+		setLogo(stage, SettingsManager.getInstance().getLogoPath());
         
         initializeTextEditorController(htmlEditorController, stage);
         
@@ -859,4 +905,26 @@ public class QuickTextController {
 			e.printStackTrace();
 		}
     }
+
+	void setLogo(Object object, String logo) {
+		if (object instanceof Stage) {
+			System.out.println("Setting logo");
+			((Stage) object).getIcons().add(new Image(getClass().getResource(logo).toString()));
+		}
+
+		if (object instanceof Pane) {
+			Stage stage = (Stage) ((Pane)object).getScene().getWindow();
+			stage.getIcons().add(new Image(getClass().getResource(logo).toString()));
+		}
+	}
+
+	void setStyle(Object object, String css) {
+		if (object instanceof Scene) {
+			((Scene) object).getStylesheets().add(getClass().getResource(css).toString());
+		}
+
+		if (object instanceof Pane) {
+			((Pane) object).getStylesheets().add(getClass().getResource(css).toString());
+		}
+	}
 }
