@@ -10,14 +10,15 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import com.jquinss.quicktext.control.DateTimePicker?>
+<?import javafx.scene.control.DatePicker?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="430.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="430.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
     <Tab text="Backups">
          <content>
@@ -61,7 +62,20 @@
                       <TableColumn fx:id="backupRecurrenceColumn" minWidth="97.0" prefWidth="97.0" text="Recurrence" />
                     </columns>
                   </TableView>
-                  <DateTimePicker fx:id="dateTimePicker" promptText="Pick a date" />
+                   <HBox alignment="CENTER" spacing="30.0">
+                       <children>
+                           <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="204.0" promptText="Pick a date" />
+                           <HBox spacing="5.0">
+                               <children>
+                                   <TextField fx:id="hoursTextField" prefWidth="32.0" promptText="hh" />
+                                   <Label text=":" />
+                                   <TextField fx:id="minutesTextField" prefWidth="32.0" promptText="mm" />
+                                   <Label text=":" />
+                                   <TextField fx:id="secondsTextField" prefWidth="32.0" promptText="ss" />
+                               </children>
+                           </HBox>
+                        </children>
+                   </HBox>
                   <VBox prefHeight="107.0" prefWidth="350.0" spacing="10.0">
                      <children>
                         <Label text="Recurrency:" />
