@@ -50,11 +50,6 @@
               <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quit" text="Quit" accelerator="Shortcut+Q" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Options">
-          	<items>
-          		<MenuItem mnemonicParsing="false" onAction="#openReusableTextMenu" text="Reusable text" accelerator="Shortcut+R" />
-          	</items>
-          </Menu>
         </menus>
       </MenuBar>
    </top>
