@@ -35,7 +35,6 @@ No special instructions are required to use the application. You can export the 
 * Users are able to schedule backups
 * Users are able to manually edit HTML code from templates.
 * Users can move templates by drag and drop.
-* Users can import images to the HTML Editor.
 * Users can choose the maximum number of backups created.
 * Users can reuse common pieces of text across templates.
 
