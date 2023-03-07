@@ -1,6 +1,5 @@
 package com.jquinss.quicktext.controllers;
 
-import com.jquinss.quicktext.control.DateTimePicker;
 import com.jquinss.quicktext.data.BackupTask;
 import com.jquinss.quicktext.data.FileBackup;
 import com.jquinss.quicktext.data.ScheduledBackupTask;
@@ -13,15 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Toggle;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,15 +20,29 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import com.jquinss.quicktext.util.DialogBuilder;
 import com.jquinss.quicktext.util.Schedule;
 
 import com.jquinss.quicktext.util.ZipUtil;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ButtonType;
+import javafx.util.StringConverter;
 
 public class BackupsPaneController implements Initializable {
 
@@ -66,7 +71,16 @@ public class BackupsPaneController implements Initializable {
     private TableColumn<ScheduledBackupTask, String> backupRecurrenceColumn;
 
     @FXML
-    private DateTimePicker dateTimePicker;
+    private DatePicker datePicker;
+
+	@FXML
+	private TextField hoursTextField;
+
+	@FXML
+	private TextField minutesTextField;
+
+	@FXML
+	private TextField secondsTextField;
 
     @FXML
     private Spinner<Integer> hoursSpinner;
@@ -123,7 +137,7 @@ public class BackupsPaneController implements Initializable {
     		break;
     	}
     	try {
-    		LocalDateTime dateTime = dateTimePicker.getDateTimeValue();
+    		LocalDateTime dateTime = getScheduledLocalDateTime();
     		Schedule schedule = new Schedule(dateTime, recurrence, frequency, ZoneOffset.UTC);
     		String sourceFolder = SettingsManager.getInstance().getAppDir();
         	String destZipFile = Paths.get(SettingsManager.getInstance().getBackupsDir(), generateBackupName()).toString();
@@ -200,6 +214,14 @@ public class BackupsPaneController implements Initializable {
 		name.append(".zip");
 		return name.toString();
 	}
+
+	private LocalDateTime getScheduledLocalDateTime() {
+		LocalDate date = datePicker.getValue();
+		LocalTime time = LocalTime.of(Integer.parseInt(hoursTextField.getText()),
+				Integer.parseInt(minutesTextField.getText()),
+				Integer.parseInt(secondsTextField.getText()), 0);
+		return LocalDateTime.of(date, time);
+	}
     
     private void initializeBackupsTableView() {
     	backupsTableView.setItems(backupManager.getBackupsObsList());
@@ -210,6 +232,14 @@ public class BackupsPaneController implements Initializable {
     	scheduledBackupTasksTableView.setItems(backupManager.getScheduledBackupTasksObsList());
     	setScheduledBackupTasksTableViewCellValueFactory();
     }
+
+	private void initializeTimeTextFields() {
+		LocalTime time = LocalTime.now().plusMinutes(5);
+		StringConverter<Integer> minSecConverter = new IntRangeStringConverter(0, 59);
+		secondsTextField.setTextFormatter(new TextFormatter<>(minSecConverter, time.getSecond()));
+		minutesTextField.setTextFormatter(new TextFormatter<>(minSecConverter, time.getMinute()));
+		hoursTextField.setTextFormatter(new TextFormatter<>(new IntRangeStringConverter(0, 23), time.getHour()));
+	}
     
     private void initializeRadioButtons() {
     	noRecurrencyRadioButton.setUserData(Recurrence.NO_RECURRENT);
@@ -276,6 +306,33 @@ public class BackupsPaneController implements Initializable {
 		}
     	initializeBackupsTableView();
     	initializeScheduledBackupTasksTableView();
+		initializeTimeTextFields();
     	initializeRadioButtons();
+	}
+
+	class IntRangeStringConverter extends StringConverter<Integer> {
+
+		private final int min;
+		private final int max;
+
+		public IntRangeStringConverter(int min, int max) {
+			this.min = min;
+			this.max = max;
+		}
+
+		@Override
+		public Integer fromString(String string) {
+			int integer = Integer.parseInt(string);
+			if (integer > max)
+				return max;
+			if (integer < min)
+				return min;
+			return integer;
+		}
+
+		@Override
+		public String toString(Integer integer) {
+			return String.format("%02d", integer);
+		}
 	}
 }
