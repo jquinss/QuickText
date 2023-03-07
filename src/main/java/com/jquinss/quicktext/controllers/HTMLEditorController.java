@@ -9,12 +9,9 @@ import com.jquinss.quicktext.data.FileItem;
 import com.jquinss.quicktext.enums.Charsets;
 import com.jquinss.quicktext.managers.FileManager;
 import com.jquinss.quicktext.managers.SettingsManager;
-import javafx.scene.image.Image;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import com.sun.javafx.webkit.Accessor;
-import com.sun.webkit.WebPage;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,11 +23,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
 import com.jquinss.quicktext.util.DialogBuilder;
 import com.jquinss.quicktext.util.HTMLEditorListener;
 
@@ -62,14 +56,10 @@ public class HTMLEditorController extends TextEditorController {
 	
 	@FXML
 	private Button htmlTextAreaFormatHTMLBtn;
-	
-	private HTMLEditorListener htmlEditorListener;
-	
+
 	private ChangeListener<String> htmlTextAreaChangeListener;
 	
 	private final ToggleButton htmlTextAreaToggleBtn = new ToggleButton("<HTML>");
-	
-	private final Button importImageBtn = new Button();
 	
 	private boolean isInitialHTMLTextLoaded = false;
 	
@@ -92,10 +82,7 @@ public class HTMLEditorController extends TextEditorController {
 	}
 	
 	void insertText(String text) {
-		WebView webView = (WebView) htmlEditor.lookup("WebView");
-		WebPage webPage = Accessor.getPageFor(webView.getEngine());
-		webPage.executeCommand("insertHTML", text);
-		setIsNotSavedStatus();
+		// TO DO
 	}
 	
     void saveNewFile(String fileName, String description) throws IOException {
@@ -122,7 +109,7 @@ public class HTMLEditorController extends TextEditorController {
     }
     
     private void initializeListeners() {
-    	htmlEditorListener = new HTMLEditorListener(htmlEditor);
+		HTMLEditorListener htmlEditorListener = new HTMLEditorListener(htmlEditor);
     	htmlEditorListener.textProperty().addListener((obs, oldValue, newValue) -> {
     		if (newValue != null) {
     			// the first time we load the text into the HTML area, the saved status is not changed.
@@ -145,30 +132,11 @@ public class HTMLEditorController extends TextEditorController {
     
     private void initializeToolBar() {
     	 ToolBar toolBar = (ToolBar) htmlEditor.lookup(".top-toolbar");
-    	 toolBar.getItems().addAll(htmlTextAreaToggleBtn, importImageBtn);
+    	 toolBar.getItems().addAll(htmlTextAreaToggleBtn);
     	 htmlEditorSplitPane.getItems().remove(htmlTextAreaPane);
-    	 initializeImportImageBtn();
     	 initializeHTMLTextAreaToggleBtn();
     }
-    
-	private void initializeImportImageBtn() {
-    	importImageBtn.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/com/jquinss/quicktext/images/import_img.png"))));
-   	 	importImageBtn.setOnAction(e -> {
-   	 		FileChooser.ExtensionFilter extensions = new FileChooser.ExtensionFilter("Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp");
-   	 		File file = DialogBuilder.buildFileChooser("Select an image", extensions).showOpenDialog(stage);
-   	 		if (file != null) {
-   	 			WebView webView = (WebView) htmlEditor.lookup("WebView");
-   	 			WebPage webPage = Accessor.getPageFor(webView.getEngine());
-   	 			StringBuilder imgURL = new StringBuilder();
-   	 			imgURL.append("<img src='file://");
-   	 			imgURL.append(file.toString());
-   	 			imgURL.append("'>");
-   	 			webPage.executeCommand("insertHTML", imgURL.toString());
-   	 			setIsNotSavedStatus();
-           	}
-   		});
-    }
-    
+
     private void initializeHTMLTextAreaToggleBtn() {
     	htmlTextAreaToggleBtn.setOnAction(e -> {
     		if (htmlTextAreaToggleBtn.isSelected()) {
