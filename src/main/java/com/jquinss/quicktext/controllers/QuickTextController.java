@@ -908,7 +908,6 @@ public class QuickTextController {
 
 	void setLogo(Object object, String logo) {
 		if (object instanceof Stage) {
-			System.out.println("Setting logo");
 			((Stage) object).getIcons().add(new Image(getClass().getResource(logo).toString()));
 		}
 
