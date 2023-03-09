@@ -14,6 +14,7 @@ import com.jquinss.quicktext.managers.ReusableTextManager;
 import com.jquinss.quicktext.managers.SettingsManager;
 import com.jquinss.quicktext.data.TemplateItem;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 import com.jquinss.quicktext.util.DialogBuilder;
 import com.jquinss.quicktext.util.FileItemBuilder;
@@ -72,21 +74,25 @@ public abstract class TextEditorController {
     }
 
     @FXML
-    void quit(ActionEvent event) {
-    	if (!isSavedText) {
-    		Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "Some changes made have not been saved", 
-    				"Are you sure you want to exit?", AlertType.CONFIRMATION);
+    void quit(Event event) {
+		if (!isSavedText) {
+			Alert alertDialog = DialogBuilder.buildAlertDialog("Confirmation", "Some changes made have not been saved",
+					"Are you sure you want to exit?", AlertType.CONFIRMATION);
 			quickTextController.setLogo(alertDialog.getDialogPane(), SettingsManager.getInstance().getLogoPath());
 			quickTextController.setStyle(alertDialog.getDialogPane(), SettingsManager.getInstance().getCSSPath());
-    		alertDialog.showAndWait().ifPresent(response -> {
-    			if (response == ButtonType.OK) {
-    				stage.close();
-    			}
-    		});;
-    	}
-    	else {
-    		stage.close();
-    	}
+			alertDialog.showAndWait().ifPresent(response -> {
+				if (response == ButtonType.OK) {
+					stage.close();
+				}
+
+				if (event instanceof WindowEvent) {
+					event.consume();
+				}
+			});;
+		}
+		else {
+			stage.close();
+		}
     }
 
     @FXML
