@@ -24,7 +24,7 @@
       				<children>
       					<HBox spacing="10.0">
       						<children>
-      							<ToggleButton fx:id="htmlTextAreaEditToggleBtn" mnemonicParsing="false" text="Edit" />
+      							<ToggleButton fx:id="htmlTextAreaEditToggleBtn" mnemonicParsing="false" text="Edit" styleClass="textarea-toggle-button" />
       							<Button fx:id="htmlTextAreaSaveBtn" mnemonicParsing="false" text="Save" disable="true" onAction="#saveHTMLTextArea"/>
       						</children>
       					</HBox>
