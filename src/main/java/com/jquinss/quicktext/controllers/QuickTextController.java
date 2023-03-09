@@ -793,6 +793,10 @@ public class QuickTextController {
     
     private void initializeTextEditorController(TextEditorController textEditorController, Stage stage) {
         textEditorController.setStage(stage);
+		stage.setOnCloseRequest(e -> {
+			textEditorController.quit(e);
+		});
+
         textEditorController.setQuickTextController(this);
         textEditorController.setReusableTextManager(reusableTextManager);
     }
