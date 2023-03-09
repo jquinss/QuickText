@@ -53,7 +53,7 @@
     -fx-border-color: #0078d7;
 }
 
-/* Styles for the buttons and toggle button */
+/* Styles for the buttons */
 
 .button {
 	-fx-background-color: #0078d7;
@@ -68,6 +68,20 @@
 .main-btn {
 	-fx-pref-width: 70px;
 	-fx-font-size: 9.5pt;
+}
+
+/* Styles for the toogle-buttons */
+
+.textarea-toggle-button {
+	-fx-text-fill: white;
+	-fx-background-color: #0078d7;
+	-fx-border-width: 1;
+	-fx-opacity: 1;
+}
+
+.textarea-toggle-button:selected {
+	-fx-background-color: #053355;
+	-fx-opacity: 0.4;
 }
 
 /* Styles for the date picker */
