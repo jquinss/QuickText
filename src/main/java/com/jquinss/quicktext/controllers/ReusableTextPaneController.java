@@ -81,7 +81,7 @@ public class ReusableTextPaneController {
 	}
     
     private void openReusableTextDialog() throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextDialog.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextEditionDialog.fxml"));
 		
 		fxmlLoader.setController(this);
 		Parent parent = fxmlLoader.load();

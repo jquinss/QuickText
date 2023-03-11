@@ -154,13 +154,13 @@ public abstract class TextEditorController {
 	@FXML
 	void openReusableTextMenu(ActionEvent event) throws IOException {
 		if (reusableTextMenuStage == null) {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextInsertDialog.fxml"));
-			TextEditorReusableTextDialogController textEditorReusableTextDialogController = new TextEditorReusableTextDialogController(this, reusableTextManager);
-			fxmlLoader.setController(textEditorReusableTextDialogController);
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextInsertionDialog.fxml"));
+			ReusableTextInsertionDialogController reusableTextInsertionDialogController = new ReusableTextInsertionDialogController(this, reusableTextManager);
+			fxmlLoader.setController(reusableTextInsertionDialogController);
 			Parent parent = fxmlLoader.load();
 			Scene scene = new Scene(parent, 400, 320);
 			reusableTextMenuStage = new Stage();
-			textEditorReusableTextDialogController.setStage(reusableTextMenuStage);
+			reusableTextInsertionDialogController.setStage(reusableTextMenuStage);
 			reusableTextMenuStage.setResizable(false);
 			reusableTextMenuStage.setTitle("Reusable Text Manager");
 			quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());

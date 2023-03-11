@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
-public class TextEditorReusableTextDialogController {
+public class ReusableTextInsertionDialogController {
 	@FXML
 	private ListView<ReusableText> reusableTextListView;
 	private ObservableList<ReusableText> reusableTextObsList;
@@ -19,8 +19,8 @@ public class TextEditorReusableTextDialogController {
 	private final TextEditorController textEditorController;
 	private final ReusableTextManager reusableTextManager;
 	
-	public TextEditorReusableTextDialogController(TextEditorController textEditorController,
-													ReusableTextManager reusableTextManager) {
+	public ReusableTextInsertionDialogController(TextEditorController textEditorController,
+												 ReusableTextManager reusableTextManager) {
 		this.textEditorController = textEditorController;
 		this.reusableTextManager = reusableTextManager;
 	}
