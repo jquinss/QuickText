@@ -470,7 +470,7 @@ public class QuickTextController {
         Stage stage = new Stage();
         reusableTextPaneController.setStage(stage);
         stage.setResizable(false);
-        stage.setTitle("Manage reusable text");
+        stage.setTitle("Reusable Text Manager");
 		setLogo(stage, SettingsManager.getInstance().getLogoPath());
 		setStyle(scene, SettingsManager.getInstance().getCSSPath());
         stage.initModality(Modality.APPLICATION_MODAL);
