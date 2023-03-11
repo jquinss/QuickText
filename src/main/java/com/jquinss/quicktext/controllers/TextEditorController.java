@@ -42,6 +42,8 @@ public abstract class TextEditorController {
     MenuItem quitMenuItem;
     
     Stage stage;
+
+	Stage reusableTextMenuStage;
     
     TreeItem<FileItem> folderTreeItem;
     
@@ -92,6 +94,10 @@ public abstract class TextEditorController {
 		}
 		else {
 			stage.close();
+		}
+
+		if (reusableTextMenuStage != null) {
+			reusableTextMenuStage.close();
 		}
     }
 
@@ -147,19 +153,26 @@ public abstract class TextEditorController {
     
 	@FXML
 	void openReusableTextMenu(ActionEvent event) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextInsertDialog.fxml"));
-		TextEditorReusableTextDialogController textEditorReusableTextDialogController = new TextEditorReusableTextDialogController(this, reusableTextManager);
-		fxmlLoader.setController(textEditorReusableTextDialogController); 
-		Parent parent = fxmlLoader.load();
-		Scene scene = new Scene(parent, 400, 320);
-        Stage stage = new Stage();
-        textEditorReusableTextDialogController.setStage(stage);
-        stage.setResizable(false);
-        stage.setTitle("Insert reusable text");
-		quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());
-		quickTextController.setLogo(stage, SettingsManager.getInstance().getLogoPath());
-        stage.setScene(scene);
-        stage.showAndWait();
+		if (reusableTextMenuStage == null) {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextInsertDialog.fxml"));
+			TextEditorReusableTextDialogController textEditorReusableTextDialogController = new TextEditorReusableTextDialogController(this, reusableTextManager);
+			fxmlLoader.setController(textEditorReusableTextDialogController);
+			Parent parent = fxmlLoader.load();
+			Scene scene = new Scene(parent, 400, 320);
+			reusableTextMenuStage = new Stage();
+			textEditorReusableTextDialogController.setStage(reusableTextMenuStage);
+			reusableTextMenuStage.setResizable(false);
+			reusableTextMenuStage.setTitle("Insert reusable text");
+			quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());
+			quickTextController.setLogo(stage, SettingsManager.getInstance().getLogoPath());
+			reusableTextMenuStage.setScene(scene);
+		}
+
+		if (!reusableTextMenuStage.isShowing()) {
+			reusableTextMenuStage.showAndWait();
+		}
+
+		reusableTextMenuStage.toFront();
 	}
     
     abstract void saveExistingFile(File file) throws IOException;
