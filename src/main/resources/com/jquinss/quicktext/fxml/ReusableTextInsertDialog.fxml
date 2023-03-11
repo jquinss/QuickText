@@ -11,7 +11,7 @@
    <children>
       <VBox layoutX="80.0" layoutY="40.0" prefHeight="250.0" prefWidth="240.0" spacing="20.0">
          <children>
-            <Label text="Select an item:" />
+            <Label text="Select some reusable text:" styleClass="dialogpane-description" />
             <ListView fx:id="reusableTextListView" prefHeight="200.0" prefWidth="210.0" />
             <HBox alignment="CENTER" prefHeight="55.0" prefWidth="240.0" spacing="10.0">
                <children>
