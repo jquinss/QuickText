@@ -21,6 +21,10 @@
 	-fx-font-size: 11.0;
 }
 
+.dialogpane-description {
+    -fx-font-size: 13.0;
+}
+
 .secondary-settings-btn {
     -fx-font-size: 11.0;
     -fx-font-weight: normal;
