@@ -459,7 +459,7 @@ public class QuickTextController {
     
     @FXML
     void openReusableTextPane(ActionEvent event) throws IOException {
-    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextPane.fxml"));
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/jquinss/quicktext/fxml/ReusableTextManagerPane.fxml"));
     	
 		ReusableTextPaneController reusableTextPaneController = new ReusableTextPaneController(reusableTextManager);
 		fxmlLoader.setController(reusableTextPaneController);
