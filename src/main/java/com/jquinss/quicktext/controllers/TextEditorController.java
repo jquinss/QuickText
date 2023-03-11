@@ -164,7 +164,7 @@ public abstract class TextEditorController {
 			reusableTextMenuStage.setResizable(false);
 			reusableTextMenuStage.setTitle("Reusable Text Manager");
 			quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());
-			quickTextController.setLogo(stage, SettingsManager.getInstance().getLogoPath());
+			quickTextController.setLogo(reusableTextMenuStage, SettingsManager.getInstance().getLogoPath());
 			reusableTextMenuStage.setScene(scene);
 		}
 
