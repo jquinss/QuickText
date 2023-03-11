@@ -162,7 +162,7 @@ public abstract class TextEditorController {
 			reusableTextMenuStage = new Stage();
 			textEditorReusableTextDialogController.setStage(reusableTextMenuStage);
 			reusableTextMenuStage.setResizable(false);
-			reusableTextMenuStage.setTitle("Insert reusable text");
+			reusableTextMenuStage.setTitle("Reusable Text Manager");
 			quickTextController.setStyle(scene, SettingsManager.getInstance().getCSSPath());
 			quickTextController.setLogo(stage, SettingsManager.getInstance().getLogoPath());
 			reusableTextMenuStage.setScene(scene);
