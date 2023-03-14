@@ -15,8 +15,8 @@
             <ListView fx:id="reusableTextListView" prefHeight="200.0" prefWidth="210.0" />
             <HBox alignment="CENTER" prefHeight="55.0" prefWidth="240.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#insertReusableText" text="Insert" />
-                  <Button mnemonicParsing="false" onAction="#manageReusableText" text="Manage..." />
+                  <Button mnemonicParsing="false" onAction="#insertReusableText" text="Insert" styleClass="main-btn" />
+                  <Button mnemonicParsing="false" onAction="#manageReusableText" text="Manage..." styleClass="main-btn" />
                </children>
             </HBox>
          </children>
