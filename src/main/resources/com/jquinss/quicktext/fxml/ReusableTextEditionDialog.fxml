@@ -32,8 +32,8 @@
             <TextArea fx:id="reusableTextTextArea" prefHeight="114.0" prefWidth="294.0" promptText="Enter some text ..." />
             <HBox alignment="CENTER" prefHeight="42.0" prefWidth="214.0" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#saveReusableText" text="Save" />
-                  <Button mnemonicParsing="false" onAction="#cancelReusableTextDialog" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#saveReusableText" text="Save" styleClass="main-btn" />
+                  <Button mnemonicParsing="false" onAction="#cancelReusableTextDialog" text="Cancel" styleClass="main-btn" />
                </children>
             </HBox>
          </children>
