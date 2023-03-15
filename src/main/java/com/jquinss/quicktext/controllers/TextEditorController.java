@@ -96,9 +96,7 @@ public abstract class TextEditorController {
 			stage.close();
 		}
 
-		if (reusableTextMenuStage != null) {
-			reusableTextMenuStage.close();
-		}
+		closeReusableTextPane();
     }
 
     @FXML
@@ -188,6 +186,12 @@ public abstract class TextEditorController {
     void openReusableTextPane(ActionEvent event) throws IOException {
     	quickTextController.openReusableTextPane(event);
     }
+
+	protected void closeReusableTextPane() {
+		if (reusableTextMenuStage != null) {
+			reusableTextMenuStage.close();
+		}
+	}
     
     public void setQuickTextController(QuickTextController quickTextController) {
     	this.quickTextController = quickTextController;
