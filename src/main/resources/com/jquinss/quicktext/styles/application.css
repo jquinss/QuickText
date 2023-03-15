@@ -88,6 +88,33 @@
 	-fx-opacity: 0.4;
 }
 
+/* Styles for the insert menu-button */
+
+#insert-menu-button {
+	-fx-background-color: #0078d7;
+	-fx-border-width: 1;
+}
+
+#insert-menu-button .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+#insert-menu-button .label {
+    -fx-text-fill: white;
+}
+
+#insert-menu-button .context-menu {
+    -fx-background-color: #0078d7;
+}
+
+#insert-menu-button .menu-item:focused {
+    -fx-background-color: #053355;
+}
+
+#insert-menu-button:hover {
+    -fx-background-color: #053355;
+}
+
 /* Styles for the date picker */
 
 .date-picker .button {
