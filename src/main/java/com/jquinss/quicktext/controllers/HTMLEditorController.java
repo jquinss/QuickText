@@ -18,6 +18,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
@@ -57,6 +58,9 @@ public class HTMLEditorController extends TextEditorController {
 	@FXML
 	private Button htmlTextAreaFormatHTMLBtn;
 
+	@FXML
+	private MenuButton htmlTextAreaInsertBtn;
+
 	private ChangeListener<String> htmlTextAreaChangeListener;
 	
 	private final ToggleButton htmlTextAreaToggleBtn = new ToggleButton("<HTML>");
@@ -72,6 +76,7 @@ public class HTMLEditorController extends TextEditorController {
 			setIsNotSavedStatus();
 		}
 		htmlTextArea.textProperty().removeListener(htmlTextAreaChangeListener);
+		closeReusableTextPane();
 		disableHTMLTextArea();
 	}
 	
@@ -82,7 +87,7 @@ public class HTMLEditorController extends TextEditorController {
 	}
 	
 	void insertText(String text) {
-		// TO DO
+		htmlTextArea.replaceSelection(text);
 	}
 	
     void saveNewFile(String fileName, String description) throws IOException {
@@ -164,6 +169,7 @@ public class HTMLEditorController extends TextEditorController {
 		htmlTextAreaEditToggleBtn.setDisable(true);
 		htmlTextAreaSaveBtn.setDisable(false);
 		htmlTextAreaFormatHTMLBtn.setDisable(false);
+		htmlTextAreaInsertBtn.setDisable(false);
     }
     
     private void disableHTMLTextArea() {
@@ -173,6 +179,7 @@ public class HTMLEditorController extends TextEditorController {
 		htmlTextAreaEditToggleBtn.setSelected(false);
 		htmlTextAreaSaveBtn.setDisable(true);
 		htmlTextAreaFormatHTMLBtn.setDisable(true);
+		htmlTextAreaInsertBtn.setDisable(true);
     }
     
     private void initializeHTMLTextArea() {
