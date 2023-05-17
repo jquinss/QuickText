@@ -44,5 +44,6 @@ This project is still in "In Progress" status
 
 ## To-Do
 
+* Add toolbar with quick buttons
 * Add option for the users to search for a string in a template.
 * Allow users to change the application style theme.
