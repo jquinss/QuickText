@@ -47,3 +47,4 @@ This project is still in "In Progress" status
 * Add toolbar with quick buttons
 * Add option for the users to search for a string in a template.
 * Allow users to change the application style theme.
+* Implement the use of variables to replace text.
