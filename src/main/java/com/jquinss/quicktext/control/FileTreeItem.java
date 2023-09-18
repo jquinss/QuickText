@@ -8,9 +8,9 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 
 public class FileTreeItem extends TreeItem<FileItem> {
-	private static final String FOLDER_IMG = "/com/jquinss/quicktext/images/folder_img.png";
-	private static final String TXT_IMG = "/com/jquinss/quicktext/images/txt_img.png";
-	private static final String HTML_IMG = "/com/jquinss/quicktext/images/html_img.png";
+	private static final String FOLDER_IMG = "/com/jquinss/quicktext/images/folder.png";
+	private static final String TXT_IMG = "/com/jquinss/quicktext/images/plaintext_template.png";
+	private static final String HTML_IMG = "/com/jquinss/quicktext/images/html_template.png";
 	private ContextMenu contextMenu;
 	
 	public FileTreeItem(FileItem fileItem) {
