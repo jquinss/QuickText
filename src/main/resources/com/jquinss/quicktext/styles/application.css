@@ -206,3 +206,17 @@
 .scroll-bar:horizontal .thumb {
 	-fx-background-color: #e7e4e4;
 }
+
+/* Styles for the toolbar */
+
+.tool-bar {
+    -fx-background-color: #f2f0f0;
+}
+
+.toolbar-btn {
+    -fx-background-color: transparent;
+}
+
+.toolbar-btn:hover {
+    -fx-background-color: #b7e0ff;
+}

@@ -12,6 +12,7 @@ import java.util.Optional;
 import com.jquinss.quicktext.enums.Charsets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -85,7 +86,70 @@ public class QuickTextController {
     
     @FXML
     private MenuItem editTemplateMenuItem;
-    
+
+	@FXML
+	private Button createPlainTextTemplateToolbarButton;
+
+	@FXML
+	private Button createHTMLTemplateToolbarButton;
+
+	@FXML
+	private Button deleteTemplateToolbarButton;
+
+	@FXML
+	private Button duplicateTemplateToolbarButton;
+
+	@FXML
+	private Button viewTemplateToolbarButton;
+
+	@FXML
+	private Button editTemplateToolbarButton;
+
+	@FXML
+	private Button copyTemplateToClipboardToolbarButton;
+
+	@FXML
+	private Button createFolderToolbarButton;
+
+	@FXML
+	private Button deleteFolderToolbarButton;
+
+	@FXML
+	private ImageView createPlainTextTemplateImage;
+
+	@FXML
+	private ImageView createHTMLTemplateImage;
+
+	@FXML
+	private ImageView deleteTemplateImage;
+
+	@FXML
+	private ImageView duplicateTemplateImage;
+
+	@FXML
+	private ImageView viewTemplateImage;
+
+	@FXML
+	private ImageView editTemplateImage;
+
+	@FXML
+	private ImageView copyTemplateToClipboardImage;
+
+	@FXML
+	private ImageView createFolderImage;
+
+	@FXML
+	private ImageView deleteFolderImage;
+
+	@FXML
+	private ImageView settingsImage;
+
+	@FXML
+	private ImageView backupsManagerImage;
+
+	@FXML
+	private ImageView reusableTextImage;
+
     @FXML
     private ScrollPane detailsPane;
     
@@ -477,7 +541,8 @@ public class QuickTextController {
         stage.setScene(scene);
         stage.showAndWait();
     }
-    
+
+	@FXML
     void viewTemplate() {
     	TreeItem<FileItem> treeItem = treeViewPaneController.getSelectedTreeItem();
     	try {
@@ -531,11 +596,27 @@ public class QuickTextController {
     
     @FXML
 	public void initialize() {;
+		initializeToolBar();
 		initializeCache();
 		initializeTreeView();
 		initializeDescriptionPane();
 		initializeBackups();
 		initializeReusableText();
+	}
+
+	private void initializeToolBar() {
+		createPlainTextTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/create_plaintext_template.png").toString()));
+		createHTMLTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/create_html_template.png").toString()));
+		deleteTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/delete_template.png").toString()));
+		duplicateTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/duplicate_template.png").toString()));
+		viewTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/view_template.png").toString()));
+		editTemplateImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/edit_template.png").toString()));
+		copyTemplateToClipboardImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/copy_clipboard.png").toString()));
+		createFolderImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/create_folder.png").toString()));
+		deleteFolderImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/delete_folder.png").toString()));
+		settingsImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/settings.png").toString()));
+		backupsManagerImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/backups_manager.png").toString()));
+		reusableTextImage.setImage(new Image(getClass().getResource("/com/jquinss/quicktext/images/reusable_text.png").toString()));
 	}
     
     private void initializeCache() {
@@ -626,6 +707,48 @@ public class QuickTextController {
     	disableFolderRelatedMenuItems(true);
     	disableTemplateRelatedMenuItems(true);
     }
+
+	private void disableRootRelatedToolbarButtons(boolean disable) {
+		createFolderToolbarButton.setDisable(disable);
+	}
+
+	private void disableFolderRelatedToolBarButtons(boolean disable) {
+		createPlainTextTemplateToolbarButton.setDisable(disable);
+		createHTMLTemplateToolbarButton.setDisable(disable);
+		deleteFolderToolbarButton.setDisable(disable);
+	}
+
+	private void disableTemplateRelatedToolbarButtons(boolean disable) {
+		deleteTemplateToolbarButton.setDisable(disable);
+		duplicateTemplateToolbarButton.setDisable(disable);
+		viewTemplateToolbarButton.setDisable(disable);
+		editTemplateToolbarButton.setDisable(disable);
+		copyTemplateToClipboardToolbarButton.setDisable(disable);
+	}
+
+	void disableAllToolbarButtons() {
+		disableRootRelatedToolbarButtons(true);
+		disableFolderRelatedToolBarButtons(true);
+		disableTemplateRelatedToolbarButtons(true);
+	}
+
+	void enableRootRelatedToolbarButtons() {
+		disableRootRelatedToolbarButtons(false);
+		disableFolderRelatedToolBarButtons(true);
+		disableTemplateRelatedToolbarButtons(true);
+	}
+
+	void enableFolderRelatedToolbarButtons() {
+		disableRootRelatedToolbarButtons(true);
+		disableFolderRelatedToolBarButtons(false);
+		disableTemplateRelatedToolbarButtons(true);
+	}
+
+	void enableTemplateRelatedToolbarButtons() {
+		disableRootRelatedToolbarButtons(true);
+		disableFolderRelatedToolBarButtons(true);
+		disableTemplateRelatedToolbarButtons(false);
+	}
     
     void hideAllViewAreas() {
     	hideTextArea();

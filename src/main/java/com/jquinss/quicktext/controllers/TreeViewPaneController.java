@@ -205,13 +205,16 @@ public class TreeViewPaneController {
 		    	quickTextController.hideAllViewAreas();
 		    	FileItem fileItem = newValue.getValue();
 		    	if (fileItem instanceof RootFolderItem) {
+					quickTextController.enableRootRelatedToolbarButtons();
 		    		quickTextController.enableRootRelatedMenuItems();
 		    	}
 		    	else if (fileItem instanceof FolderItem) {
+					quickTextController.enableFolderRelatedToolbarButtons();
 		    		quickTextController.enableFolderRelatedMenuItems();
 		    		quickTextController.viewFileDetails(newValue.getValue());
 		    	}
 		    	else if (fileItem instanceof TemplateItem) {
+					quickTextController.enableTemplateRelatedToolbarButtons();
 		    		quickTextController.enableTemplateRelatedMenuItems();
 		    		quickTextController.viewFileDetails(newValue.getValue());
 		    	}
@@ -219,6 +222,7 @@ public class TreeViewPaneController {
 		    else {
 		    	// when no items are selected, we disable all menu items and hide all the view areas.
 		    	quickTextController.disableAllMenuItems();
+				quickTextController.disableAllToolbarButtons();
 		    	quickTextController.hideAllViewAreas();
 		    }
 		});

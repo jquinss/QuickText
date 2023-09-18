@@ -15,7 +15,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ToolBar?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Tooltip?>
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jquinss.quicktext.controllers.QuickTextController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
@@ -62,6 +69,84 @@
         </Menu>
       </menus>
     </MenuBar>
+      <ToolBar>
+          <HBox>
+              <Button fx:id="createPlainTextTemplateToolbarButton" onAction="#createPlainTextTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Create plain-text template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="createPlainTextTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="createHTMLTemplateToolbarButton" onAction="#createHTMLTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Create HTML template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="createHTMLTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="createFolderToolbarButton" onAction="#createFolder" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Create folder" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="createFolderImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="deleteFolderToolbarButton" onAction="#deleteFolder" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Delete folder" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="deleteFolderImage"/>
+                  </graphic>
+              </Button>
+              <Separator orientation="VERTICAL" />
+              <Button fx:id="deleteTemplateToolbarButton" onAction="#deleteTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Delete template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="deleteTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="duplicateTemplateToolbarButton" onAction="#duplicateTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Duplicate template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="duplicateTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="viewTemplateToolbarButton" onAction="#viewTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="View template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="viewTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="editTemplateToolbarButton" onAction="#editTemplate" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Edit template" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="editTemplateImage"/>
+                  </graphic>
+              </Button>
+              <Button fx:id="copyTemplateToClipboardToolbarButton" onAction="#copyTemplateToClipboard" disable="true" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Copy template to clipboard" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="copyTemplateToClipboardImage"/>
+                  </graphic>
+              </Button>
+              <Separator orientation="VERTICAL" />
+              <Button onAction="#openSettingsDialog" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Settings" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="settingsImage"/>
+                  </graphic>
+              </Button>
+              <Button onAction="#openBackupsPane" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Backups" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="backupsManagerImage"/>
+                  </graphic>
+              </Button>
+              <Button onAction="#openReusableTextPane" styleClass="toolbar-btn">
+                  <tooltip><Tooltip text="Reusable text" /></tooltip>
+                  <graphic>
+                      <ImageView fx:id="reusableTextImage"/>
+                  </graphic>
+              </Button>
+          </HBox>
+      </ToolBar>
     <SplitPane dividerPositions="0.25, 0.7" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
 			<fx:include fx:id="treeViewPane" source="TreeViewPane.fxml" />
