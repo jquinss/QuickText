@@ -32,19 +32,19 @@ No special instructions are required to use the application. You can export the 
 * Users can rename templates.
 * Users can rename folders.
 * Users are able to create backups.
-* Users are able to schedule backups
+* Users are able to schedule backups.
 * Users are able to manually edit HTML code from templates.
 * Users can move templates by drag and drop.
 * Users can choose the maximum number of backups created.
 * Users can reuse common pieces of text across templates.
+* Users can make use of a toolbar with quick buttons.
 
 ## Status
-This project is still in "In Progress" status
+This project is still in "In Progress" status.
 
 
 ## To-Do
 
-* Add toolbar with quick buttons
 * Add option for the users to search for a string in a template.
 * Allow users to change the application style theme.
 * Implement the use of variables to replace text.
