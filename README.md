@@ -47,5 +47,6 @@ This project is still in "In Progress" status.
 
 * Add option for the users to search for a string in a template.
 * Add option to import backups.
+* Add splash screen at the beginning.
 * Allow users to change the application style theme.
 * Implement the use of variables to replace text.
